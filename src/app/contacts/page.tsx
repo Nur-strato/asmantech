@@ -521,7 +521,7 @@ export default function ContactsPage() {
                                                     <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border ${
                                                         isSelected ? "bg-white/10 border-white/20 text-white" : "bg-white border-neutral-200 text-neutral-700"
                                                     }`}>
-                                                        <Icon size={19} strokeWidth={2} />
+                                                        <Icon size={19} />
                                                     </div>
                                                     <span className="text-[15px] sm:text-[16px] font-bold tracking-tight truncate">
                                                         {s.title}
