@@ -10,7 +10,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-    title: "Vital-Tech | IT & Product Studio",
+    title: "Asman-Tech | IT & Product Studio",
     description: "Разработка масштабируемых веб-сервисов, цифровых продуктов и высоконагруженных систем.",
     keywords: ["IT-компания", "веб-разработка", "Next.js", "создание сайтов", "Vital-Tech"],
 };
