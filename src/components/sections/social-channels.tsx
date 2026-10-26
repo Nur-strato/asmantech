@@ -1,0 +1,205 @@
+"use client";
+
+import React, { useState } from "react";
+import { Send, AtSign, Copy, Check } from "lucide-react";
+
+// Официальный оригинальный вектор WhatsApp (size = 36.8)
+function WhatsAppOfficialIcon({ size = 36.8, className = "" }: { size?: number; className?: string }) {
+    return (
+        <svg
+            width={size}
+            height={size}
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className={`shrink-0 overflow-visible ${className}`}
+        >
+            <path
+                d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2z"
+                fill="#25D366"
+            />
+            <path
+                d="M17.47 14.38c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.95 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51-.17-.01-.37-.01-.57-.01-.2 0-.52.07-.8.37-.27.3-1.05 1.03-1.05 2.51 0 1.48 1.08 2.91 1.23 3.11.15.2 2.13 3.25 5.16 4.56.72.31 1.28.5 1.72.64.72.23 1.38.2 1.9.12.58-.09 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.07-.13-.27-.2-.57-.35z"
+                fill="#FFFFFF"
+            />
+        </svg>
+    );
+}
+
+// Официальный оригинальный вектор Google Workspace Gmail (size = 36.7)
+function GmailOfficialIcon({ size = 36.7, className = "" }: { size?: number; className?: string }) {
+    return (
+        <svg
+            width={size}
+            height={size}
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className={`shrink-0 overflow-visible ${className}`}
+        >
+            <path
+                d="M5 20.5h2V10.86L2 7.11V17.5C2 19.16 3.34 20.5 5 20.5z"
+                fill="#4285F4"
+            />
+            <path
+                d="M19 20.5h-2V10.86L22 7.11V17.5c0 1.66-1.34 3-3 3z"
+                fill="#34A853"
+            />
+            <path
+                d="M17 5.14V10.86L22 7.11V6.5c0-1.88-2.15-2.95-3.66-1.82L17 5.14z"
+                fill="#FBBC04"
+            />
+            <path
+                d="M7 5.14V10.86L2 7.11V6.5c0-1.88 2.15-2.95 3.66-1.82L7 5.14z"
+                fill="#C5221F"
+            />
+            <path
+                d="M7 5.14v5.72L12 14.5l5-3.64V5.14l-5 3.75-5-3.75z"
+                fill="#EA4335"
+            />
+        </svg>
+    );
+}
+
+function InstagramIcon({ size = 34, className = "" }: { size?: number; className?: string }) {
+    return (
+        <svg
+            width={size}
+            height={size}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={className}
+        >
+            <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+            <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+        </svg>
+    );
+}
+
+interface SocialChannel {
+    name: string;
+    handle: string;
+    copyValue: string;
+    href: string;
+    accentClass: string;
+    icon: React.ReactNode;
+}
+
+const channels: SocialChannel[] = [
+    {
+        name: "Telegram",
+        handle: "@vitaltech_lab",
+        copyValue: "@vitaltech_lab",
+        href: "https://t.me/vitaltech_lab",
+        accentClass: "text-[#228BE6]",
+        icon: <Send size={34} className="translate-x-0.5 -translate-y-0.5" />,
+    },
+    {
+        name: "WhatsApp",
+        handle: "+996 (555) 00-00-00",
+        copyValue: "+996555000000",
+        href: "https://wa.me/996555000000",
+        accentClass: "",
+        icon: <WhatsAppOfficialIcon size={36.8} />,
+    },
+    {
+        name: "Gmail",
+        handle: "vitaltech.kg@gmail.com",
+        copyValue: "vitaltech.kg@gmail.com",
+        href: "mailto:vitaltech.kg@gmail.com",
+        accentClass: "",
+        icon: <GmailOfficialIcon size={36.7} />,
+    },
+    {
+        name: "Instagram",
+        handle: "@vitaltech.dev",
+        copyValue: "@vitaltech.dev",
+        href: "https://instagram.com/vitaltech.dev",
+        accentClass: "text-[#D84C69]",
+        icon: <InstagramIcon size={34} />,
+    },
+    {
+        name: "Threads",
+        handle: "@vitaltech.thoughts",
+        copyValue: "@vitaltech.thoughts",
+        href: "https://threads.net/@vitaltech.thoughts",
+        accentClass: "text-[#18181B]",
+        icon: <AtSign size={34} />,
+    },
+];
+
+export function SocialChannels() {
+    const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+
+    const handleCopy = (e: React.MouseEvent, text: string, index: number) => {
+        e.preventDefault();
+        e.stopPropagation();
+        navigator.clipboard.writeText(text);
+        setCopiedIndex(index);
+        setTimeout(() => setCopiedIndex(null), 2000);
+    };
+
+    return (
+        <section id="connect" className="pt-4 select-none">
+            {/* Верхний заголовок */}
+            <div>
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-neutral-900 tracking-tight mt-1">
+                    Всегда на связи
+                </h3>
+            </div>
+
+            {/* Сетка: вылет на 5% по бокам, отступ сверху pt-[9%] md:pt-20, зазор gap-8 */}
+            <div className="w-[110%] max-w-[110%] -mx-[5%] pt-[9%] md:pt-20">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
+                    {channels.map((channel, index) => (
+                        <div
+                            key={channel.name}
+                            className="flex flex-col items-center text-center"
+                        >
+                            <a
+                                href={channel.href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="group/link inline-flex flex-col items-center cursor-pointer transition-transform duration-300 hover:-translate-y-1.5"
+                            >
+                                <div className={`${channel.accentClass} flex items-center justify-center transition-transform duration-300 group-hover/link:scale-110`}>
+                                    {channel.icon}
+                                </div>
+
+                                <h4 className="text-[21px] font-bold text-neutral-900 tracking-tight pt-3.5">
+                                    {channel.name}
+                                </h4>
+                            </a>
+
+                            <div className="inline-flex items-center justify-center gap-1.5 max-w-full pt-1.5">
+                                <span className="font-mono text-[13px] text-neutral-900/50 font-medium truncate select-text">
+                                    {channel.handle}
+                                </span>
+
+                                <button
+                                    type="button"
+                                    onClick={(e) => handleCopy(e, channel.copyValue, index)}
+                                    title="Скопировать"
+                                    className="p-1.5 rounded text-neutral-900/40 hover:text-neutral-900 hover:bg-neutral-100 transition-colors cursor-pointer"
+                                >
+                                    {copiedIndex === index ? (
+                                        <Check size={13.5} className="text-emerald-600 stroke-[2.5]" />
+                                    ) : (
+                                        <Copy size={13.5} />
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+}
+
+export default SocialChannels;

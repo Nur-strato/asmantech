@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    color-scheme: light;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: #ffffff;
+    color: #171717;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Кастомный скроллбар в минималистичном стиле */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #ffffff;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #e4e4e7;
+    border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #d4d4d8;
+}
+
+@keyframes soundwave {
+    0%, 100% {
+        transform: scaleY(0.25);
+    }
+    50% {
+        transform: scaleY(1);
+    }
+}
+
+.animate-wave-1 {
+    animation: soundwave 1s ease-in-out infinite;
+}
+.animate-wave-2 {
+    animation: soundwave 1.2s ease-in-out infinite 0.15s;
+}
+.animate-wave-3 {
+    animation: soundwave 0.9s ease-in-out infinite 0.35s;
+}
+.animate-wave-4 {
+    animation: soundwave 1.1s ease-in-out infinite 0.2s;
+}
+.animate-wave-5 {
+    animation: soundwave 0.85s ease-in-out infinite 0.45s;
+}
