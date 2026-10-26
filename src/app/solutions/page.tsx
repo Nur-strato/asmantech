@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { Cpu, ArrowUpRight } from "lucide-react";
 import { SERVICES } from "@/data/services";
 
-export function Solutions() {
+export default function Solutions() {
     const router = useRouter();
     const [activeId, setActiveId] = useState<string>("web-dev");
     const [currentDateStr, setCurrentDateStr] = useState<string>("");
@@ -137,8 +137,8 @@ export function Solutions() {
                             <div className="flex items-center justify-between pb-4 border-b border-neutral-200/80">
                                 <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold">
                                     Guarantee for quality
-                                </span>
-                                <span className="font-mono text-[11px] uppercase tracking-wider px-2.5 py-1 rounded-md bg-white border border-neutral-200 text-neutral-700 font-medium">
+                                    }}
+                                    <span className="font-mono text-[11px] uppercase tracking-wider px-2.5 py-1 rounded-md bg-white border border-neutral-200 text-neutral-700 font-medium">
                                     {activeService.badge}
                                 </span>
                             </div>
@@ -193,7 +193,5 @@ export function Solutions() {
 
             </div>
         </section>
-    );
+);
 }
-
-export default Solutions;
