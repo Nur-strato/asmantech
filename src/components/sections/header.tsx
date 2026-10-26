@@ -33,12 +33,12 @@ export function Header() {
                 {/* Логотип: Home сдвинут правее суммарно на 14% */}
                 <Link
                     href="/"
-                    aria-label="Vital Tech Home"
+                    aria-label="Asman Tech Home"
                     className="group relative inline-flex items-center select-none active:scale-95 transition-transform font-serif text-[32px] md:text-[36px] font-bold tracking-tight"
                 >
-                    {/* Vital Tech без затухания */}
+                    {/* Asman Tech без затухания */}
                     <span className="text-neutral-900 group-hover:invisible">
-                        Vital Tech
+                        Asman Tech
                     </span>
 
                     {/* Home со смещением вправо на 14% */}

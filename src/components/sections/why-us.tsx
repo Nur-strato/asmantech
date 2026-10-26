@@ -16,7 +16,7 @@ export function WhyUs() {
                 <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-6 border-b border-neutral-200">
                     <div className="space-y-3 max-w-2xl">
                         <h2 className="font-serif italic text-4xl sm:text-6xl md:text-7xl font-normal tracking-tight text-neutral-950 leading-none">
-                            Почему Vital Tech
+                            Почему Asman Tech
                         </h2>
                     </div>
 
@@ -210,7 +210,7 @@ export function WhyUs() {
                             <div className="md:col-span-3 flex justify-end">
                                 <div className="relative w-44 h-24 sm:w-56 sm:h-28 rounded-xl bg-gradient-to-tr from-neutral-200 to-neutral-50 border border-neutral-300/80 shadow-sm p-4 flex flex-col justify-between [transform:rotate(-6deg)] group-hover:[transform:rotate(-2deg)] transition-transform duration-300">
                                     <span className="font-mono text-[9px] uppercase tracking-widest text-neutral-400 font-bold">
-                                        VITAL TECH CONTRACT
+                                        ASMAN TECH CONTRACT
                                     </span>
                                     <div className="space-y-1.5">
                                         <div className="h-1 bg-neutral-300 rounded w-3/4" />
@@ -267,7 +267,7 @@ export function WhyUs() {
                 {/* Аккуратный студийный разделитель с укрупненной надписью VITAL TECH STANDARDS */}
                 <div className="pt-2 pb-1 border-t border-neutral-200/80 flex items-center justify-end">
                     <span className="font-mono text-[12px] uppercase tracking-[0.2em] text-neutral-400 font-semibold">
-                        VITAL TECH STANDARDS
+                        ASMAN TECH STANDARDS
                     </span>
                 </div>
 

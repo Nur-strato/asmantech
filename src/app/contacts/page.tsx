@@ -413,10 +413,7 @@ export default function ContactsPage() {
                     <span>Back to Home</span>
                 </Link>
 
-                <div className="flex items-center gap-2 font-mono text-[11px] text-neutral-500 uppercase tracking-wider">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span>ACCEPTING NEW PROJECTS</span>
-                </div>
+
             </div>
 
             {/* Заголовок страницы */}
@@ -777,7 +774,7 @@ export default function ContactsPage() {
                         <div className="space-y-3 pt-1">
                             {/* Telegram */}
                             <a
-                                href="https://t.me/NurRay0"
+                                href="https://t.me/AsmanTech"
                                 target="_blank"
                                 rel="noreferrer"
                                 className="group flex items-center justify-between p-4.5 rounded-2xl bg-neutral-50 hover:bg-neutral-100/90 border border-neutral-200 transition-all hover:border-neutral-400"
@@ -788,7 +785,7 @@ export default function ContactsPage() {
                                     </div>
                                     <div>
                                         <div className="text-[15px] font-bold text-neutral-950">Telegram</div>
-                                        <div className="text-xs text-neutral-500 font-mono">@NurRay0</div>
+                                        <div className="text-xs text-neutral-500 font-mono">@AsmanTech</div>
                                     </div>
                                 </div>
                                 <ArrowUpRight size={17} className="text-neutral-400 group-hover:text-neutral-950 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
@@ -807,7 +804,7 @@ export default function ContactsPage() {
                                     </div>
                                     <div>
                                         <div className="text-[15px] font-bold text-neutral-950">WhatsApp</div>
-                                        <div className="text-xs text-neutral-500 font-mono">+996 778 300 405</div>
+                                        <div className="text-xs text-neutral-500 font-mono">+996 755 275 270</div>
                                     </div>
                                 </div>
                                 <ArrowUpRight size={17} className="text-neutral-400 group-hover:text-neutral-950 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
@@ -815,7 +812,7 @@ export default function ContactsPage() {
 
                             {/* Email с векторной иконкой Google Workspace Gmail */}
                             <a
-                                href="mailto:info@Vitaltech.kg"
+                                href="mailto:Asmantech.kg@gmail.com"
                                 className="group flex items-center justify-between p-4.5 rounded-2xl bg-neutral-50 hover:bg-neutral-100/90 border border-neutral-200 transition-all hover:border-neutral-400"
                             >
                                 <div className="flex items-center gap-3.5">
@@ -824,7 +821,7 @@ export default function ContactsPage() {
                                     </div>
                                     <div>
                                         <div className="text-[15px] font-bold text-neutral-950">Email</div>
-                                        <div className="text-xs text-neutral-500 font-mono">info@Vitaltech.kg</div>
+                                        <div className="text-xs text-neutral-500 font-mono">Asmantech.kg@gmail.com</div>
                                     </div>
                                 </div>
                                 <ArrowUpRight size={17} className="text-neutral-400 group-hover:text-neutral-950 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />

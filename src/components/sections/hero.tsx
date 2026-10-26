@@ -369,7 +369,7 @@ export function Hero() {
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-100 border border-neutral-200/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
 
                             <span className="text-[11px] font-mono font-medium uppercase tracking-wider text-neutral-600">
-                                Vital Tech
+                                Asman Tech
                             </span>
                         </div>
                         <h1 className="font-serif text-[64px] sm:text-[84px] md:text-[98px] lg:text-[108px] font-normal text-[#0A1A2F] tracking-[-0.04em] leading-[0.98]">

@@ -61,7 +61,7 @@ export function Footer() {
                             </div>
                         )}
                         <span className="text-[12px] text-neutral-400 font-normal">
-                            © {new Date().getFullYear()} Vital-Tech. All rights reserved.
+                            © {new Date().getFullYear()} Asman Tech. All rights reserved.
                         </span>
                     </div>
 

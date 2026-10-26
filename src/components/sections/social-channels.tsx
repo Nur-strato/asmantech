@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Send, AtSign, Copy, Check } from "lucide-react";
+import { Send, AtSign, Copy, Check, X } from "lucide-react";
 
 // Официальный оригинальный вектор WhatsApp (size = 36.8)
 function WhatsAppOfficialIcon({ size = 36.8, className = "" }: { size?: number; className?: string }) {
@@ -88,64 +88,110 @@ interface SocialChannel {
     href: string;
     accentClass: string;
     icon: React.ReactNode;
+    isUnderDev?: boolean;
 }
 
 const channels: SocialChannel[] = [
     {
         name: "Telegram",
-        handle: "@vitaltech_lab",
-        copyValue: "@vitaltech_lab",
-        href: "https://t.me/vitaltech_lab",
+        handle: "@AsmanTech",
+        copyValue: "@AsmanTech",
+        href: "https://t.me/AsmanTech",
         accentClass: "text-[#228BE6]",
         icon: <Send size={34} className="translate-x-0.5 -translate-y-0.5" />,
     },
     {
         name: "WhatsApp",
-        handle: "+996 (555) 00-00-00",
-        copyValue: "+996555000000",
-        href: "https://wa.me/996555000000",
+        handle: "+996 (755) 275-270",
+        copyValue: "+996755275270",
+        href: "https://wa.me/996755275270",
         accentClass: "",
         icon: <WhatsAppOfficialIcon size={36.8} />,
     },
     {
         name: "Gmail",
-        handle: "vitaltech.kg@gmail.com",
-        copyValue: "vitaltech.kg@gmail.com",
-        href: "mailto:vitaltech.kg@gmail.com",
+        handle: "asmantech.kg@gmail.com",
+        copyValue: "asmantech.kg@gmail.com",
+        href: "mailto:asmantech.kg@gmail.com",
         accentClass: "",
         icon: <GmailOfficialIcon size={36.7} />,
     },
     {
         name: "Instagram",
-        handle: "@vitaltech.dev",
-        copyValue: "@vitaltech.dev",
-        href: "https://instagram.com/vitaltech.dev",
+        handle: "",
+        copyValue: "Under development",
+        href: "#",
         accentClass: "text-[#D84C69]",
         icon: <InstagramIcon size={34} />,
+        isUnderDev: true,
     },
     {
         name: "Threads",
-        handle: "@vitaltech.thoughts",
-        copyValue: "@vitaltech.thoughts",
-        href: "https://threads.net/@vitaltech.thoughts",
+        handle: "",
+        copyValue: "Under development",
+        href: "#",
         accentClass: "text-[#18181B]",
         icon: <AtSign size={34} />,
+        isUnderDev: true,
     },
 ];
 
 export function SocialChannels() {
     const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+    const [activeDevChannel, setActiveDevChannel] = useState<string | null>(null);
 
-    const handleCopy = (e: React.MouseEvent, text: string, index: number) => {
+    const triggerDevNotice = (name: string) => {
+        setActiveDevChannel(name);
+        setTimeout(() => {
+            setActiveDevChannel((curr) => (curr === name ? null : curr));
+        }, 2800);
+    };
+
+    const handleChannelClick = (e: React.MouseEvent, channel: SocialChannel) => {
+        if (channel.isUnderDev) {
+            e.preventDefault();
+            triggerDevNotice(channel.name);
+        }
+    };
+
+    const handleCopy = (e: React.MouseEvent, channel: SocialChannel, index: number) => {
         e.preventDefault();
         e.stopPropagation();
-        navigator.clipboard.writeText(text);
+
+        if (channel.isUnderDev) {
+            triggerDevNotice(channel.name);
+            return;
+        }
+
+        navigator.clipboard.writeText(channel.copyValue);
         setCopiedIndex(index);
         setTimeout(() => setCopiedIndex(null), 2000);
     };
 
     return (
-        <section id="connect" className="pt-4 select-none">
+        <section id="connect" className="pt-4 select-none relative">
+            {/* Лаконичная белая табличка с коротким текстом */}
+            {activeDevChannel && (
+                <div className="fixed top-[58%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[88%] max-w-[360px] p-6 rounded-3xl bg-white border border-neutral-200/90 shadow-[0_20px_50px_rgba(0,0,0,0.14)] transition-all duration-200 animate-in fade-in zoom-in-95 text-center">
+                    <button
+                        type="button"
+                        onClick={() => setActiveDevChannel(null)}
+                        className="absolute top-4 right-4 p-1 rounded-full text-neutral-400 hover:text-neutral-900 transition-colors cursor-pointer"
+                        title="Закрыть"
+                    >
+                        <X size={18} />
+                    </button>
+
+                    <h4 className="font-sans text-2xl font-black text-neutral-950 tracking-tight">
+                        {activeDevChannel}
+                    </h4>
+
+                    <p className="mt-2 font-sans text-base font-semibold text-neutral-500">
+                        В разработке
+                    </p>
+                </div>
+            )}
+
             {/* Верхний заголовок */}
             <div>
                 <h3 className="text-2xl sm:text-3xl font-extrabold text-neutral-900 tracking-tight mt-1">
@@ -163,8 +209,9 @@ export function SocialChannels() {
                         >
                             <a
                                 href={channel.href}
-                                target="_blank"
-                                rel="noopener noreferrer"
+                                onClick={(e) => handleChannelClick(e, channel)}
+                                target={channel.isUnderDev ? undefined : "_blank"}
+                                rel={channel.isUnderDev ? undefined : "noopener noreferrer"}
                                 className="group/link inline-flex flex-col items-center cursor-pointer transition-transform duration-300 hover:-translate-y-1.5"
                             >
                                 <div className={`${channel.accentClass} flex items-center justify-center transition-transform duration-300 group-hover/link:scale-110`}>
@@ -183,7 +230,7 @@ export function SocialChannels() {
 
                                 <button
                                     type="button"
-                                    onClick={(e) => handleCopy(e, channel.copyValue, index)}
+                                    onClick={(e) => handleCopy(e, channel, index)}
                                     title="Скопировать"
                                     className="p-1.5 rounded text-neutral-900/40 hover:text-neutral-900 hover:bg-neutral-100 transition-colors cursor-pointer"
                                 >
