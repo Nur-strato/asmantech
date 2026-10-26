@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { Cpu, ArrowUpRight } from "lucide-react";
 import { SERVICES } from "@/data/services";
 
-export function Solutions() {
+export default function Solutions() {
     const router = useRouter();
     const [activeId, setActiveId] = useState<string>("web-dev");
     const [currentDateStr, setCurrentDateStr] = useState<string>("");
@@ -57,7 +57,7 @@ export function Solutions() {
                         <Cpu size={36} strokeWidth={1.75} />
                     </button>
                     <h2 className="font-sans font-extrabold text-3xl sm:text-4xl md:text-5xl tracking-tight text-neutral-950 uppercase">
-                        VITAL TECH
+                        ASMAN TECH
                     </h2>
                     <p className="font-mono text-xs sm:text-sm tracking-[0.25em] uppercase text-neutral-400 font-medium">
                         DIGITAL ENGINEERING
@@ -195,5 +195,3 @@ export function Solutions() {
         </section>
     );
 }
-
-export default Solutions;
