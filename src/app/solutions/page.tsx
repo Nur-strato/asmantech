@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { Cpu, ArrowUpRight } from "lucide-react";
 import { SERVICES } from "@/data/services";
 
-export default function Solutions() {
+export function Solutions() {
     const router = useRouter();
     const [activeId, setActiveId] = useState<string>("web-dev");
     const [currentDateStr, setCurrentDateStr] = useState<string>("");
@@ -52,7 +52,7 @@ export default function Solutions() {
                         type="button"
                         onClick={handleSecretAdminAccess}
                         aria-label="Engine Status"
-                        className="text-neutral-900 mb-1 focus:outline-hidden transition-transform active:scale-90 cursor-default select-none"
+                        className="text-neutral-900 mb-1 focus:outline-none transition-transform active:scale-90 cursor-default select-none"
                     >
                         <Cpu size={36} strokeWidth={1.75} />
                     </button>
@@ -137,8 +137,8 @@ export default function Solutions() {
                             <div className="flex items-center justify-between pb-4 border-b border-neutral-200/80">
                                 <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold">
                                     Guarantee for quality
-                                    }}
-                                    <span className="font-mono text-[11px] uppercase tracking-wider px-2.5 py-1 rounded-md bg-white border border-neutral-200 text-neutral-700 font-medium">
+                                </span>
+                                <span className="font-mono text-[11px] uppercase tracking-wider px-2.5 py-1 rounded-md bg-white border border-neutral-200 text-neutral-700 font-medium">
                                     {activeService.badge}
                                 </span>
                             </div>
@@ -193,5 +193,7 @@ export default function Solutions() {
 
             </div>
         </section>
-);
+    );
 }
+
+export default Solutions;
