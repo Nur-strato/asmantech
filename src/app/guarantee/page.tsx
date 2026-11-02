@@ -124,7 +124,7 @@ export default function GuaranteePage() {
                         <div
                             key={rule.id}
                             onClick={() => handleSelect(rule.id)}
-                            className={`p-7 rounded-[28px] cursor-pointer transition-all duration-200 border flex flex-col justify-between min-h-[210px] select-none ${
+                            className={`p-7 rounded-[28px] cursor-pointer transition-all duration-200 border flex flex-col justify-between min-h-[210px]  ${
                                 isCurrent
                                     ? "bg-neutral-900 text-white border-neutral-900 shadow-xl -translate-y-1"
                                     : "bg-[#FAF6F4] hover:bg-[#F3ECE8] text-neutral-900 border-neutral-200/80"

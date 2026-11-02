@@ -1,271 +1,416 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef } from "react";
+import Image from "next/image";
 import Link from "next/link";
+import * as THREE from "three";
 import {
     ArrowLeft,
     ArrowUpRight,
-    Box,
-    Layers,
     Sparkles,
     Eye,
     Cpu,
     Check,
-    Info,
-    Flame,
-    Loader2,
-    MonitorPlay,
-    Palette,
     Shapes,
+    CheckCircle2,
 } from "lucide-react";
+import { ThreeDirectionsSection } from "@/components/ThreeDirectionsSection";
 
-// --- КОМПОНЕНТ ДЛЯ 2-ГО ЭКРАНА (МОКАПЫ УСТРОЙСТВ ДЛЯ 3D ДИЗАЙНА) ---
-function ThreeDevicePairMockup({ type }: { type: "product" | "interactive" | "arch" }) {
-    if (type === "product") {
-        return (
-            <div className="relative w-full h-[220px] sm:h-[240px] flex items-end justify-center select-none pt-2">
-                <div className="relative w-[78%] sm:w-[74%] aspect-[16/10] mr-[14%] flex flex-col items-center">
-                    <div className="w-full h-full bg-[#1A1A1A] rounded-t-[14px] p-1.5 sm:p-2 border-[2px] border-[#2A2A2A] shadow-xl flex flex-col overflow-hidden">
-                        <div className="w-1.5 h-1.5 rounded-full bg-neutral-800 mx-auto mb-1 shrink-0" />
-                        <div className="flex-1 rounded-[6px] bg-[#0A0D14] p-3 text-white overflow-hidden flex flex-col justify-between border border-neutral-800">
-                            <div className="flex items-center justify-between border-b border-neutral-800 pb-1.5 text-[8px] sm:text-[9px] font-mono text-neutral-400">
-                                <span className="font-bold text-amber-400">CYCLES / RAYTRACING</span>
-                                <span className="text-emerald-400">4K UHD READY</span>
-                            </div>
-                            <div className="grid grid-cols-12 gap-2 items-center my-auto">
-                                <div className="col-span-7 space-y-1">
-                                    <span className="text-[7px] font-mono text-blue-400 uppercase tracking-wider">
-                                        PBR MATERIALS
-                                    </span>
-                                    <h4 className="font-bold text-[10px] sm:text-xs text-white leading-tight">
-                                        Фотореализм для E-Commerce
-                                    </h4>
-                                    <p className="text-[7px] sm:text-[8px] text-neutral-400 line-clamp-2">
-                                        Студийный свет, текстуры металла, стекла, кожи и пластика.
-                                    </p>
-                                </div>
-                                <div className="col-span-5 h-14 sm:h-16 rounded bg-neutral-900 border border-neutral-800 flex flex-col items-center justify-center">
-                                    <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-amber-500/20 via-orange-500/30 to-amber-400/40 border border-amber-400/30 flex items-center justify-center text-sm shadow-inner">
-                                        💎
-                                    </div>
-                                    <span className="text-[6px] font-mono text-neutral-400 mt-1">PRODUCT RENDER</span>
-                                </div>
-                            </div>
-                            <div className="text-[6px] text-neutral-500 font-mono">01 // COMMERCIAL STILLS</div>
-                        </div>
-                    </div>
-                    <div className="w-[108%] h-2 bg-gradient-to-b from-[#D1D5DB] via-[#9CA3AF] to-[#6B7280] rounded-b-md shadow-md flex justify-center">
-                        <div className="w-12 h-1 bg-[#4B5563] rounded-b-sm" />
-                    </div>
-                </div>
+// =========================================================================
+// ИНТЕРАКТИВНЫЙ 3D РОБОТ-СВЕТИЛЬНИК (МИНУС 5%, ИТОГО 0.9025)
+// =========================================================================
+function RobotLampCanvas() {
+    const mountRef = useRef<HTMLDivElement>(null);
 
-                <div className="absolute right-2 sm:right-4 bottom-0 w-[82px] sm:w-[94px] aspect-[9/19] bg-[#161616] rounded-[22px] p-1 border-[2px] border-[#383838] shadow-[0_20px_40px_rgba(0,0,0,0.35)] z-20 flex flex-col">
-                    <div className="w-5 h-1.5 bg-black rounded-full mx-auto my-0.5 shrink-0" />
-                    <div className="flex-1 rounded-[17px] bg-[#0A0D14] p-2 text-white overflow-hidden flex flex-col justify-between border border-neutral-800">
-                        <div className="text-[6px] font-mono text-amber-400 flex justify-between">
-                            <span>STORE</span>
-                            <span>360°</span>
-                        </div>
-                        <div className="space-y-1 my-auto text-center">
-                            <div className="w-9 h-9 rounded-full bg-amber-500/20 border border-amber-400/30 mx-auto flex items-center justify-center text-[11px]">
-                                📦
-                            </div>
-                            <span className="text-[6.5px] font-mono block text-neutral-300">Clean Alpha</span>
-                        </div>
-                        <div className="w-6 h-0.5 bg-neutral-600 rounded-full mx-auto" />
-                    </div>
-                </div>
-            </div>
-        );
-    }
+    useEffect(() => {
+        const currentMount = mountRef.current;
+        if (!currentMount) return;
 
-    if (type === "interactive") {
-        return (
-            <div className="relative w-full h-[220px] sm:h-[240px] flex items-end justify-center select-none pt-2">
-                <div className="relative w-[78%] sm:w-[74%] aspect-[16/10] mr-[14%] flex flex-col items-center">
-                    <div className="w-full h-full bg-[#1A1A1A] rounded-t-[14px] p-1.5 sm:p-2 border-[2px] border-[#2A2A2A] shadow-xl flex flex-col overflow-hidden">
-                        <div className="w-1.5 h-1.5 rounded-full bg-neutral-800 mx-auto mb-1 shrink-0" />
-                        <div className="flex-1 rounded-[6px] bg-[#0E1726] p-3 text-white overflow-hidden flex flex-col justify-between">
-                            <div className="flex items-center justify-between border-b border-white/10 pb-1.5 text-[8px] sm:text-[9px] font-mono text-neutral-300">
-                                <span className="font-bold text-purple-400">THREE.JS / WEBGL</span>
-                                <span className="text-emerald-400">STABLE 60 FPS</span>
-                            </div>
-                            <div className="space-y-1 my-auto">
-                                <span className="text-[7px] font-mono text-emerald-400 uppercase tracking-wider font-semibold">
-                                    REALTIME CONFIGURATOR • GLTF 2.0
-                                </span>
-                                <div className="p-1.5 rounded bg-white/5 border border-white/10 space-y-0.5">
-                                    <div className="text-[8.5px] font-bold text-white leading-tight">
-                                        Вращение 360°, смена цветов и кастомизация
-                                    </div>
-                                    <div className="text-[6.5px] text-neutral-400 line-clamp-1">
-                                        Оптимизация Draco-компрессией: вес моделей до 2-3 МБ.
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="text-[6px] text-neutral-400 font-mono">02 // WEB 3D APPS</div>
-                        </div>
-                    </div>
-                    <div className="w-[108%] h-2 bg-gradient-to-b from-[#D1D5DB] via-[#9CA3AF] to-[#6B7280] rounded-b-md shadow-md flex justify-center">
-                        <div className="w-12 h-1 bg-[#4B5563] rounded-b-sm" />
-                    </div>
-                </div>
+        const scene = new THREE.Scene();
+        const width = currentMount.clientWidth || 450;
+        const height = currentMount.clientHeight || 550;
 
-                <div className="absolute right-2 sm:right-4 bottom-0 w-[82px] sm:w-[94px] aspect-[9/19] bg-[#161616] rounded-[22px] p-1 border-[2px] border-[#383838] shadow-[0_20px_40px_rgba(0,0,0,0.35)] z-20 flex flex-col">
-                    <div className="w-5 h-1.5 bg-black rounded-full mx-auto my-0.5 shrink-0" />
-                    <div className="flex-1 rounded-[17px] bg-[#0E1726] p-2 text-white overflow-hidden flex flex-col justify-between border border-white/10">
-                        <div className="text-[6px] font-mono text-purple-400 flex justify-between">
-                            <span>TOUCH</span>
-                            <span>ROTATE</span>
-                        </div>
-                        <div className="space-y-1 my-auto text-center">
-                            <div className="text-[12px]">🔄</div>
-                            <span className="text-[6.5px] font-mono text-emerald-400">Mobile Fluid</span>
-                        </div>
-                        <div className="w-6 h-0.5 bg-white/40 rounded-full mx-auto" />
-                    </div>
-                </div>
-            </div>
-        );
-    }
+        const camera = new THREE.PerspectiveCamera(34, width / height, 0.1, 100);
+        camera.position.set(0, 0.35, 6.2);
+
+        const renderer = new THREE.WebGLRenderer({
+            alpha: true,
+            antialias: true,
+            powerPreference: "high-performance",
+        });
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.25;
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        currentMount.appendChild(renderer.domElement);
+
+        // Функция создания скругленных геометрий
+        const createRoundedBoxGeometry = (w: number, h: number, d: number, r: number, s: number) => {
+            const shape = new THREE.Shape();
+            const x = -w / 2;
+            const y = -h / 2;
+            shape.moveTo(x + r, y);
+            shape.lineTo(x + w - r, y);
+            shape.quadraticCurveTo(x + w, y, x + w, y + r);
+            shape.lineTo(x + w, y + h - r);
+            shape.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+            shape.lineTo(x + r, y + h);
+            shape.quadraticCurveTo(x, y + h, x, y + h - r);
+            shape.lineTo(x, y + r);
+            shape.quadraticCurveTo(x, y, x + r, y);
+
+            const extrudeSettings = {
+                depth: Math.max(0.01, d - 2 * r),
+                bevelEnabled: true,
+                bevelSegments: s,
+                steps: 1,
+                bevelSize: r,
+                bevelThickness: r,
+            };
+
+            const geo = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+            geo.center();
+            return geo;
+        };
+
+        // --- МАТЕРИАЛЫ: SPACE GRAY & MATTE TITANIUM ---
+        const bodyMaterial = new THREE.MeshPhysicalMaterial({
+            color: 0x1c2026,
+            metalness: 0.82,
+            roughness: 0.32,
+            clearcoat: 0.6,
+            clearcoatRoughness: 0.15,
+            reflectivity: 0.8,
+        });
+
+        const titaniumMaterial = new THREE.MeshStandardMaterial({
+            color: 0x3b4352,
+            metalness: 0.9,
+            roughness: 0.22,
+        });
+
+        const facePlateMaterial = new THREE.MeshStandardMaterial({
+            color: 0xe2e6eb,
+            metalness: 0.18,
+            roughness: 0.32,
+        });
+
+        const eyeMaterial = new THREE.MeshStandardMaterial({
+            color: 0xf8fafc,
+            emissive: 0xe2e8f0,
+            emissiveIntensity: 0.85,
+            roughness: 0.05,
+            metalness: 0.1,
+        });
+
+        const accentIndicatorMat = new THREE.MeshStandardMaterial({
+            color: 0xe2e8f0,
+            emissive: 0xffffff,
+            emissiveIntensity: 0.6,
+            roughness: 0.2,
+        });
+
+        // Корневая группа светильника (уменьшена ещё на 5%: 0.95 * 0.95 = ~0.9)
+        const lamp = new THREE.Group();
+        lamp.scale.set(0.9, 0.9, 0.9);
+        lamp.position.set(0, -0.4, 0);
+        scene.add(lamp);
+
+        // =========================================================
+        // 1. ПОДСТАВКА СВЕТИЛЬНИКА
+        // =========================================================
+        const basePlateGeo = new THREE.CylinderGeometry(1.05, 1.15, 0.14, 48);
+        const basePlate = new THREE.Mesh(basePlateGeo, titaniumMaterial);
+        basePlate.position.y = -0.58;
+        basePlate.receiveShadow = true;
+        lamp.add(basePlate);
+
+        const ringGeo = new THREE.TorusGeometry(1.08, 0.022, 16, 64);
+        const ringMesh = new THREE.Mesh(ringGeo, titaniumMaterial);
+        ringMesh.rotation.x = Math.PI / 2;
+        ringMesh.position.y = -0.56;
+        lamp.add(ringMesh);
+
+        const baseConeGeo = new THREE.CylinderGeometry(0.32, 0.55, 0.18, 36);
+        const baseCone = new THREE.Mesh(baseConeGeo, titaniumMaterial);
+        baseCone.position.y = -0.44;
+        lamp.add(baseCone);
+
+        // =========================================================
+        // 2. КОРПУС СВЕТИЛЬНИКА
+        // =========================================================
+        const bodyGeo = createRoundedBoxGeometry(1.28, 1.15, 1.15, 0.14, 5);
+        const bodyMesh = new THREE.Mesh(bodyGeo, bodyMaterial);
+        bodyMesh.position.y = 0.22;
+        bodyMesh.castShadow = true;
+        lamp.add(bodyMesh);
+
+        const bodyLightGeo = createRoundedBoxGeometry(0.68, 0.12, 0.04, 0.04, 3);
+        const bodyLight = new THREE.Mesh(bodyLightGeo, accentIndicatorMat);
+        bodyLight.position.set(0, 0.26, 0.6);
+        lamp.add(bodyLight);
+
+        // =========================================================
+        // 3. МЕХАНИЧЕСКИЙ ШАРНИР ШЕИ
+        // =========================================================
+        const neckGroup = new THREE.Group();
+        neckGroup.position.set(0, 0.82, 0);
+        lamp.add(neckGroup);
+
+        const collarGeo = new THREE.CylinderGeometry(0.26, 0.32, 0.12, 28);
+        const collar = new THREE.Mesh(collarGeo, titaniumMaterial);
+        neckGroup.add(collar);
+
+        const neckBallGeo = new THREE.SphereGeometry(0.22, 24, 20);
+        const neckBall = new THREE.Mesh(neckBallGeo, titaniumMaterial);
+        neckBall.position.y = 0.16;
+        neckGroup.add(neckBall);
+
+        // =========================================================
+        // 4. ГОЛОВА СВЕТИЛЬНИКА
+        // =========================================================
+        const headPivot = new THREE.Group();
+        headPivot.position.set(0, 0.32, 0);
+        neckGroup.add(headPivot);
+
+        const headGeo = createRoundedBoxGeometry(1.3, 0.94, 0.96, 0.14, 5);
+        const headMesh = new THREE.Mesh(headGeo, bodyMaterial);
+        headMesh.position.set(0, 0.44, 0);
+        headMesh.castShadow = true;
+        headPivot.add(headMesh);
+
+        const facePlateGeo = createRoundedBoxGeometry(1.04, 0.7, 0.08, 0.09, 4);
+        const facePlate = new THREE.Mesh(facePlateGeo, facePlateMaterial);
+        facePlate.position.set(0, 0.44, 0.48);
+        headPivot.add(facePlate);
+
+        // Глаза-линзы
+        const eyeGeo = new THREE.SphereGeometry(0.125, 32, 24);
+        const eyeLeft = new THREE.Mesh(eyeGeo, eyeMaterial);
+        eyeLeft.position.set(-0.22, 0.47, 0.52);
+        eyeLeft.scale.set(1, 1.15, 0.55);
+        headPivot.add(eyeLeft);
+
+        const eyeRight = new THREE.Mesh(eyeGeo, eyeMaterial);
+        eyeRight.position.set(0.22, 0.47, 0.52);
+        eyeRight.scale.set(1, 1.15, 0.55);
+        headPivot.add(eyeRight);
+
+        // Боковые разъемы на висках
+        const earRingGeo = new THREE.TorusGeometry(0.15, 0.02, 16, 32);
+        const earLeft = new THREE.Mesh(earRingGeo, titaniumMaterial);
+        earLeft.position.set(-0.66, 0.44, 0);
+        earLeft.rotation.y = Math.PI / 2;
+        headPivot.add(earLeft);
+
+        const earRight = new THREE.Mesh(earRingGeo, titaniumMaterial);
+        earRight.position.set(0.66, 0.44, 0);
+        earRight.rotation.y = Math.PI / 2;
+        headPivot.add(earRight);
+
+        // =========================================================
+        // 5. НЕЙТРАЛЬНЫЙ СТУДИЙНЫЙ СВЕТ
+        // =========================================================
+        const ambientLight = new THREE.AmbientLight(0xffffff, 2.2);
+        scene.add(ambientLight);
+
+        const frontKey = new THREE.DirectionalLight(0xffffff, 3.8);
+        frontKey.position.set(3, 4, 6);
+        scene.add(frontKey);
+
+        const fillCool = new THREE.DirectionalLight(0xcfd8dc, 2.2);
+        fillCool.position.set(-4, 2.5, 4);
+        scene.add(fillCool);
+
+        const topRim = new THREE.DirectionalLight(0xffffff, 3.2);
+        topRim.position.set(0, 6, 1.5);
+        scene.add(topRim);
+
+        const backRim = new THREE.DirectionalLight(0x94a3b8, 2.0);
+        backRim.position.set(0, 2, -4);
+        scene.add(backRim);
+
+        // =========================================================
+        // 6. СЛЕЖЕНИЕ ЗА КУРСОРОМ И АНИМАЦИЯ
+        // =========================================================
+        const targetHead = { x: -0.12, y: 0.22, z: 0.08 };
+
+        const handleMouseMove = (e: MouseEvent) => {
+            const rect = currentMount.getBoundingClientRect();
+            const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+            const ny = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
+
+            targetHead.y = THREE.MathUtils.clamp(nx * 0.65, -0.6, 0.6);
+            targetHead.x = THREE.MathUtils.clamp(-ny * 0.45 - 0.1, -0.35, 0.3);
+            targetHead.z = THREE.MathUtils.clamp(-nx * 0.18 + 0.06, -0.12, 0.18);
+        };
+
+        window.addEventListener("mousemove", handleMouseMove);
+
+        let animationFrameId: number;
+        const clock = new THREE.Clock();
+
+        const animate = () => {
+            animationFrameId = requestAnimationFrame(animate);
+            const time = clock.getElapsedTime();
+
+            headPivot.rotation.y += (targetHead.y - headPivot.rotation.y) * 0.08;
+            headPivot.rotation.x += (targetHead.x - headPivot.rotation.x) * 0.08;
+            headPivot.rotation.z += (targetHead.z - headPivot.rotation.z) * 0.08;
+
+            lamp.position.y = -0.4 + Math.sin(time * 1.6) * 0.018;
+
+            const blink = time % 4.8;
+            if (blink > 4.65) {
+                eyeLeft.scale.y = 0.06;
+                eyeRight.scale.y = 0.06;
+            } else {
+                eyeLeft.scale.y = 1.15;
+                eyeRight.scale.y = 1.15;
+            }
+
+            renderer.render(scene, camera);
+        };
+        animate();
+
+        const handleResize = () => {
+            if (!currentMount) return;
+            const w = currentMount.clientWidth;
+            const h = currentMount.clientHeight;
+            if (w === 0 || h === 0) return;
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+            renderer.setSize(w, h, false);
+        };
+
+        const ro = new ResizeObserver(() => handleResize());
+        ro.observe(currentMount);
+        handleResize();
+
+        return () => {
+            window.removeEventListener("mousemove", handleMouseMove);
+            ro.disconnect();
+            cancelAnimationFrame(animationFrameId);
+            if (currentMount.contains(renderer.domElement)) {
+                currentMount.removeChild(renderer.domElement);
+            }
+            renderer.dispose();
+            basePlateGeo.dispose();
+            ringGeo.dispose();
+            baseConeGeo.dispose();
+            bodyGeo.dispose();
+            bodyLightGeo.dispose();
+            collarGeo.dispose();
+            neckBallGeo.dispose();
+            headGeo.dispose();
+            facePlateGeo.dispose();
+            eyeGeo.dispose();
+            earRingGeo.dispose();
+        };
+    }, []);
 
     return (
-        <div className="relative w-full h-[220px] sm:h-[240px] flex items-end justify-center select-none pt-2">
-            <div className="relative w-[78%] sm:w-[74%] aspect-[16/10] mr-[14%] flex flex-col items-center">
-                <div className="w-full h-full bg-[#1A1A1A] rounded-t-[14px] p-1.5 sm:p-2 border-[2px] border-[#2A2A2A] shadow-xl flex flex-col overflow-hidden">
-                    <div className="w-1.5 h-1.5 rounded-full bg-neutral-800 mx-auto mb-1 shrink-0" />
-                    <div className="flex-1 rounded-[6px] bg-[#111827] p-3 text-white overflow-hidden flex flex-col justify-between">
-                        <div className="flex items-center justify-between border-b border-neutral-800 pb-1.5 text-[8px] sm:text-[9px] font-mono text-neutral-300">
-                            <span className="font-bold text-blue-400">ARCHVIZ & INTERIOR</span>
-                            <span className="text-emerald-400">EXACT SCALE 1:1</span>
-                        </div>
-                        <div className="space-y-1.5 my-auto">
-                            <div className="flex justify-between items-baseline">
-                                <h4 className="font-bold text-[10px] sm:text-xs">Архитектура и промо-анимация</h4>
-                                <span className="text-[8px] text-emerald-400 font-mono">Cinematic</span>
-                            </div>
-                            <div className="p-1.5 rounded bg-black/40 border border-neutral-800 text-[7px] space-y-1">
-                                <div className="text-neutral-300 font-medium">Сложные интерьерные сцены и экстерьеры</div>
-                                <div className="text-[6.5px] text-neutral-400">Облёты камерой, динамическое естественное освещение</div>
-                            </div>
-                        </div>
-                        <div className="text-[6px] text-neutral-400 font-mono">03 // MOTION & SCENES</div>
-                    </div>
-                </div>
-                <div className="w-[108%] h-2 bg-gradient-to-b from-[#D1D5DB] via-[#9CA3AF] to-[#6B7280] rounded-b-md shadow-md flex justify-center">
-                    <div className="w-12 h-1 bg-[#4B5563] rounded-b-sm" />
-                </div>
-            </div>
-
-            <div className="absolute right-2 sm:right-4 bottom-0 w-[82px] sm:w-[94px] aspect-[9/19] bg-[#161616] rounded-[22px] p-1 border-[2px] border-[#383838] shadow-[0_20px_40px_rgba(0,0,0,0.35)] z-20 flex flex-col">
-                <div className="w-5 h-1.5 bg-black rounded-full mx-auto my-0.5 shrink-0" />
-                <div className="flex-1 rounded-[17px] bg-[#111827] p-2 text-white overflow-hidden flex flex-col justify-between border border-neutral-800">
-                    <div className="text-[6px] font-mono text-blue-400 flex justify-between">
-                        <span>RENDER</span>
-                        <span className="text-emerald-400">READY</span>
-                    </div>
-                    <div className="space-y-1.5 my-auto text-center">
-                        <div className="w-6 h-6 rounded-full bg-blue-500/20 border border-blue-400/40 mx-auto flex items-center justify-center text-[9px] font-mono text-blue-400">
-                            🏛️
-                        </div>
-                        <div className="text-[6px] text-neutral-300 font-mono">
-                            Ultra Detail
-                        </div>
-                    </div>
-                    <div className="w-6 h-0.5 bg-white/40 rounded-full mx-auto" />
-                </div>
-            </div>
-        </div>
+        <div
+            ref={mountRef}
+            className="w-full h-full flex items-center justify-center relative  cursor-grab active:cursor-grabbing overflow-visible"
+        />
     );
 }
 
-// --- НАПРАВЛЕНИЯ 3D-РАЗРАБОТКИ ---
-interface ThreeDirection {
-    num: string;
-    type: "product" | "interactive" | "arch";
-    title: string;
+// =========================================================================
+// ДАННЫЕ РЕАЛЬНЫХ КЕЙСОВ
+// =========================================================================
+interface ThreeCaseItem {
+    id: string;
+    directionNum: string;
+    directionTitle: string;
+    caseTitle: string;
+    client: string;
+    badge: string;
     description: string;
-    timeline: string;
-    express: string;
-    icon: React.ElementType;
-    iconBg: string;
-    iconColor: string;
-    examples: string[];
+    metrics: { label: string; value: string }[];
+    deliverables: string[];
+    techStack: string[];
+    imageUrl: string;
 }
 
-const THREE_DIRECTIONS: ThreeDirection[] = [
+const THREE_CASES: ThreeCaseItem[] = [
     {
-        num: "01",
-        type: "product",
-        title: "Предметный 3D-рендеринг для каталогов",
-        description: "Фотореалистичные изображения товаров без затрат на аренду фотостудий.",
-        timeline: "до 7 дней",
-        express: "3 дня",
-        icon: Box,
-        iconBg: "bg-amber-50/80 border-amber-100/70",
-        iconColor: "text-amber-600",
-        examples: [
-            "Товары для интернет-магазинов на чистом прозрачном фоне",
-            "Детализация фактур: дерево, металл, карбон, ткань",
-            "Любые ракурсы, макро-детали и взрыв-схемы (Exploded View)",
+        id: "case-arch",
+        directionNum: "01",
+        directionTitle: "Architectural 3D",
+        caseTitle: "Жилой комплекс «Baytik Hills Residence»",
+        client: "Девелоперская группа",
+        badge: "Архитектурный рендеринг & Видеооблёт",
+        description:
+            "Создание полного пакета визуализации жилого комплекса по чертежам DWG: дневной и закатный свет, ландшафтный дизайн, подземный паркинг и 60-секундный 4K-видеоролик для отдела продаж.",
+        metrics: [
+            { label: "Разрешение", value: "4K UHD" },
+            { label: "Срок проекта", value: "12 дней" },
+            { label: "Бронь на старте", value: "+42%" },
         ],
+        deliverables: [
+            "16 ракурсов экстерьера с дневным и ночным светом",
+            "Интерьер лобби и видовых пентхаусов 1:1 по чертежам",
+            "Синематик-видеоролик с плавными облётами камеры",
+        ],
+        techStack: ["3ds Max", "Corona Renderer", "AutoCAD", "Photoshop"],
+        imageUrl:
+            "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
     },
     {
-        num: "02",
-        type: "interactive",
-        title: "Интерактивное 3D для сайтов (Three.js / WebGL)",
-        description: "Внедрение 3D-моделей прямо в код сайта с плавным вращением на смартфонах.",
-        timeline: "14 дней",
-        express: "7 дней",
-        icon: MonitorPlay,
-        iconBg: "bg-purple-50/80 border-purple-100/70",
-        iconColor: "text-purple-500",
-        examples: [
-            "3D-конфигураторы товаров со сменой цвета и комплектации",
-            "Интерактивные герои и промо-сцены для лендингов",
-            "Оптимизированные форматы GLTF / GLB с компрессией Draco",
+        id: "case-web3d",
+        directionNum: "02",
+        directionTitle: "Web 3D Design",
+        caseTitle: "3D-конфигуратор аудиосистемы «Aura Horizon»",
+        client: "Hi-Fi Audio Brand",
+        badge: "Интерактивный WebGL прямо на сайте",
+        description:
+            "Разработка веб-конфигуратора колонок и наушников: свободное вращение на 360°, смена отделки (орех, полированный алюминий, матовый графит) и интерактивная взрыв-схема компонентов.",
+        metrics: [
+            { label: "Вес GLB модели", value: "1.9 MB" },
+            { label: "Частота кадров", value: "60 FPS" },
+            { label: "Глубина сессии", value: "3.4x" },
         ],
+        deliverables: [
+            "Плавная 3D-сцена на Three.js с поддержкой тач-жестов",
+            "Оптимизация полигонов сжатием Google Draco",
+            "Прямая связь со страницей оформления заказа",
+        ],
+        techStack: ["Three.js", "React / Next.js", "Blender", "Draco GLTF"],
+        imageUrl:
+            "https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=1200&q=80",
     },
     {
-        num: "03",
-        type: "arch",
-        title: "Архитектурная визуализация и 3D-моушн",
-        description: "Визуализация интерьеров, зданий и кинематографичные рекламные видеоролики.",
-        timeline: "до 28 дней",
-        express: "14 дней",
-        icon: Palette,
-        iconBg: "bg-blue-50/80 border-blue-100/70",
-        iconColor: "text-blue-500",
-        examples: [
-            "Экстерьеры зданий, жилых комплексов и коммерческих пространств",
-            "Интерьерные решения в масштабе 1:1 по чертежам",
-            "Промо-ролики с облётами камеры и бесшовной анимацией",
+        id: "case-product",
+        directionNum: "03",
+        directionTitle: "3D Product Visualization",
+        caseTitle: "Хронограф «Apex Chrono Titanium»",
+        client: "Премиальный часовой бренд",
+        badge: "Студийный PBR-рендеринг для каталога",
+        description:
+            "Рекламная визуализация титанового корпуса без затрат на студию: макро-съемка сапфирового стекла, чистые кадры на прозрачном фоне (Alpha) и наглядный послойный разбор часового механизма.",
+        metrics: [
+            { label: "Разрешение", value: "8000×6000" },
+            { label: "Готовых кадров", value: "24 ракурса" },
+            { label: "Экономия на фото", value: "~60%" },
         ],
+        deliverables: [
+            "Кадры на прозрачном фоне (PNG) под любую верстку",
+            "Послойная взрыв-схема механизма (Exploded View)",
+            "Исходные файлы сцены (.blend) и 4K PBR-карты",
+        ],
+        techStack: ["Blender 4.2", "Cycles", "Substance Painter", "PBR 4K"],
+        imageUrl:
+            "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=80",
     },
 ];
 
 export default function ThreeDesignPage() {
-    const [viewMode, setViewMode] = useState<"preview" | "info">("preview");
-    const [isRebooting, setIsRebooting] = useState(false);
-    const [bootText, setBootText] = useState("INFO");
-
-    const switchModeWithBoot = (target: "preview" | "info") => {
-        if (viewMode === target || isRebooting) return;
-
-        setBootText(target === "info" ? "INFO" : "3D ENGINE");
-        setIsRebooting(true);
-
-        setTimeout(() => {
-            setViewMode(target);
-        }, 450);
-
-        setTimeout(() => {
-            setIsRebooting(false);
-        }, 900);
-    };
-
     return (
-        <main className="max-w-[1544px] mx-auto px-6 sm:px-10 pt-28 pb-32 space-y-28 bg-white text-neutral-900 font-sans select-none">
+        <main className="max-w-[1544px] mx-auto px-6 sm:px-10 pt-28 pb-32 space-y-28 bg-white text-neutral-900 font-sans ">
 
             {/* Навигация */}
             <div className="flex items-center justify-between border-b border-neutral-200/80 pb-6">
@@ -279,34 +424,34 @@ export default function ThreeDesignPage() {
 
                 <div className="flex items-center gap-2 font-mono text-[11px] text-neutral-500 uppercase tracking-wider">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span>REALTIME 3D EXPERIENCES</span>
+                    <span>ARCHVIZ • WEB 3D • PRODUCT VISUALS</span>
                 </div>
             </div>
 
             {/* ========================================================= */}
-            {/* 1-Й ЭКРАН: Слева описание, справа интерактивный вьювер    */}
+            {/* 1-Й ЭКРАН: Главный блок (Хиро) с роботом-светильником    */}
             {/* ========================================================= */}
-            <section className="grid grid-cols-1 lg:grid-cols-12 gap-14 items-center pt-2">
+            <section className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center pt-2">
 
                 {/* Левая колонка */}
-                <div className="lg:col-span-5 space-y-6">
+                <div className="lg:col-span-6 space-y-6">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-100 border border-neutral-200 text-neutral-700 font-mono text-[11.5px] uppercase tracking-wider">
-                        <span>SPATIAL & PRODUCT 3D</span>
+                        <span>3D DIGITAL STUDIO</span>
                         <span>•</span>
-                        <span className="font-bold text-neutral-900">BLENDER & THREE.JS</span>
+                        <span className="font-bold text-neutral-900">BLENDER, THREE.JS & CORONA</span>
                     </div>
 
                     <h1 className="text-4xl sm:text-6xl font-black uppercase tracking-tight text-neutral-950 leading-[1.02]">
-                        3D для продуктов.
+                        3D визуализация и Web 3D.
                     </h1>
 
                     <p className="text-neutral-600 text-[16.8px] sm:text-[18.9px] leading-relaxed font-normal">
-                        Создаем убедительный трехмерный контент: от детализированных рендеров для каталогов до легких интерактивных моделей прямо в браузере с откликом 60 кадров в секунду.
+                        Создаем убедительный 3D-контент по трем ключевым направлениям: архитектурные рендеры зданий и интерьеров, интерактивные трехмерные модели для браузера и студийную визуализацию предметов без затрат на физическую съемку.
                     </p>
 
                     <div className="flex flex-wrap gap-4 pt-2 font-mono text-[12.6px] text-neutral-600">
                         <div className="px-3.5 py-1.5 rounded-xl bg-neutral-50 border border-neutral-200">
-                            РЕНДЕРИНГ: <span className="font-bold text-amber-600">PBR Photoreal</span>
+                            КАЧЕСТВО: <span className="font-bold text-sky-600">4K Ultra-HD & 60 FPS</span>
                         </div>
                         <div className="px-3.5 py-1.5 rounded-xl bg-neutral-50 border border-neutral-200">
                             ДОГОВОР: <span className="font-bold text-neutral-900">FIXED PRICE</span>
@@ -324,288 +469,136 @@ export default function ThreeDesignPage() {
                     </div>
                 </div>
 
-                {/* Правая колонка: ноутбук с переключением ENGINE / INFO */}
-                <div className="lg:col-span-7 flex flex-col items-center">
-
-                    <div className="inline-flex items-center gap-2 mb-5 p-2 rounded-2xl bg-neutral-100/90 border border-neutral-200 font-mono text-[12.6px] shadow-2xs">
-                        <button
-                            type="button"
-                            onClick={() => switchModeWithBoot("preview")}
-                            className={`px-5 py-2.5 rounded-xl font-bold whitespace-nowrap transition-all duration-200 cursor-pointer ${
-                                viewMode === "preview" && !isRebooting
-                                    ? "bg-white text-neutral-950 shadow-sm scale-[1.02]"
-                                    : "text-neutral-500 hover:text-neutral-900"
-                            }`}
-                        >
-                            3D ENGINE
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => switchModeWithBoot("info")}
-                            className={`inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl font-bold whitespace-nowrap transition-all duration-200 cursor-pointer ${
-                                viewMode === "info" && !isRebooting
-                                    ? "bg-neutral-950 text-white shadow-sm scale-[1.02]"
-                                    : "text-neutral-500 hover:text-neutral-900"
-                            }`}
-                        >
-                            <Info size={14} />
-                            <span>Info</span>
-                        </button>
+                {/* Правая колонка: чистый 3D робот-светильник без фона и без срезов */}
+                <div className="lg:col-span-6 flex items-center justify-center relative min-h-[480px] sm:min-h-[560px]">
+                    <div className="w-full h-[480px] sm:h-[560px] relative">
+                        <RobotLampCanvas />
                     </div>
-
-                    <div className="relative w-full max-w-[690px] aspect-[16/10] bg-neutral-900 rounded-[24px] p-2.5 sm:p-3.5 border border-neutral-700/80 shadow-[0_30px_70px_rgba(0,0,0,0.22)] flex flex-col select-none">
-
-                        <div className="h-4 flex items-center justify-between px-2 shrink-0">
-                            <span className="text-[9.5px] font-mono text-neutral-500 uppercase tracking-wider">
-                                viewport.threejs.vitaltech
-                            </span>
-                            <div className="w-2 h-2 rounded-full bg-neutral-800" />
-                            <span className="text-[9.5px] font-mono text-neutral-500">
-                                {isRebooting ? "SHADING..." : "60 FPS"}
-                            </span>
-                        </div>
-
-                        <div className="relative flex-1 rounded-[16px] bg-[#0A0D14] overflow-hidden shadow-inner flex flex-col justify-between">
-
-                            {/* Экран гаснет: спиннер + надпись */}
-                            <div
-                                className={`absolute inset-0 bg-[#07090E] z-30 flex flex-col items-center justify-center gap-4 transition-opacity duration-300 pointer-events-none ${
-                                    isRebooting ? "opacity-100" : "opacity-0"
-                                }`}
-                            >
-                                <div className="text-2xl sm:text-3xl font-black font-mono tracking-[0.25em] text-white">
-                                    {bootText}
-                                </div>
-                                <Loader2 size={26} className="text-neutral-400 animate-spin" />
-                            </div>
-
-                            {/* ВИД 1: 3D ENGINE */}
-                            <div
-                                className={`absolute inset-0 bg-white text-neutral-900 p-6 sm:p-8 flex flex-col justify-between transition-opacity duration-300 ${
-                                    viewMode === "preview" && !isRebooting
-                                        ? "opacity-100 z-10 pointer-events-auto"
-                                        : "opacity-0 z-0 pointer-events-none"
-                                }`}
-                            >
-                                <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
-                                    <div className="flex items-center gap-2 font-bold text-sm tracking-tight text-neutral-950">
-                                        <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-                                        <span>3D SPATIAL LAB</span>
-                                    </div>
-                                    <span className="font-mono text-[10.5px] uppercase text-neutral-400">
-                                        WebGL 2.0 / PBR Shading
-                                    </span>
-                                </div>
-
-                                <div className="space-y-3 py-4">
-                                    <span className="inline-block px-2.5 py-0.5 rounded-md bg-amber-50 font-mono text-[10.5px] text-amber-700 font-bold uppercase border border-amber-200">
-                                        Draco Mesh Compressed
-                                    </span>
-                                    <h3 className="text-xl sm:text-2xl font-black tracking-tight text-neutral-950">
-                                        Интерактивное окружение без лагов
-                                    </h3>
-                                    <p className="text-neutral-500 text-[12.6px] sm:text-[14.7px] max-w-md leading-relaxed">
-                                        Модели весят считанные мегабайты, быстро загружаются на мобильных устройствах и позволяют клиентам рассматривать товар со всех сторон.
-                                    </p>
-                                </div>
-
-                                <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-neutral-100 font-mono text-[10.5px]">
-                                    {["Blender 4.2", "Three.js", "PBR Workflow"].map((b, i) => (
-                                        <span key={i} className="px-2 py-0.5 rounded bg-neutral-50 border border-neutral-200 text-neutral-700">
-                                            {b}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* ВИД 2: OKHO INFO */}
-                            <div
-                                className={`absolute inset-0 bg-white text-neutral-950 flex flex-col justify-between transition-opacity duration-300 ${
-                                    viewMode === "info" && !isRebooting
-                                        ? "opacity-100 z-10 pointer-events-auto"
-                                        : "opacity-0 z-0 pointer-events-none"
-                                }`}
-                            >
-                                <div className="h-10 bg-neutral-50 border-b border-neutral-200 px-4 sm:px-6 flex items-center justify-between shrink-0">
-                                    <span className="text-[11.5px] font-mono font-bold text-neutral-700">
-                                        3D PIPELINE // Регламент разработки
-                                    </span>
-                                    <button
-                                        type="button"
-                                        onClick={() => switchModeWithBoot("preview")}
-                                        className="text-[13px] font-mono font-bold text-neutral-600 hover:text-neutral-950 transition-colors cursor-pointer"
-                                    >
-                                        Назад ✕
-                                    </button>
-                                </div>
-
-                                <div className="flex-1 overflow-y-auto p-5 sm:p-7 space-y-4 scrollbar-thin scrollbar-thumb-neutral-300 scrollbar-track-transparent">
-                                    <div>
-                                        <div className="flex items-baseline gap-2.5">
-                                            <span className="font-mono text-[15px] font-bold text-neutral-400">01</span>
-                                            <h4 className="text-[17px] font-bold text-neutral-950 leading-snug">
-                                                Точное полигональное моделирование (1:1)
-                                            </h4>
-                                        </div>
-                                        <p className="text-[14px] text-neutral-500 leading-relaxed mt-0.5 pl-7">
-                                            Создание высокоточных SubD-моделей по чертежам, реальным образцам или референсам с правильной топологией сетки.
-                                        </p>
-                                    </div>
-
-                                    <div>
-                                        <div className="flex items-baseline gap-2.5">
-                                            <span className="font-mono text-[15px] font-bold text-neutral-400">02</span>
-                                            <h4 className="text-[17px] font-bold text-neutral-950 leading-snug">
-                                                Фотореалистичные PBR-материалы (4K)
-                                            </h4>
-                                        </div>
-                                        <p className="text-[14px] text-neutral-500 leading-relaxed mt-0.5 pl-7">
-                                            Настройка карт шероховатости (Roughness), рельефа (Normal), металличности и подповерхностного рассеивания (SSS).
-                                        </p>
-                                    </div>
-
-                                    <div>
-                                        <div className="flex items-baseline gap-2.5">
-                                            <span className="font-mono text-[15px] font-bold text-neutral-400">03</span>
-                                            <h4 className="text-[17px] font-bold text-neutral-950 leading-snug">
-                                                Оптимизация под WebGL и мобильные платформы
-                                            </h4>
-                                        </div>
-                                        <p className="text-[14px] text-neutral-500 leading-relaxed mt-0.5 pl-7">
-                                            Ретопология, бейкинг карт нормалей и компрессия Draco для плавной анимации 60 FPS прямо в окне браузера.
-                                        </p>
-                                    </div>
-
-                                    <div>
-                                        <div className="flex items-baseline gap-2.5">
-                                            <span className="font-mono text-[15px] font-bold text-neutral-400">04</span>
-                                            <h4 className="text-[17px] font-bold text-neutral-950 leading-snug">
-                                                Интерактивные конфигураторы товаров
-                                            </h4>
-                                        </div>
-                                        <p className="text-[14px] text-neutral-500 leading-relaxed mt-0.5 pl-7">
-                                            Разработка логики смены деталей, вариантов обшивки, окраски и динамического расчета цены изделия.
-                                        </p>
-                                    </div>
-
-                                    <div>
-                                        <div className="flex items-baseline gap-2.5">
-                                            <span className="font-mono text-[15px] font-bold text-neutral-400">05</span>
-                                            <h4 className="text-[17px] font-bold text-neutral-950 leading-snug">
-                                                Студийная постановка света и рендер сцен
-                                            </h4>
-                                        </div>
-                                        <p className="text-[14px] text-neutral-500 leading-relaxed mt-0.5 pl-7">
-                                            Физически корректные HDRI-карты, многоточечный софт-бокс свет и глубина резкости камеры (DoF).
-                                        </p>
-                                    </div>
-
-                                    <div>
-                                        <div className="flex items-baseline gap-2.5">
-                                            <span className="font-mono text-[15px] font-bold text-neutral-400">06</span>
-                                            <h4 className="text-[17px] font-bold text-neutral-950 leading-snug">
-                                                Полная передача исходных исходников
-                                            </h4>
-                                        </div>
-                                        <p className="text-[14px] text-neutral-500 leading-relaxed mt-0.5 pl-7">
-                                            Передаем оригинальные файлы проектов (.blend, .fbx, .obj, .gltf) со всеми слоями, текстурами и готовыми рендерами в высоком разрешении.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div className="h-1.5 w-16 bg-neutral-700 rounded-b-md mx-auto mt-1" />
-                    </div>
-
-                    <div className="w-[85%] h-2 bg-gradient-to-b from-neutral-300 to-neutral-400 rounded-b-xl shadow-md" />
                 </div>
 
             </section>
 
             {/* ========================================================= */}
-            {/* 2-Й ЭКРАН: 02 / НАШИ НАПРАВЛЕНИЯ                          */}
+            {/* 2-Й ЭКРАН: 02 / НАШИ 3 НАПРАВЛЕНИЯ                        */}
             {/* ========================================================= */}
-            <section className="space-y-12 pt-4">
+            <ThreeDirectionsSection />
 
-                <div className="space-y-3 max-w-3xl">
-                    <div className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold">
-                        02 / НАШИ НАПРАВЛЕНИЯ
+            {/* ========================================================= */}
+            {/* СЕКЦИЯ: РЕАЛЬНЫЕ КЕЙСЫ ПО 3 НАПРАВЛЕНИЯМ                  */}
+            {/* ========================================================= */}
+            <section className="space-y-12 pt-6">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-neutral-200/80 pb-6">
+                    <div className="space-y-3 max-w-2xl">
+                        <div className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold">
+                            РЕАЛЬНЫЕ РЕЗУЛЬТАТЫ
+                        </div>
+                        <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-neutral-950 leading-[1.15]">
+                            Кейсы по каждому направлению
+                        </h2>
+                        <p className="text-neutral-500 text-sm sm:text-base leading-relaxed">
+                            Показываем, как архитектурные рендеры, WebGL-конфигураторы и предметная визуализация решают бизнес-задачи наших клиентов.
+                        </p>
                     </div>
-                    <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-neutral-900 leading-[1.15]">
-                        Мы создаем 3D-графику <br />
-                        для презентаций и веба
-                    </h2>
+
+                    <div className="font-mono text-xs text-neutral-500 bg-neutral-50 border border-neutral-200 px-4 py-2 rounded-xl shrink-0">
+                        STATUS: <span className="text-emerald-600 font-bold">100% PRODUCTION READY</span>
+                    </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-7 items-stretch">
-                    {THREE_DIRECTIONS.map((item) => {
-                        const Icon = item.icon;
-                        return (
-                            <div
-                                key={item.num}
-                                className="bg-neutral-50/70 hover:bg-neutral-50 rounded-[32px] border border-neutral-200/80 p-7 sm:p-8 flex flex-col justify-between transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:border-neutral-300"
-                            >
-                                <div className="space-y-5">
-                                    <div className="flex items-center justify-between">
-                                        <div className={`w-12 h-12 rounded-[18px] border flex items-center justify-center ${item.iconBg} ${item.iconColor}`}>
-                                            <Icon size={22} strokeWidth={2} />
-                                        </div>
-                                        <span className="font-mono text-xs font-bold text-neutral-400">
-                                            {item.num}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {THREE_CASES.map((item) => (
+                        <div
+                            key={item.id}
+                            className="rounded-[32px] bg-neutral-50/70 border border-neutral-200/90 overflow-hidden flex flex-col justify-between hover:border-neutral-300 transition-all duration-300 shadow-sm group hover:shadow-md"
+                        >
+                            <div className="space-y-5">
+                                <div className="relative w-full h-56 sm:h-64 overflow-hidden bg-neutral-900 border-b border-neutral-200/80">
+                                    <Image
+                                        src={item.imageUrl}
+                                        alt={item.caseTitle}
+                                        fill
+                                        unoptimized
+                                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                        sizes="(max-width: 1024px) 100vw, 33vw"
+                                    />
+                                    <div className="absolute top-4 left-4 flex items-center gap-2">
+                                        <span className="font-mono text-[10.5px] uppercase tracking-wider px-2.5 py-1 rounded-lg bg-neutral-950/80 text-white font-bold backdrop-blur-xs">
+                                            {item.directionTitle}
                                         </span>
                                     </div>
-
-                                    <div className="space-y-1.5">
-                                        <h3 className="text-2xl font-bold tracking-tight text-neutral-900">
-                                            {item.title}
-                                        </h3>
-                                        <p className="text-neutral-500 text-[16.2px] leading-relaxed min-h-[46px]">
-                                            {item.description}
-                                        </p>
-                                    </div>
-
-                                    <div className="p-3.5 rounded-xl bg-white border border-neutral-200/80 flex items-center justify-between text-[13.2px] font-mono">
-                                        <span className="text-neutral-400">Срок:</span>
-                                        <span className="font-bold text-neutral-950">
-                                            {item.timeline} <span className="font-normal text-neutral-500">(срочно: {item.express})</span>
-                                        </span>
-                                    </div>
-
-                                    <div className="pt-2">
-                                        <div className="rounded-2xl bg-white border border-neutral-200/90 shadow-xs p-3 overflow-hidden">
-                                            <ThreeDevicePairMockup type={item.type} />
-                                        </div>
+                                    <div className="absolute bottom-3 right-4 font-mono text-[10px] text-white/90 bg-neutral-950/70 px-2 py-0.5 rounded backdrop-blur-xs">
+                                        {item.badge}
                                     </div>
                                 </div>
 
-                                <div className="pt-6 border-t border-neutral-200/70 space-y-3 mt-6">
-                                    <span className="font-mono text-xs text-neutral-400 uppercase tracking-wider font-semibold block">
-                                        Примеры задач:
-                                    </span>
-                                    <ul className="space-y-2 text-[14.5px] sm:text-[15.8px] text-neutral-600">
-                                        {item.examples.map((ex, idx) => (
-                                            <li key={idx} className="flex items-start gap-2.5">
-                                                <span className="w-1.5 h-1.5 rounded-full bg-amber-500/60 mt-2 shrink-0" />
-                                                <span className="leading-snug">{ex}</span>
-                                            </li>
+                                <div className="p-6 sm:p-7 pt-1 space-y-4">
+                                    <div>
+                                        <span className="text-xs font-mono text-neutral-400 uppercase tracking-wider font-semibold">
+                                            {item.client}
+                                        </span>
+                                        <h3 className="text-xl font-bold tracking-tight text-neutral-950 mt-1 leading-snug">
+                                            {item.caseTitle}
+                                        </h3>
+                                    </div>
+
+                                    <p className="text-neutral-600 text-sm leading-relaxed">
+                                        {item.description}
+                                    </p>
+
+                                    <div className="grid grid-cols-3 gap-2 p-3 rounded-2xl bg-white border border-neutral-200/80 text-center font-mono">
+                                        {item.metrics.map((m, idx) => (
+                                            <div key={idx} className="space-y-0.5">
+                                                <div className="text-[13px] font-bold text-neutral-950">
+                                                    {m.value}
+                                                </div>
+                                                <div className="text-[9px] text-neutral-400 uppercase leading-tight">
+                                                    {m.label}
+                                                </div>
+                                            </div>
                                         ))}
-                                    </ul>
+                                    </div>
+
+                                    <div className="space-y-2 pt-2">
+                                        <span className="font-mono text-[11px] text-neutral-400 uppercase tracking-wider font-semibold block">
+                                            Результат:
+                                        </span>
+                                        <ul className="space-y-1.5 text-xs text-neutral-600">
+                                            {item.deliverables.map((del, dIdx) => (
+                                                <li key={dIdx} className="flex items-start gap-2">
+                                                    <CheckCircle2
+                                                        size={14}
+                                                        className="text-emerald-600 mt-0.5 shrink-0"
+                                                    />
+                                                    <span className="leading-tight">{del}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
-                        );
-                    })}
-                </div>
 
-                <div className="p-5 rounded-2xl bg-neutral-50/70 border border-neutral-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-[14.5px] font-mono">
-                    <div className="flex items-center gap-2.5 text-neutral-800">
-                        <Flame size={18} className="text-amber-500 shrink-0" />
-                        <span>Срочное 3D-производство: предметный рендер — 3 дня, 3D для веба — 7 дней, сцена с анимацией — 14 дней</span>
-                    </div>
-                    <span className="font-bold text-neutral-950 bg-white border border-neutral-200 px-3.5 py-1.5 rounded-xl w-fit shadow-xs shrink-0">
-                        +20% К СТОИМОСТИ
-                    </span>
+                            <div className="p-6 sm:p-7 pt-0 border-t border-neutral-200/60 mt-4 space-y-4">
+                                <div className="flex flex-wrap gap-1.5 pt-3">
+                                    {item.techStack.map((tech, tIdx) => (
+                                        <span
+                                            key={tIdx}
+                                            className="font-mono text-[10px] px-2 py-0.5 rounded bg-white border border-neutral-200 text-neutral-600"
+                                        >
+                                            {tech}
+                                        </span>
+                                    ))}
+                                </div>
+
+                                <Link
+                                    href="/contacts"
+                                    className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-mono text-xs font-semibold uppercase tracking-wider transition-all active:scale-[0.98]"
+                                >
+                                    <span>Заказать такой же</span>
+                                    <ArrowUpRight size={14} />
+                                </Link>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </section>
 
@@ -613,7 +606,6 @@ export default function ThreeDesignPage() {
             {/* 3-Й ЭКРАН: 03 / ПРЕИМУЩЕСТВА                               */}
             {/* ========================================================= */}
             <section className="space-y-10 pt-4">
-
                 <div className="space-y-3 max-w-3xl">
                     <div className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold">
                         03 / ПРЕИМУЩЕСТВА
@@ -624,41 +616,37 @@ export default function ThreeDesignPage() {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-7">
-
-                    {/* КАРТОЧКА 1: Фотореализм без студийных затрат */}
                     <div className="rounded-[28px] bg-neutral-50/70 border border-neutral-200/80 p-6 sm:p-7 flex flex-col sm:flex-row items-center justify-between gap-6 hover:border-neutral-300 transition-all">
                         <div className="space-y-3 flex-1 min-w-[200px]">
-                            <div className="w-11 h-11 rounded-2xl bg-amber-50 border border-amber-100/80 flex items-center justify-center text-amber-600">
+                            <div className="w-11 h-11 rounded-2xl bg-sky-50 border border-sky-100/80 flex items-center justify-center text-sky-600">
                                 <Sparkles size={22} strokeWidth={2} />
                             </div>
                             <h3 className="text-xl font-bold tracking-tight text-neutral-950">
-                                Премиальный вид
+                                Премиальный фотореализм
                             </h3>
                             <p className="text-neutral-500 text-[16.2px] leading-relaxed">
-                                Любые ракурсы товара в идеальном качестве без проведения дорогой фотосъемки.
+                                Любые ракурсы, сложные фактуры и идеальная инсоляция без необходимости реальной фотосъемки.
                             </p>
                         </div>
-
-                        <div className="relative w-full sm:w-[300px] h-[152px] flex items-center justify-center gap-3 select-none shrink-0">
+                        <div className="relative w-full sm:w-[300px] h-[152px] flex items-center justify-center gap-3  shrink-0">
                             <div className="p-3.5 rounded-2xl bg-white border border-neutral-200/90 shadow-sm flex flex-col items-center justify-center text-center space-y-1.5 w-[136px] shrink-0 z-10">
-                                <div className="relative w-[60px] h-[60px] rounded-full border-4 border-amber-500 flex items-center justify-center font-extrabold text-[17px] text-amber-600">
+                                <div className="relative w-[60px] h-[60px] rounded-full border-4 border-sky-500 flex items-center justify-center font-extrabold text-[17px] text-sky-600">
                                     4K
                                 </div>
                                 <span className="text-[10px] font-mono text-neutral-700 leading-tight font-bold">
                                     Ultra-HD Stills
                                 </span>
                             </div>
-
                             <div className="w-[152px] h-[118px] rounded-xl bg-white border border-neutral-200/90 shadow-2xs p-2.5 flex flex-col justify-between -ml-3.5">
                                 <div className="flex items-center gap-1 border-b border-neutral-100 pb-1">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                                    <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+                                    <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+                                    <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
                                 </div>
                                 <div className="space-y-1.5 my-auto">
-                                    <div className="text-[10px] font-mono font-bold text-neutral-800">Raytraced Lights</div>
-                                    <div className="h-1.5 w-full bg-amber-100 rounded-full overflow-hidden">
-                                        <div className="h-full bg-amber-500 w-full" />
+                                    <div className="text-[10px] font-mono font-bold text-neutral-800">Raytraced PBR</div>
+                                    <div className="h-1.5 w-full bg-sky-100 rounded-full overflow-hidden">
+                                        <div className="h-full bg-sky-500 w-full" />
                                     </div>
                                     <span className="text-[8px] font-mono text-neutral-400 block">Alpha Transparency</span>
                                 </div>
@@ -666,89 +654,83 @@ export default function ThreeDesignPage() {
                         </div>
                     </div>
 
-                    {/* КАРТОЧКА 2: Высокая конверсия карточек */}
                     <div className="rounded-[28px] bg-neutral-50/70 border border-neutral-200/80 p-6 sm:p-7 flex flex-col sm:flex-row items-center justify-between gap-6 hover:border-neutral-300 transition-all">
                         <div className="space-y-3 flex-1 min-w-[200px]">
-                            <div className="w-11 h-11 rounded-2xl bg-amber-50 border border-amber-100/80 flex items-center justify-center text-amber-600">
+                            <div className="w-11 h-11 rounded-2xl bg-purple-50 border border-purple-100/80 flex items-center justify-center text-purple-600">
                                 <Eye size={22} strokeWidth={2} />
                             </div>
                             <h3 className="text-xl font-bold tracking-tight text-neutral-950">
-                                Рост вовлеченности
+                                Интерактивный опыт 360°
                             </h3>
                             <p className="text-neutral-500 text-[16.2px] leading-relaxed">
-                                Возможность покрутить предмет на 360° повышает доверие покупателей к товару.
+                                Возможность покрутить здание или товар прямо в браузере в разы увеличивает глубину просмотра и продажи.
                             </p>
                         </div>
-
-                        <div className="relative w-full sm:w-[300px] h-[152px] flex items-center justify-center select-none shrink-0">
+                        <div className="relative w-full sm:w-[300px] h-[152px] flex items-center justify-center  shrink-0">
                             <div className="w-full max-w-[268px] p-3.5 rounded-2xl bg-white border border-neutral-200/90 shadow-sm space-y-2">
                                 <div className="flex items-center justify-between text-[11px] font-mono">
                                     <span className="text-neutral-500">Interaction Rate:</span>
-                                    <span className="text-emerald-600 font-bold">+64% YoY</span>
+                                    <span className="text-emerald-600 font-bold">+68% Avg</span>
                                 </div>
                                 <div className="p-2 rounded-xl bg-neutral-50 border border-neutral-200 flex items-center justify-between text-[12px] font-bold">
-                                    <span>Глубина просмотра</span>
-                                    <span className="font-mono text-neutral-900">4.2x выше</span>
+                                    <span>Глубина взаимодействия</span>
+                                    <span className="font-mono text-neutral-900">3.8x выше</span>
                                 </div>
                                 <div className="text-[9px] font-mono text-neutral-400 text-center">
-                                    Осознанные покупки с меньшим возвратом
+                                    Мгновенный отклик на смартфонах и ПК
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* КАРТОЧКА 3: Оптимизация для мобильных (60 FPS) */}
                     <div className="rounded-[28px] bg-neutral-50/70 border border-neutral-200/80 p-6 sm:p-7 flex flex-col sm:flex-row items-center justify-between gap-6 hover:border-neutral-300 transition-all">
                         <div className="space-y-3 flex-1 min-w-[200px]">
-                            <div className="w-11 h-11 rounded-2xl bg-amber-50 border border-amber-100/80 flex items-center justify-center text-amber-600">
+                            <div className="w-11 h-11 rounded-2xl bg-emerald-50 border border-emerald-100/80 flex items-center justify-center text-emerald-600">
                                 <Cpu size={22} strokeWidth={2} />
                             </div>
                             <h3 className="text-xl font-bold tracking-tight text-neutral-950">
-                                Плавность в вебе
+                                Оптимизация под веб
                             </h3>
                             <p className="text-neutral-500 text-[16.2px] leading-relaxed">
-                                Модели не тормозят интерфейс сайта и быстро загружаются даже при слабом 4G.
+                                Сжатие Draco и чистая топология позволяют открывать 3D-модели за 1-2 секунды даже на смартфонах.
                             </p>
                         </div>
-
-                        <div className="relative w-full sm:w-[300px] h-[152px] flex items-center justify-center select-none shrink-0">
+                        <div className="relative w-full sm:w-[300px] h-[152px] flex items-center justify-center  shrink-0">
                             <div className="w-full max-w-[268px] p-4 rounded-2xl bg-white border border-neutral-200/90 shadow-sm space-y-2.5">
                                 <div className="flex items-center justify-between font-mono text-xs">
-                                    <span className="text-neutral-500">Frame Rate:</span>
+                                    <span className="text-neutral-500">WebGL Frame Rate:</span>
                                     <span className="font-bold text-emerald-600">60 FPS Locked</span>
                                 </div>
                                 <div className="w-full bg-neutral-100 h-2 rounded-full overflow-hidden">
-                                    <div className="bg-amber-500 h-full w-[94%]" />
+                                    <div className="bg-emerald-500 h-full w-[95%]" />
                                 </div>
                                 <div className="flex justify-between text-[10px] font-mono text-neutral-400">
-                                    <span>Draco: 1.8 MB</span>
-                                    <span>Draw Calls: Minimal</span>
+                                    <span>Draco: 1.5–2.5 MB</span>
+                                    <span>Draw Calls: Optimized</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* КАРТОЧКА 4: Полная передача прав и моделей */}
                     <div className="rounded-[28px] bg-neutral-50/70 border border-neutral-200/80 p-6 sm:p-7 flex flex-col sm:flex-row items-center justify-between gap-6 hover:border-neutral-300 transition-all">
                         <div className="space-y-3 flex-1 min-w-[200px]">
-                            <div className="w-11 h-11 rounded-2xl bg-amber-50 border border-amber-100/80 flex items-center justify-center text-amber-600">
+                            <div className="w-11 h-11 rounded-2xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800">
                                 <Shapes size={22} strokeWidth={2} />
                             </div>
                             <h3 className="text-xl font-bold tracking-tight text-neutral-950">
                                 Все исходники ваши
                             </h3>
                             <p className="text-neutral-500 text-[16.2px] leading-relaxed">
-                                Отдаем открытые файлы проектов для повторного использования в любых целях.
+                                Передаем исходные проекты, настроенные сцены и коммерческие лицензии без скрытых условий.
                             </p>
                         </div>
-
-                        <div className="relative w-full sm:w-[300px] h-[152px] flex items-center justify-center select-none shrink-0">
+                        <div className="relative w-full sm:w-[300px] h-[152px] flex items-center justify-center  shrink-0">
                             <div className="w-full max-w-[258px] p-4 rounded-2xl bg-[#111827] text-white shadow-lg space-y-2">
                                 {[
-                                    ".BLEND исходники",
-                                    "GLTF / GLB форматы",
-                                    "4K текстурные карты",
-                                    "Коммерческая лицензия",
+                                    ".BLEND / .MAX исходники",
+                                    "GLTF 2.0 / GLB веб-форматы",
+                                    "4K PBR текстурные карты",
+                                    "Полные авторские права",
                                 ].map((item, idx) => (
                                     <div key={idx} className="flex items-center justify-between text-[12.6px]">
                                         <div className="flex items-center gap-2">
@@ -758,7 +740,7 @@ export default function ThreeDesignPage() {
                                             <span className="text-neutral-300 font-medium">{item}</span>
                                         </div>
                                         {idx === 3 && (
-                                            <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 font-bold text-[9.5px]">
+                                            <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold text-[9.5px]">
                                                 100%
                                             </span>
                                         )}
@@ -767,12 +749,11 @@ export default function ThreeDesignPage() {
                             </div>
                         </div>
                     </div>
-
                 </div>
             </section>
 
             {/* ========================================================= */}
-            {/* 4-Й ЭКРАН: 04 / ПРОЦЕСС — НА ВСЮ ШИРИНУ                    */}
+            {/* 4-Й ЭКРАН: 04 / ПРОЦЕСС — ЭТАПЫ РАБОТЫ                    */}
             {/* ========================================================= */}
             <section className="space-y-8 pt-4">
                 <div className="space-y-3 max-w-3xl">
@@ -781,86 +762,79 @@ export default function ThreeDesignPage() {
                             04
                         </span>
                         <span className="text-base sm:text-lg font-bold text-neutral-900 tracking-tight">
-                            Процесс — как всё происходит
+                            Процесс разработки
                         </span>
                     </div>
                     <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-neutral-950 leading-[1.12]">
-                        От референса до финального рендера.
+                        От чертежей до рендера и внедрения.
                     </h2>
                 </div>
 
                 <div className="rounded-[32px] bg-white border border-neutral-200/90 shadow-[0_10px_35px_rgba(0,0,0,0.02)] p-8 sm:p-12 divide-y divide-neutral-100">
-
-                    {/* 01 Бриф и референсы */}
                     <div className="pb-8 space-y-1.5">
                         <div className="flex items-center gap-3">
                             <span className="font-mono text-sm text-neutral-400 font-semibold">01</span>
                             <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-950">
-                                Изучаем задачу
+                                Анализ чертежей, планов и референсов
                             </h3>
                         </div>
                         <p className="text-neutral-500 text-[15.4px] sm:text-[16.5px] leading-relaxed pl-7">
-                            Получаем фотографии, чертежи или эскизы продукта и согласуем ракурсы.
+                            Изучаем архитектурные файлы (DWG, BIM), габариты изделий или референсы товаров и фиксируем требования к детализации.
                         </p>
                     </div>
 
-                    {/* 02 Моделирование */}
                     <div className="py-8 space-y-1.5">
                         <div className="flex items-center gap-3">
                             <span className="font-mono text-sm text-neutral-400 font-semibold">02</span>
                             <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-950">
-                                Создаем геометрию
+                                Высокоточное полигональное моделирование
                             </h3>
                         </div>
                         <p className="text-neutral-500 text-[15.4px] sm:text-[16.5px] leading-relaxed pl-7">
-                            Моделируем точную цифровую форму изделия с правильной сеткой без дефектов.
+                            Строим точную геометрию зданий или предметов с правильной топологией без артефактов и самопересечений.
                         </p>
                     </div>
 
-                    {/* 03 Материалы и свет */}
                     <div className="py-8 space-y-1.5">
                         <div className="flex items-center gap-3">
                             <span className="font-mono text-sm text-neutral-400 font-semibold">03</span>
                             <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-950">
-                                Текстурируем и выставляем свет
+                                PBR-материалы, солнце и студийное освещение
                             </h3>
                         </div>
                         <p className="text-neutral-500 text-[15.4px] sm:text-[16.5px] leading-relaxed pl-7">
-                            Настраиваем реалистичные блики, микро-рельеф материалов и студийное окружение.
+                            Настраиваем физические карты бетона, стекла, дерева, металла и ткани с физически достоверным светом и тенями.
                         </p>
                     </div>
 
-                    {/* 04 Рендеринг и оптимизация */}
                     <div className="py-8 space-y-1.5">
                         <div className="flex items-center gap-3">
                             <span className="font-mono text-sm text-neutral-400 font-semibold">04</span>
                             <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-950">
-                                Рендерим или собираем в код
+                                Финальный рендеринг или интеграция в код сайта
                             </h3>
                         </div>
                         <p className="text-neutral-500 text-[15.4px] sm:text-[16.5px] leading-relaxed pl-7">
-                            Просчитываем Ultra-HD кадры или интегрируем модель в веб-интерфейс на Three.js.
+                            Просчитываем Ultra-HD кадры и синематик-видео либо интегрируем 3D-сцену в браузер на Three.js с логикой кастомизатора.
                         </p>
                     </div>
 
-                    {/* 05 Сдача и архив */}
                     <div className="pt-8 space-y-1.5">
                         <div className="flex items-center gap-3">
                             <span className="font-mono text-sm text-emerald-600 font-semibold">05</span>
                             <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-950">
-                                Передаем архив
+                                Передача полного пакета файлов
                             </h3>
                         </div>
                         <p className="text-neutral-500 text-[15.4px] sm:text-[16.5px] leading-relaxed pl-7">
-                            Отправляем все исходные файлы моделей, текстурные карты и готовые рендеры.
+                            Предоставляем готовые 4K-рендеры, оптимизированные GLTF-модели и оригинальные файлы проектов со всеми текстурами.
                         </p>
                     </div>
-
                 </div>
             </section>
 
             {/* ========================================================= */}
-            {/* 5-Й ЭКРАН: 05 / НАШИ ГАРАНТИИ (ГОРИЗОНТАЛЬНЫЙ ТЕКСТ)        */}
+            {/* 5-Й ЭКРАН: 05 / НАШИ ГАРАНТИИ                            */}
             {/* ========================================================= */}
             <section className="space-y-10 pt-4">
                 <div className="flex items-center gap-2.5">
@@ -873,39 +847,34 @@ export default function ThreeDesignPage() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 divide-y md:divide-y-0 md:divide-x divide-neutral-200/80">
-
-                    {/* 1 */}
                     <div className="group pt-6 md:pt-0 md:pr-8 transition-transform duration-300">
                         <h3 className="text-2xl sm:text-3xl lg:text-[34px] font-black tracking-tight text-neutral-950 leading-[1.12]">
                             100% реализм. <br />
                             <span className="text-neutral-400 font-bold group-hover:text-neutral-600 transition-colors">
-                                или дорабатываем до идеала
+                                Доводим геометрию и свет до идеала по брифу.
                             </span>
                         </h3>
                     </div>
 
-                    {/* 2 */}
                     <div className="group pt-8 md:pt-0 md:px-8 transition-transform duration-300">
                         <h3 className="text-2xl sm:text-3xl lg:text-[32px] font-black tracking-tight text-neutral-950 leading-[1.14]">
-                            Все исходные <br className="hidden lg:inline" />
-                            файлы 3D ваши. <br />
+                            Все исходники <br className="hidden lg:inline" />
+                            остаются у вас. <br />
                             <span className="text-neutral-400 font-bold group-hover:text-neutral-600 transition-colors">
-                                Без скрытых ограничений по лицензиям.
+                                Полная коммерческая свобода без роялти.
                             </span>
                         </h3>
                     </div>
 
-                    {/* 3 */}
                     <div className="group pt-8 md:pt-0 md:pl-8 transition-transform duration-300">
                         <h3 className="text-2xl sm:text-3xl lg:text-[28px] font-black tracking-tight text-neutral-950 leading-[1.18]">
-                            Фиксируем стоимость <br className="hidden lg:inline" />
+                            Фиксированная цена <br className="hidden lg:inline" />
                             в договоре — <br />
                             <span className="text-neutral-400 font-bold group-hover:text-neutral-600 transition-colors">
-                                цена не вырастет в процессе.
+                                стоимость не изменится в ходе работы.
                             </span>
                         </h3>
                     </div>
-
                 </div>
             </section>
 
@@ -915,10 +884,10 @@ export default function ThreeDesignPage() {
             <section className="bg-neutral-950 text-white rounded-[32px] p-8 sm:p-12 flex flex-col lg:flex-row items-center justify-between gap-8 shadow-xl">
                 <div className="space-y-2 text-center lg:text-left">
                     <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-                        Создадим 3D-контент с гарантией по договору
+                        Запустим 3D-проект с гарантией по договору
                     </h2>
                     <p className="text-neutral-400 text-xs sm:text-sm">
-                        Фиксированная цена, передача 100% исходных моделей и фотореалистичный результат.
+                        Архитектура, WebGL или предметный рендеринг: фиксируем срок, бюджет и передаем все исходники.
                     </p>
                 </div>
 

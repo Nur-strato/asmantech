@@ -1,18 +1,12 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/sections/header";
-
-// Подключаем чистый современный шрифт
-const inter = Inter({
-    subsets: ["latin", "cyrillic"],
-    variable: "--font-inter",
-});
+import { SmoothScrollProvider } from "@/components/providers/smooth-scroll";
 
 export const metadata: Metadata = {
     title: "Asman-Tech | IT & Product Studio",
     description: "Разработка масштабируемых веб-сервисов, цифровых продуктов и высоконагруженных систем.",
-    keywords: ["IT-компания", "веб-разработка", "Next.js", "создание сайтов", "Vital-Tech"],
+    keywords: ["IT-компания", "веб-разработка", "Next.js", "создание сайтов", "Asman-Tech"],
 };
 
 export default function RootLayout({
@@ -22,14 +16,13 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="ru" className="scroll-smooth">
-        <body className={`${inter.className} min-h-screen flex flex-col bg-white text-neutral-900 antialiased`}>
-        {/* Шапка сайта */}
-        <Header />
-
-        {/* Основной контент */}
-        <div className="flex-1">
-            {children}
-        </div>
+        <body className="min-h-screen flex flex-col bg-white text-black antialiased selection:bg-neutral-950 selection:text-white">
+        <SmoothScrollProvider>
+            <Header />
+            <div className="flex-1">
+                {children}
+            </div>
+        </SmoothScrollProvider>
         </body>
         </html>
     );

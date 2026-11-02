@@ -567,7 +567,7 @@ export function Hero() {
 
                 {/* ПРАВАЯ КОЛОНКА: ИНЖЕНЕРНЫЙ 3D-БАРАБАН */}
                 <div
-                    className="w-full lg:w-auto flex-1 flex flex-col items-center lg:items-end select-none pr-1 sm:pr-3"
+                    className="w-full lg:w-auto flex-1 flex flex-col items-center lg:items-end  pr-1 sm:pr-3"
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
                     role="region"

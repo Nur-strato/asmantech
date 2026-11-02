@@ -401,7 +401,7 @@ export default function ContactsPage() {
     };
 
     return (
-        <main className="max-w-[1544px] mx-auto px-6 sm:px-10 pt-28 pb-32 space-y-20 bg-white text-neutral-900 font-sans select-none">
+        <main className="max-w-[1544px] mx-auto px-6 sm:px-10 pt-28 pb-32 space-y-20 bg-white text-neutral-900 font-sans ">
 
             {/* Навигация */}
             <div className="flex items-center justify-between border-b border-neutral-200/80 pb-6">
@@ -712,7 +712,7 @@ export default function ContactsPage() {
                                             <button
                                                 type="button"
                                                 onClick={() => setContactPreference("message")}
-                                                className={`h-[39.9px] inline-flex items-center gap-2.5 px-4 rounded-xl text-[12.6px] font-semibold bg-white transition-all duration-200 cursor-pointer select-none border-2 shrink-0 ${
+                                                className={`h-[39.9px] inline-flex items-center gap-2.5 px-4 rounded-xl text-[12.6px] font-semibold bg-white transition-all duration-200 cursor-pointer  border-2 shrink-0 ${
                                                     contactPreference === "message"
                                                         ? "border-neutral-950 text-neutral-950 shadow-2xs"
                                                         : "border-neutral-200 text-neutral-600 hover:border-neutral-300"
@@ -734,7 +734,7 @@ export default function ContactsPage() {
                                             <button
                                                 type="button"
                                                 onClick={() => setContactPreference("call")}
-                                                className={`h-[39.9px] inline-flex items-center gap-2.5 px-4 rounded-xl text-[12.6px] font-semibold bg-white transition-all duration-200 cursor-pointer select-none border-2 shrink-0 ${
+                                                className={`h-[39.9px] inline-flex items-center gap-2.5 px-4 rounded-xl text-[12.6px] font-semibold bg-white transition-all duration-200 cursor-pointer  border-2 shrink-0 ${
                                                     contactPreference === "call"
                                                         ? "border-neutral-950 text-neutral-950 shadow-2xs"
                                                         : "border-neutral-200 text-neutral-600 hover:border-neutral-300"

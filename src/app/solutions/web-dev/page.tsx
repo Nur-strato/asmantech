@@ -22,7 +22,7 @@ import {
 function DevicePairMockup({ type }: { type: "basic" | "multi" | "platform" }) {
     if (type === "basic") {
         return (
-            <div className="relative w-full h-[220px] sm:h-[240px] flex items-end justify-center select-none pt-2">
+            <div className="relative w-full h-[220px] sm:h-[240px] flex items-end justify-center  pt-2">
                 <div className="relative w-[78%] sm:w-[74%] aspect-[16/10] mr-[14%] flex flex-col items-center">
                     <div className="w-full h-full bg-[#1A1A1A] rounded-t-[14px] p-1.5 sm:p-2 border-[2px] border-[#2A2A2A] shadow-xl flex flex-col overflow-hidden">
                         <div className="w-1.5 h-1.5 rounded-full bg-neutral-800 mx-auto mb-1 shrink-0" />
@@ -82,7 +82,7 @@ function DevicePairMockup({ type }: { type: "basic" | "multi" | "platform" }) {
 
     if (type === "multi") {
         return (
-            <div className="relative w-full h-[220px] sm:h-[240px] flex items-end justify-center select-none pt-2">
+            <div className="relative w-full h-[220px] sm:h-[240px] flex items-end justify-center  pt-2">
                 <div className="relative w-[78%] sm:w-[74%] aspect-[16/10] mr-[14%] flex flex-col items-center">
                     <div className="w-full h-full bg-[#1A1A1A] rounded-t-[14px] p-1.5 sm:p-2 border-[2px] border-[#2A2A2A] shadow-xl flex flex-col overflow-hidden">
                         <div className="w-1.5 h-1.5 rounded-full bg-neutral-800 mx-auto mb-1 shrink-0" />
@@ -137,7 +137,7 @@ function DevicePairMockup({ type }: { type: "basic" | "multi" | "platform" }) {
     }
 
     return (
-        <div className="relative w-full h-[220px] sm:h-[240px] flex items-end justify-center select-none pt-2">
+        <div className="relative w-full h-[220px] sm:h-[240px] flex items-end justify-center  pt-2">
             <div className="relative w-[78%] sm:w-[74%] aspect-[16/10] mr-[14%] flex flex-col items-center">
                 <div className="w-full h-full bg-[#1A1A1A] rounded-t-[14px] p-1.5 sm:p-2 border-[2px] border-[#2A2A2A] shadow-xl flex flex-col overflow-hidden">
                     <div className="w-1.5 h-1.5 rounded-full bg-neutral-800 mx-auto mb-1 shrink-0" />
@@ -276,7 +276,7 @@ export default function WebDevPage() {
     };
 
     return (
-        <main className="max-w-[1544px] mx-auto px-6 sm:px-10 pt-28 pb-32 space-y-28 bg-white text-neutral-900 font-sans select-none">
+        <main className="max-w-[1544px] mx-auto px-6 sm:px-10 pt-28 pb-32 space-y-28 bg-white text-neutral-900 font-sans ">
 
             {/* Навигация */}
             <div className="flex items-center justify-between border-b border-neutral-200/80 pb-6">
@@ -366,7 +366,7 @@ export default function WebDevPage() {
                     </div>
 
                     {/* Корпус ноутбука */}
-                    <div className="relative w-full max-w-[690px] aspect-[16/10] bg-neutral-900 rounded-[24px] p-2.5 sm:p-3.5 border border-neutral-700/80 shadow-[0_30px_70px_rgba(0,0,0,0.22)] flex flex-col select-none">
+                    <div className="relative w-full max-w-[690px] aspect-[16/10] bg-neutral-900 rounded-[24px] p-2.5 sm:p-3.5 border border-neutral-700/80 shadow-[0_30px_70px_rgba(0,0,0,0.22)] flex flex-col ">
 
                         {/* Верхняя кромка */}
                         <div className="h-4 flex items-center justify-between px-2 shrink-0">
@@ -670,7 +670,7 @@ export default function WebDevPage() {
                             </p>
                         </div>
 
-                        <div className="relative w-full sm:w-[300px] h-[152px] flex items-end justify-center select-none shrink-0 overflow-visible">
+                        <div className="relative w-full sm:w-[300px] h-[152px] flex items-end justify-center  shrink-0 overflow-visible">
                             <div className="relative w-[178px] aspect-[16/10] -mr-10 mb-0.5 flex flex-col items-center">
                                 <div className="w-full h-full bg-[#1A1A1A] rounded-t-md p-1 border border-[#2A2A2A] shadow-sm flex flex-col overflow-hidden">
                                     <div className="flex-1 rounded-xs bg-white p-1.5 flex flex-col justify-between">
@@ -712,7 +712,7 @@ export default function WebDevPage() {
                             </p>
                         </div>
 
-                        <div className="relative w-full sm:w-[300px] h-[152px] flex items-center justify-center gap-3 select-none shrink-0">
+                        <div className="relative w-full sm:w-[300px] h-[152px] flex items-center justify-center gap-3  shrink-0">
                             <div className="p-3.5 rounded-2xl bg-white border border-neutral-200/90 shadow-sm flex flex-col items-center justify-center text-center space-y-1.5 w-[136px] shrink-0 z-10">
                                 <div className="relative w-[60px] h-[60px] rounded-full border-4 border-emerald-500 flex items-center justify-center font-extrabold text-[17px] text-emerald-600">
                                     98
@@ -761,7 +761,7 @@ export default function WebDevPage() {
                             </p>
                         </div>
 
-                        <div className="relative w-full sm:w-[300px] h-[152px] flex items-center justify-center select-none shrink-0">
+                        <div className="relative w-full sm:w-[300px] h-[152px] flex items-center justify-center  shrink-0">
                             <div className="w-full max-w-[268px] p-4 rounded-2xl bg-white border border-neutral-200/90 shadow-sm space-y-2.5">
                                 <span className="text-[13px] font-bold text-[#4285F4]">
                                     G<span className="text-[#EA4335]">o</span><span className="text-[#FBBC05]">o</span><span className="text-[#4285F4]">g</span><span className="text-[#34A853]">l</span><span className="text-[#EA4335]">e</span>
@@ -792,7 +792,7 @@ export default function WebDevPage() {
                             </p>
                         </div>
 
-                        <div className="relative w-full sm:w-[300px] h-[152px] flex items-center justify-center select-none shrink-0">
+                        <div className="relative w-full sm:w-[300px] h-[152px] flex items-center justify-center  shrink-0">
                             <div className="w-full max-w-[258px] p-4 rounded-2xl bg-[#111827] text-white shadow-lg space-y-2">
                                 {[
                                     "Адаптивность",

@@ -48,7 +48,7 @@ const EXHIBITS: ExhibitItem[] = [
         platformType: "Website",
         description:
             "Оцифровка строительного цикла: от сметных чертежей до сквозной координации поставок бетона и 14 действующих стройплощадок столицы.",
-        link: "https://konurat.kg",
+        link: "https://Conurat-Construction.kg",
         screenTheme: {
             bg: "bg-[#060D0A]",
             text: "text-emerald-50",
@@ -82,7 +82,7 @@ const EXHIBITS: ExhibitItem[] = [
         platformType: "Веб-сайт + Мобильное приложение",
         description:
             "Высоконагруженная экосистема для таксопарка: автоматические моментальные выплаты сотням водителей и круглосуточный учет парка.",
-        link: "/partners/alfapark",
+        link: "https://alfapark.kg",
         screenTheme: {
             bg: "bg-[#100714]",
             text: "text-fuchsia-50",
