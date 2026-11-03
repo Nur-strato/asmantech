@@ -169,27 +169,34 @@ export function SocialChannels() {
     };
 
     return (
-        <section id="connect" className="pt-4 select-none relative">
-            {/* Лаконичная белая табличка с коротким текстом */}
+        <section id="connect" className="pt-4 select-none relative overflow-x-clip">
+            {/* Лаконичная белая плашка уведомления + полупрозрачный защитный фон */}
             {activeDevChannel && (
-                <div className="fixed top-[58%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[88%] max-w-[360px] p-6 rounded-3xl bg-white border border-neutral-200/90 shadow-[0_20px_50px_rgba(0,0,0,0.14)] transition-all duration-200 animate-in fade-in zoom-in-95 text-center">
-                    <button
-                        type="button"
+                <>
+                    <div
+                        className="fixed inset-0 z-40 bg-black/20 backdrop-blur-[2px] animate-in fade-in duration-200"
                         onClick={() => setActiveDevChannel(null)}
-                        className="absolute top-4 right-4 p-1 rounded-full text-neutral-400 hover:text-neutral-900 transition-colors cursor-pointer"
-                        title="Закрыть"
-                    >
-                        <X size={18} />
-                    </button>
+                    />
+                    <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[88%] max-w-[340px] sm:max-w-[360px] p-6 rounded-3xl bg-white border border-neutral-200/90 shadow-[0_20px_50px_rgba(0,0,0,0.14)] transition-all duration-200 animate-in fade-in zoom-in-95 text-center">
+                        <button
+                            type="button"
+                            onClick={() => setActiveDevChannel(null)}
+                            className="absolute top-4 right-4 p-2 rounded-full text-neutral-400 hover:text-neutral-900 active:bg-neutral-100 transition-colors cursor-pointer"
+                            title="Закрыть"
+                            aria-label="Закрыть уведомление"
+                        >
+                            <X size={18} />
+                        </button>
 
-                    <h4 className="font-sans text-2xl font-black text-neutral-950 tracking-tight">
-                        {activeDevChannel}
-                    </h4>
+                        <h4 className="font-sans text-2xl font-black text-neutral-950 tracking-tight">
+                            {activeDevChannel}
+                        </h4>
 
-                    <p className="mt-2 font-sans text-base font-semibold text-neutral-500">
-                        В разработке
-                    </p>
-                </div>
+                        <p className="mt-2 font-sans text-base font-semibold text-neutral-500">
+                            В разработке
+                        </p>
+                    </div>
+                </>
             )}
 
             {/* Верхний заголовок */}
@@ -199,47 +206,50 @@ export function SocialChannels() {
                 </h3>
             </div>
 
-            {/* Сетка: вылет на 5% по бокам, отступ сверху pt-[9%] md:pt-20, зазор gap-8 */}
-            <div className="w-[110%] max-w-[110%] -mx-[5%] pt-[9%] md:pt-20">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
+            {/* Сетка каналов: на мобильных строго в границах экрана, на десктопе вылет 110% с -mx-[5%] сохранен */}
+            <div className="w-full max-w-full mx-0 pt-8 sm:pt-[9%] md:pt-20 md:w-[110%] md:max-w-[110%] md:-mx-[5%]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-7 sm:gap-8">
                     {channels.map((channel, index) => (
                         <div
                             key={channel.name}
-                            className="flex flex-col items-center text-center"
+                            className="flex flex-col items-center text-center p-3 sm:p-0 rounded-2xl sm:rounded-none bg-neutral-50/60 sm:bg-transparent border border-neutral-200/60 sm:border-none"
                         >
                             <a
                                 href={channel.href}
                                 onClick={(e) => handleChannelClick(e, channel)}
                                 target={channel.isUnderDev ? undefined : "_blank"}
                                 rel={channel.isUnderDev ? undefined : "noopener noreferrer"}
-                                className="group/link inline-flex flex-col items-center cursor-pointer transition-transform duration-300 hover:-translate-y-1.5"
+                                className="group/link inline-flex flex-col items-center cursor-pointer transition-transform duration-300 hover:-translate-y-1.5 active:scale-95 touch-manipulation"
                             >
                                 <div className={`${channel.accentClass} flex items-center justify-center transition-transform duration-300 group-hover/link:scale-110`}>
                                     {channel.icon}
                                 </div>
 
-                                <h4 className="text-[21px] font-bold text-neutral-900 tracking-tight pt-3.5">
+                                <h4 className="text-[19px] sm:text-[21px] font-bold text-neutral-900 tracking-tight pt-3 sm:pt-3.5">
                                     {channel.name}
                                 </h4>
                             </a>
 
-                            <div className="inline-flex items-center justify-center gap-1.5 max-w-full pt-1.5">
+                            <div className="inline-flex items-center justify-center gap-1.5 max-w-[calc(100vw-4rem)] sm:max-w-full pt-1.5">
                                 <span className="font-mono text-[13px] text-neutral-900/50 font-medium truncate select-text">
                                     {channel.handle}
                                 </span>
 
-                                <button
-                                    type="button"
-                                    onClick={(e) => handleCopy(e, channel, index)}
-                                    title="Скопировать"
-                                    className="p-1.5 rounded text-neutral-900/40 hover:text-neutral-900 hover:bg-neutral-100 transition-colors cursor-pointer"
-                                >
-                                    {copiedIndex === index ? (
-                                        <Check size={13.5} className="text-emerald-600 stroke-[2.5]" />
-                                    ) : (
-                                        <Copy size={13.5} />
-                                    )}
-                                </button>
+                                {channel.handle && (
+                                    <button
+                                        type="button"
+                                        onClick={(e) => handleCopy(e, channel, index)}
+                                        title="Скопировать"
+                                        aria-label={`Скопировать ${channel.name}`}
+                                        className="p-2 sm:p-1.5 rounded-lg text-neutral-900/40 hover:text-neutral-900 hover:bg-neutral-100 active:bg-neutral-200 active:scale-90 transition-all cursor-pointer touch-manipulation"
+                                    >
+                                        {copiedIndex === index ? (
+                                            <Check size={14} className="text-emerald-600 stroke-[2.5]" />
+                                        ) : (
+                                            <Copy size={14} />
+                                        )}
+                                    </button>
+                                )}
                             </div>
                         </div>
                     ))}

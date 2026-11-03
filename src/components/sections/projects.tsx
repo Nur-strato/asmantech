@@ -135,22 +135,22 @@ export function Projects() {
         <section
             id="projects"
             aria-label="Витрина работ"
-            className="w-full bg-[#FAF9F6] text-neutral-900 pt-10 sm:pt-14 pb-20 sm:pb-28 border-t border-neutral-200 select-none overflow-hidden"
+            className="w-full bg-[#FAF9F6] text-neutral-900 pt-8 sm:pt-14 pb-14 sm:pb-28 border-t border-neutral-200 select-none overflow-x-clip"
         >
-            <div className="max-w-[1412px] mx-auto px-5 md:px-8 space-y-8">
+            <div className="max-w-[1412px] mx-auto px-4 xs:px-5 md:px-8 space-y-6 sm:space-y-8">
 
                 {/* Хедер секции */}
-                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-6 border-b border-neutral-300">
+                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 sm:gap-6 pb-5 sm:pb-6 border-b border-neutral-300">
                     <div>
-                        <h2 className="font-serif italic text-4xl sm:text-6xl md:text-7xl font-normal tracking-tight text-neutral-900 leading-none">
+                        <h2 className="font-serif italic text-3xl xs:text-4xl sm:text-6xl md:text-7xl font-normal tracking-tight text-neutral-900 leading-none">
                             Витрина работ
                         </h2>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 self-start sm:self-auto">
                         <Link
                             href="/projects"
-                            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-neutral-300 hover:border-neutral-900 font-mono text-xs font-bold uppercase tracking-wider text-neutral-700 hover:text-black transition-all"
+                            className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full border border-neutral-300 hover:border-neutral-900 font-mono text-[11px] sm:text-xs font-bold uppercase tracking-wider text-neutral-700 hover:text-black transition-all"
                         >
                             <span>Все проекты</span>
                             <ArrowUpRight size={14} />
@@ -159,47 +159,49 @@ export function Projects() {
                 </div>
 
                 {/* Главный блок */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 lg:gap-14 items-center">
 
                     {/* ЛЕВАЯ КОЛОНКА */}
-                    <div className="lg:col-span-5 flex flex-col justify-between space-y-8 order-2 lg:order-1">
+                    <div className="lg:col-span-5 flex flex-col justify-between space-y-6 sm:space-y-8 order-2 lg:order-1">
 
-                        {/* Переключатель [ 01 AUCAHACK ] [ 02 ] [ 03 ] [ 04 ] */}
-                        <div className="flex items-center gap-1.5 p-1.5 bg-neutral-200/60 rounded-2xl w-fit">
-                            {EXHIBITS.map((item, idx) => {
-                                const isActive = selectedIdx === idx;
-                                return (
-                                    <button
-                                        key={item.id}
-                                        type="button"
-                                        onClick={() => setSelectedIdx(idx)}
-                                        className={`flex items-center gap-2 py-2 px-3.5 rounded-xl font-mono text-xs font-bold transition-all duration-300 cursor-pointer ${
-                                            isActive
-                                                ? "bg-white text-neutral-900 shadow-sm"
-                                                : "text-neutral-500 hover:text-neutral-900 hover:bg-white/40"
-                                        }`}
-                                    >
-                                        <span className={isActive ? "text-neutral-900" : "text-neutral-400"}>
-                                            {item.num}
-                                        </span>
-                                        {isActive && (
-                                            <span className="font-sans text-xs font-semibold tracking-tight text-neutral-900 animate-in fade-in duration-200">
-                                                {item.shortTitle}
+                        {/* Переключатель проектов с защитой от вылета за пределы экрана */}
+                        <div className="max-w-full overflow-x-auto no-scrollbar py-0.5">
+                            <div className="flex items-center gap-1.5 p-1.5 bg-neutral-200/60 rounded-2xl w-fit shrink-0">
+                                {EXHIBITS.map((item, idx) => {
+                                    const isActive = selectedIdx === idx;
+                                    return (
+                                        <button
+                                            key={item.id}
+                                            type="button"
+                                            onClick={() => setSelectedIdx(idx)}
+                                            className={`flex items-center gap-1.5 sm:gap-2 py-1.5 sm:py-2 px-3 sm:px-3.5 rounded-xl font-mono text-xs font-bold transition-all duration-300 cursor-pointer shrink-0 ${
+                                                isActive
+                                                    ? "bg-white text-neutral-900 shadow-sm"
+                                                    : "text-neutral-500 hover:text-neutral-900 hover:bg-white/40"
+                                            }`}
+                                        >
+                                            <span className={isActive ? "text-neutral-900" : "text-neutral-400"}>
+                                                {item.num}
                                             </span>
-                                        )}
-                                    </button>
-                                );
-                            })}
+                                            {isActive && (
+                                                <span className="font-sans text-xs font-semibold tracking-tight text-neutral-900 animate-in fade-in duration-200 whitespace-nowrap">
+                                                    {item.shortTitle}
+                                                </span>
+                                            )}
+                                        </button>
+                                    );
+                                })}
+                            </div>
                         </div>
 
                         {/* Название, тип платформы и описание */}
-                        <div className="space-y-4">
+                        <div className="space-y-3.5 sm:space-y-4">
                             <div className="space-y-2">
-                                <h3 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-neutral-900">
+                                <h3 className="font-serif text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-neutral-900 leading-tight">
                                     {current.title}
                                 </h3>
 
-                                <div className="inline-block px-3 py-1 rounded-lg bg-neutral-200/70 border border-neutral-300 text-neutral-800 font-mono text-xs font-semibold">
+                                <div className="inline-block px-2.5 sm:px-3 py-1 rounded-lg bg-neutral-200/70 border border-neutral-300 text-neutral-800 font-mono text-[11px] sm:text-xs font-semibold">
                                     {current.platformType}
                                 </div>
                             </div>
@@ -210,12 +212,12 @@ export function Projects() {
                         </div>
 
                         {/* Кнопка перехода к проекту */}
-                        <div className="pt-2">
+                        <div className="pt-1 sm:pt-2">
                             <a
                                 href={current.link}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl bg-neutral-900 hover:bg-black text-white font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-md active:scale-95"
+                                className="inline-flex items-center justify-center gap-2.5 w-full sm:w-auto px-7 py-3.5 rounded-xl bg-neutral-900 hover:bg-black text-white font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-md active:scale-95"
                             >
                                 <span>Открыть проект</span>
                                 <ArrowUpRight size={15} />
@@ -224,7 +226,7 @@ export function Projects() {
                     </div>
 
                     {/* ПРАВАЯ КОЛОНКА: Витрина с подиумом и ноутбуком */}
-                    <div className="lg:col-span-7 flex flex-col items-center justify-center order-1 lg:order-2">
+                    <div className="lg:col-span-7 flex flex-col items-center justify-center order-1 lg:order-2 w-full">
 
                         <div
                             ref={stageRef}
@@ -235,19 +237,19 @@ export function Projects() {
                             onTouchStart={(e) => handleStart(e.touches[0].clientX)}
                             onTouchMove={(e) => handleMove(e.touches[0].clientX)}
                             onTouchEnd={handleEnd}
-                            className="relative w-full aspect-[4/3] max-w-[620px] rounded-[36px] bg-gradient-to-b from-[#F2EFE9] to-[#E5E0D6] border border-neutral-300/70 p-6 flex flex-col items-center justify-center select-none shadow-[inset_0_2px_12px_rgba(255,255,255,0.8),0_20px_50px_rgba(0,0,0,0.06)] [perspective:1400px] cursor-grab active:cursor-grabbing"
+                            className="relative w-full aspect-[4/3] min-h-[330px] xs:min-h-[360px] sm:min-h-0 max-w-[620px] rounded-[28px] sm:rounded-[36px] bg-gradient-to-b from-[#F2EFE9] to-[#E5E0D6] border border-neutral-300/70 p-4 sm:p-6 flex flex-col items-center justify-center select-none shadow-[inset_0_2px_12px_rgba(255,255,255,0.8),0_20px_50px_rgba(0,0,0,0.06)] [perspective:1400px] cursor-grab active:cursor-grabbing touch-pan-y"
                         >
                             {/* Верхний HUD: градус и управление */}
-                            <div className="absolute top-5 inset-x-6 flex items-center justify-between z-20 pointer-events-none">
-                                <div className="px-3 py-1 rounded-full bg-white/80 backdrop-blur-md border border-neutral-300/80 font-mono text-[11px] font-bold text-neutral-700 tabular-nums shadow-xs">
+                            <div className="absolute top-3.5 sm:top-5 inset-x-4 sm:inset-x-6 flex items-center justify-between z-20 pointer-events-none">
+                                <div className="px-2.5 sm:px-3 py-1 rounded-full bg-white/80 backdrop-blur-md border border-neutral-300/80 font-mono text-[10px] sm:text-[11px] font-bold text-neutral-700 tabular-nums shadow-xs">
                                     STAGE: {angleDisplay}°
                                 </div>
 
-                                <div className="pointer-events-auto flex items-center gap-1.5 p-1 rounded-full bg-white/80 backdrop-blur-md border border-neutral-300/80 shadow-xs">
+                                <div className="pointer-events-auto flex items-center gap-1 sm:gap-1.5 p-1 rounded-full bg-white/80 backdrop-blur-md border border-neutral-300/80 shadow-xs">
                                     <button
                                         type="button"
                                         onClick={() => setIsAutoSpin(!isAutoSpin)}
-                                        className={`px-3 py-1 rounded-full font-mono text-[10px] font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                                        className={`px-2.5 sm:px-3 py-1 rounded-full font-mono text-[9px] sm:text-[10px] font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                                             isAutoSpin
                                                 ? "bg-neutral-900 text-white"
                                                 : "text-neutral-600 hover:text-black"
@@ -271,7 +273,7 @@ export function Projects() {
                                 </div>
                             </div>
 
-                            {/* 3D НОУТБУК */}
+                            {/* 3D НОУТБУК (Адаптивные размеры под мобильные дисплеи) */}
                             <div
                                 style={{
                                     transform: `rotateY(${rotationY}deg) rotateX(8deg)`,
@@ -279,39 +281,39 @@ export function Projects() {
                                 }}
                                 className="relative z-10 [transform-style:preserve-3d] will-change-transform flex items-center justify-center my-auto"
                             >
-                                <div className="relative w-[320px] sm:w-[420px] h-[230px] sm:h-[275px] [transform-style:preserve-3d] flex flex-col items-center">
+                                <div className="relative w-[260px] xs:w-[295px] sm:w-[420px] h-[185px] xs:h-[210px] sm:h-[275px] [transform-style:preserve-3d] flex flex-col items-center">
 
                                     {/* Тень под экраном */}
-                                    <div className="absolute -bottom-6 w-[88%] h-7 bg-neutral-900/40 blur-xl rounded-full pointer-events-none [transform:translateZ(-20px)]" />
+                                    <div className="absolute -bottom-5 sm:-bottom-6 w-[88%] h-5 sm:h-7 bg-neutral-900/40 blur-lg sm:blur-xl rounded-full pointer-events-none [transform:translateZ(-20px)]" />
 
                                     {/* Лицевая панель */}
-                                    <div className="absolute inset-0 [backface-visibility:hidden] bg-[#121316] rounded-[20px] p-2.5 sm:p-3 border border-neutral-700/80 shadow-[0_30px_70px_rgba(0,0,0,0.45)] flex flex-col overflow-hidden">
+                                    <div className="absolute inset-0 [backface-visibility:hidden] bg-[#121316] rounded-[16px] sm:rounded-[20px] p-2 sm:p-3 border border-neutral-700/80 shadow-[0_30px_70px_rgba(0,0,0,0.45)] flex flex-col overflow-hidden">
 
-                                        <div className="h-3.5 flex justify-center items-center shrink-0">
-                                            <div className="w-2 h-2 rounded-full bg-neutral-800 border border-neutral-700" />
+                                        <div className="h-2.5 sm:h-3.5 flex justify-center items-center shrink-0">
+                                            <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-neutral-800 border border-neutral-700" />
                                         </div>
 
-                                        <div className={`flex-1 rounded-[12px] ${current.screenTheme.bg} p-6 flex flex-col justify-between items-center text-center transition-colors duration-500 overflow-hidden relative border border-white/5`}>
+                                        <div className={`flex-1 rounded-[10px] sm:rounded-[12px] ${current.screenTheme.bg} p-3.5 xs:p-4 sm:p-6 flex flex-col justify-between items-center text-center transition-colors duration-500 overflow-hidden relative border border-white/5`}>
 
                                             <div className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px] opacity-10 pointer-events-none" />
 
                                             <div className="w-full flex justify-between items-center relative z-10">
-                                                <span className={`font-mono text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-full border ${current.screenTheme.badgeBg} ${current.screenTheme.badgeText}`}>
+                                                <span className={`font-mono text-[8px] sm:text-[9px] uppercase tracking-widest px-1.5 sm:px-2 py-0.5 rounded-full border ${current.screenTheme.badgeBg} ${current.screenTheme.badgeText}`}>
                                                     ● LIVE EXHIBIT
                                                 </span>
-                                                <span className="font-mono text-[9px] text-neutral-500">
+                                                <span className="font-mono text-[8px] sm:text-[9px] text-neutral-500">
                                                     {current.num}
                                                 </span>
                                             </div>
 
                                             {/* Заголовок на экране */}
                                             <div className="my-auto space-y-1 relative z-10">
-                                                <h4 className={`font-serif italic text-3xl sm:text-5xl font-black tracking-tight ${current.screenTheme.text} transition-colors duration-300 leading-none`}>
+                                                <h4 className={`font-serif italic text-2xl xs:text-3xl sm:text-5xl font-black tracking-tight ${current.screenTheme.text} transition-colors duration-300 leading-none truncate max-w-[210px] xs:max-w-[240px] sm:max-w-none`}>
                                                     {current.screenTitle}
                                                 </h4>
                                             </div>
 
-                                            <div className="w-full flex justify-between items-center relative z-10 font-mono text-[8px] text-neutral-500 pt-2 border-t border-white/10">
+                                            <div className="w-full flex justify-between items-center relative z-10 font-mono text-[7px] sm:text-[8px] text-neutral-500 pt-1.5 sm:pt-2 border-t border-white/10">
                                                 <span>Vital Tech Lab</span>
                                                 <span>Precision 360°</span>
                                             </div>
@@ -319,33 +321,33 @@ export function Projects() {
                                     </div>
 
                                     {/* Задняя крышка с логотипом */}
-                                    <div className="absolute inset-0 [transform:rotateY(180deg)] [backface-visibility:hidden] bg-gradient-to-br from-neutral-800 via-neutral-900 to-neutral-950 rounded-[20px] border border-neutral-700/80 shadow-2xl flex flex-col items-center justify-center">
-                                        <div className="w-14 h-14 rounded-full bg-neutral-900/90 border border-neutral-700/60 flex items-center justify-center shadow-inner">
-                                            <span className="font-serif italic text-lg font-bold text-neutral-300">
+                                    <div className="absolute inset-0 [transform:rotateY(180deg)] [backface-visibility:hidden] bg-gradient-to-br from-neutral-800 via-neutral-900 to-neutral-950 rounded-[16px] sm:rounded-[20px] border border-neutral-700/80 shadow-2xl flex flex-col items-center justify-center">
+                                        <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-neutral-900/90 border border-neutral-700/60 flex items-center justify-center shadow-inner">
+                                            <span className="font-serif italic text-base sm:text-lg font-bold text-neutral-300">
                                                 V
                                             </span>
                                         </div>
-                                        <span className="text-[8px] font-mono uppercase tracking-[0.3em] text-neutral-500 mt-3">
+                                        <span className="text-[7px] sm:text-[8px] font-mono uppercase tracking-[0.3em] text-neutral-500 mt-2 sm:mt-3">
                                             Space Black Chassis
                                         </span>
                                     </div>
 
                                     {/* Основание ноутбука */}
-                                    <div className="absolute -bottom-3 w-[350px] sm:w-[455px] h-[12px] bg-gradient-to-b from-neutral-700 via-neutral-800 to-neutral-900 rounded-b-xl border-t border-neutral-600/80 shadow-2xl flex justify-center [transform:translateZ(6px)]">
-                                        <div className="w-16 h-1 bg-neutral-500/80 rounded-b" />
+                                    <div className="absolute -bottom-2.5 sm:-bottom-3 w-[280px] xs:w-[320px] sm:w-[455px] h-[9px] sm:h-[12px] bg-gradient-to-b from-neutral-700 via-neutral-800 to-neutral-900 rounded-b-xl border-t border-neutral-600/80 shadow-2xl flex justify-center [transform:translateZ(6px)]">
+                                        <div className="w-12 sm:w-16 h-1 bg-neutral-500/80 rounded-b" />
                                     </div>
                                 </div>
                             </div>
 
                             {/* Подиум витрины */}
-                            <div className="absolute bottom-6 w-[360px] sm:w-[460px] h-[64px] rounded-[100%] bg-gradient-to-b from-white/90 via-white/50 to-neutral-300/40 border border-white/80 shadow-[0_20px_35px_rgba(0,0,0,0.08)] pointer-events-none flex items-center justify-center [transform:rotateX(68deg)]">
+                            <div className="absolute bottom-5 sm:bottom-6 w-[280px] xs:w-[330px] sm:w-[460px] h-[48px] sm:h-[64px] rounded-[100%] bg-gradient-to-b from-white/90 via-white/50 to-neutral-300/40 border border-white/80 shadow-[0_20px_35px_rgba(0,0,0,0.08)] pointer-events-none flex items-center justify-center [transform:rotateX(68deg)]">
                                 <div className="w-[82%] h-[82%] rounded-[100%] border border-dashed border-neutral-400/50" />
                             </div>
 
                             {/* Жестовый индикатор */}
-                            <div className="absolute bottom-3.5 z-20 flex items-center gap-2.5 pointer-events-none text-neutral-800">
-                                <MoveHorizontal size={15} className="text-neutral-700 animate-pulse" />
-                                <span className="font-mono text-[10px] uppercase tracking-[0.24em] font-semibold">
+                            <div className="absolute bottom-2.5 sm:bottom-3.5 z-20 flex items-center gap-2 pointer-events-none text-neutral-800">
+                                <MoveHorizontal size={13} className="text-neutral-700 animate-pulse sm:w-3.5 sm:h-3.5" />
+                                <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.24em] font-semibold">
                                     Drag to rotate 360°
                                 </span>
                             </div>
@@ -356,6 +358,16 @@ export function Projects() {
                 </div>
 
             </div>
+
+            <style jsx>{`
+                .no-scrollbar::-webkit-scrollbar {
+                    display: none;
+                }
+                .no-scrollbar {
+                    -ms-overflow-style: none;
+                    scrollbar-width: none;
+                }
+            `}</style>
         </section>
     );
 }

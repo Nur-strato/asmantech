@@ -14,7 +14,9 @@ const NAV_LINKS = [
 export function Header() {
     const pathname = usePathname();
     const [scrolled, setScrolled] = useState(false);
+    const [mobileOpen, setMobileOpen] = useState(false);
 
+    // Отслеживание скролла
     useEffect(() => {
         const handleScroll = () => {
             setScrolled(window.scrollY > 20);
@@ -22,6 +24,30 @@ export function Header() {
         window.addEventListener("scroll", handleScroll, { passive: true });
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
+
+    // Автоматическое закрытие мобильного меню при смене маршрута
+    useEffect(() => {
+        setMobileOpen(false);
+    }, [pathname]);
+
+    // Блокировка скролла страницы при открытом мобильном меню + Escape
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") setMobileOpen(false);
+        };
+
+        if (mobileOpen) {
+            document.body.style.overflow = "hidden";
+            window.addEventListener("keydown", handleKeyDown);
+        } else {
+            document.body.style.overflow = "unset";
+        }
+
+        return () => {
+            document.body.style.overflow = "unset";
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [mobileOpen]);
 
     // Скрываем хедер на всех страницах админ-панели
     if (pathname.startsWith("/admin")) {
@@ -39,11 +65,11 @@ export function Header() {
             }`}
         >
             <div className="max-w-[1412px] mx-auto px-5 md:px-8 flex items-center justify-between w-full -translate-y-1">
-                {/* Логотип: 3D Flip-эффект переворота Asman Tech -> Home */}
+                {/* Логотип: 3D Flip-эффект переворота Asman Tech -> Home (полностью сохранен) */}
                 <Link
                     href="/"
                     aria-label="Asman Tech Home"
-                    className="group relative inline-flex items-center select-none active:scale-95 transition-transform font-serif text-[32px] md:text-[36px] font-bold tracking-tight [perspective:1000px]"
+                    className="group relative inline-flex items-center select-none active:scale-95 transition-transform font-serif text-[28px] sm:text-[32px] md:text-[36px] font-bold tracking-tight [perspective:1000px] z-50"
                 >
                     {/* Asman Tech */}
                     <span className="text-neutral-900 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] origin-bottom group-hover:opacity-0 group-hover:[transform:rotateX(90deg)_translateY(-8px)]">
@@ -59,8 +85,8 @@ export function Header() {
                     </span>
                 </Link>
 
-                {/* Навигационное меню: Solutions · Projects · Guarantee · Offers · Contacts */}
-                <nav className="flex items-center gap-5 sm:gap-7 md:gap-8 lg:gap-9 text-[20px] md:text-[22px] font-normal tracking-tight text-neutral-800">
+                {/* ДЕСКТОПНОЕ МЕНЮ (>= 1024px / lg) — исходный код без единого изменения стилей */}
+                <nav className="hidden lg:flex items-center gap-5 sm:gap-7 md:gap-8 lg:gap-9 text-[20px] md:text-[22px] font-normal tracking-tight text-neutral-800">
                     {NAV_LINKS.map((item) => {
                         const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
 
@@ -91,7 +117,7 @@ export function Header() {
                         );
                     })}
 
-                    {/* Contacts */}
+                    {/* Contacts (Desktop) */}
                     <div className="pl-1 sm:pl-3">
                         <Link
                             href="/contacts"
@@ -113,6 +139,88 @@ export function Header() {
                         </Link>
                     </div>
                 </nav>
+
+                {/* МОБИЛЬНАЯ КНОПКА МЕНЮ (< 1024px) с минималистичной микро-анимацией линий */}
+                <button
+                    type="button"
+                    onClick={() => setMobileOpen(!mobileOpen)}
+                    aria-label={mobileOpen ? "Закрыть меню" : "Открыть меню"}
+                    aria-expanded={mobileOpen}
+                    className="lg:hidden relative z-50 p-2.5 -mr-1.5 rounded-full text-neutral-950 hover:bg-neutral-100/80 active:scale-90 transition-all flex flex-col justify-center items-center w-11 h-11 cursor-pointer focus:outline-none"
+                >
+                    <span
+                        className={`w-6 h-[2px] bg-neutral-950 rounded-full transition-all duration-300 ease-out ${
+                            mobileOpen ? "rotate-45 translate-y-[3.5px]" : "-translate-y-1"
+                        }`}
+                    />
+                    <span
+                        className={`w-6 h-[2px] bg-neutral-950 rounded-full transition-all duration-300 ease-out ${
+                            mobileOpen ? "-rotate-45 -translate-y-[1.5px]" : "translate-y-1"
+                        }`}
+                    />
+                </button>
+            </div>
+
+            {/* МОБИЛЬНОЕ ПОЛНОЭКРАННОЕ МЕНЮ (Full-screen Sheet на 100dvh) */}
+            <div
+                className={`lg:hidden fixed inset-0 z-40 bg-white/98 backdrop-blur-2xl transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col justify-between px-6 sm:px-10 pt-28 pb-10 h-[100dvh] overflow-y-auto ${
+                    mobileOpen
+                        ? "opacity-100 pointer-events-auto translate-y-0"
+                        : "opacity-0 pointer-events-none -translate-y-4"
+                }`}
+            >
+                {/* Список ссылок */}
+                <div className="space-y-6 pt-4">
+                    <span className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-400 block pb-2 border-b border-neutral-100">
+                        Навигация
+                    </span>
+
+                    <div className="flex flex-col space-y-4">
+                        {NAV_LINKS.map((item) => {
+                            const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+
+                            return (
+                                <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    onClick={() => setMobileOpen(false)}
+                                    className={`py-2 text-3xl sm:text-4xl font-serif tracking-tight flex items-center justify-between transition-colors ${
+                                        isActive ? "text-neutral-950 font-bold" : "text-neutral-500 hover:text-neutral-950"
+                                    }`}
+                                >
+                                    <span>{item.label}</span>
+
+                                    {/* Зеленый бейдж скидки в мобильной версии */}
+                                    {item.badge && (
+                                        <span className="inline-flex items-center justify-center px-3 py-1 rounded-[10px] bg-[#E7F8EE] text-[#058447] font-sans text-sm font-black tracking-tight leading-none shadow-2xs">
+                                            {item.badge}
+                                        </span>
+                                    )}
+                                </Link>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                {/* Нижняя часть мобильного меню: статус + Contacts CTA */}
+                <div className="space-y-6 pt-8 border-t border-neutral-100">
+                    <div className="flex items-center justify-between text-xs font-mono text-neutral-400 uppercase tracking-wider">
+                        <span>Digital Engineering</span>
+                        <span>Asman Tech // 2026</span>
+                    </div>
+
+                    <Link
+                        href="/contacts"
+                        onClick={() => setMobileOpen(false)}
+                        className={`w-full py-4.5 rounded-2xl flex items-center justify-center font-mono text-xs uppercase tracking-wider font-bold transition-all shadow-md active:scale-[0.98] ${
+                            isContactsActive
+                                ? "bg-neutral-100 text-neutral-950 border border-neutral-300"
+                                : "bg-neutral-950 text-white"
+                        }`}
+                    >
+                        <span>Contacts</span>
+                    </Link>
+                </div>
             </div>
         </header>
     );

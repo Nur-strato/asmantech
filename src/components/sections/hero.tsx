@@ -216,6 +216,7 @@ export function Hero() {
     const [isHovered, setIsHovered] = useState(false);
     const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
     const [currentRotAngle, setCurrentRotAngle] = useState(0);
+    const [radius, setRadius] = useState(195); // Адаптивный 3D-радиус
 
     const dropdownRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -225,6 +226,7 @@ export function Hero() {
     const targetAngleRef = useRef(0);
     const isTargetingRef = useRef(false);
     const lastTimestampRef = useRef<number | null>(null);
+    const touchStartYRef = useRef<number | null>(null);
 
     const directNumberDisplay = "+996 (500) 275-270";
     const directNumberRaw = "996500275270";
@@ -232,7 +234,23 @@ export function Hero() {
 
     const count = SERVICES.length;
     const stepAngle = 360 / count; // 60 deg
-    const radius = 195;
+
+    // Адаптация радиуса барабана под мобильные устройства (предотвращает выход за экран)
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth < 480) {
+                setRadius(160);
+            } else if (window.innerWidth < 640) {
+                setRadius(175);
+            } else {
+                setRadius(195);
+            }
+        };
+
+        handleResize();
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
     useEffect(() => {
         const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -245,11 +263,12 @@ export function Hero() {
         return () => mediaQuery.removeEventListener("change", handleChange);
     }, []);
 
+    // Исправленный алгоритм поворота к ближайшему индексу
     const selectService = useCallback((index: number) => {
         setActiveIndex(index);
         const desiredTarget = -index * stepAngle;
         const current = animAngleRef.current;
-        const diff = ((desiredTarget - current) % 360 + 540) % 360 - 180;
+        const diff = (((desiredTarget - current) % 360 + 540) % 360) - 180;
         targetAngleRef.current = current + diff;
         isTargetingRef.current = true;
     }, [stepAngle]);
@@ -296,6 +315,33 @@ export function Hero() {
             lastTimestampRef.current = null;
         };
     }, [isHovered, prefersReducedMotion, stepAngle, count]);
+
+    // Тач-жесты для мобильного управления барабаном
+    const handleTouchStart = (e: React.TouchEvent) => {
+        touchStartYRef.current = e.touches[0].clientY;
+        setIsHovered(true);
+    };
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        if (touchStartYRef.current === null) return;
+        const currentY = e.touches[0].clientY;
+        const deltaY = currentY - touchStartYRef.current;
+        touchStartYRef.current = currentY;
+
+        animAngleRef.current += deltaY * 0.45;
+        if (cylinderRef.current) {
+            cylinderRef.current.style.transform = `rotateX(${animAngleRef.current}deg)`;
+        }
+        setCurrentRotAngle(animAngleRef.current);
+    };
+
+    const handleTouchEnd = () => {
+        touchStartYRef.current = null;
+        setIsHovered(false);
+        const normalizedAngle = ((-animAngleRef.current % 360) + 360) % 360;
+        const closestIdx = Math.round(normalizedAngle / stepAngle) % count;
+        selectService(closestIdx);
+    };
 
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
@@ -357,22 +403,21 @@ export function Hero() {
     return (
         <section
             aria-label="Hero Section"
-            className="relative w-full bg-white text-neutral-900 pt-[15vh] pb-16"
+            className="relative w-full bg-white text-neutral-900 pt-28 sm:pt-36 lg:pt-[15vh] pb-12 sm:pb-16 overflow-x-clip"
         >
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-12 lg:gap-14 w-full">
 
                 {/* ЛЕВАЯ КОЛОНКА */}
-                <div className="w-full lg:max-w-[640px] flex flex-col items-start space-y-10 sm:space-y-12">
+                <div className="w-full lg:max-w-[640px] flex flex-col items-start space-y-8 sm:space-y-10 lg:space-y-12">
 
                     {/* Заголовок */}
-                    <div className="space-y-3.5">
+                    <div className="space-y-3 sm:space-y-3.5">
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-100 border border-neutral-200/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
-
                             <span className="text-[11px] font-mono font-medium uppercase tracking-wider text-neutral-600">
                                 Asman Tech
                             </span>
                         </div>
-                        <h1 className="font-serif text-[64px] sm:text-[84px] md:text-[98px] lg:text-[108px] font-normal text-[#0A1A2F] tracking-[-0.04em] leading-[0.98]">
+                        <h1 className="font-serif text-[46px] xs:text-[54px] sm:text-[84px] md:text-[98px] lg:text-[108px] font-normal text-[#0A1A2F] tracking-[-0.04em] leading-[0.96] sm:leading-[0.98]">
                             IT-Solutions <br />
                             for you
                         </h1>
@@ -387,7 +432,7 @@ export function Hero() {
                                     setMode("callback");
                                     setErrorMsg(null);
                                 }}
-                                className={`relative px-6 py-2.5 rounded-t-[18px] text-[13px] font-medium transition-all duration-150 cursor-pointer flex items-center gap-2 ${
+                                className={`relative px-4 sm:px-6 py-2.5 rounded-t-[18px] text-[12px] sm:text-[13px] font-medium transition-all duration-150 cursor-pointer flex items-center gap-2 ${
                                     mode === "callback"
                                         ? "bg-[#F3F5FA] text-[#0A1A2F] font-semibold border-t border-x border-[#DFE4F0] z-10 after:absolute after:-bottom-[1px] after:left-0 after:right-0 after:h-[2px] after:bg-[#F3F5FA]"
                                         : "bg-transparent text-neutral-400 hover:text-neutral-700"
@@ -402,7 +447,7 @@ export function Hero() {
                                     setMode("direct");
                                     setErrorMsg(null);
                                 }}
-                                className={`relative px-6 py-2.5 rounded-t-[18px] text-[13px] font-medium transition-all duration-150 cursor-pointer flex items-center gap-2.5 ${
+                                className={`relative px-4 sm:px-6 py-2.5 rounded-t-[18px] text-[12px] sm:text-[13px] font-medium transition-all duration-150 cursor-pointer flex items-center gap-2 ${
                                     mode === "direct"
                                         ? "bg-[#F3F5FA] text-[#0A1A2F] font-semibold border-t border-x border-[#DFE4F0] z-10 after:absolute after:-bottom-[1px] after:left-0 after:right-0 after:h-[2px] after:bg-[#F3F5FA]"
                                         : "bg-transparent text-neutral-400 hover:text-neutral-700"
@@ -422,9 +467,9 @@ export function Hero() {
                             }`}
                         >
                             {mode === "callback" ? (
-                                <form onSubmit={handleSubmit} noValidate className="flex items-center justify-between gap-3">
+                                <form onSubmit={handleSubmit} noValidate className="flex items-center justify-between gap-2 sm:gap-3">
                                     <div
-                                        className={`flex items-center gap-2 pl-2 flex-1 bg-white/80 rounded-xl py-1.5 px-3 border transition-all relative ${
+                                        className={`flex items-center gap-1.5 sm:gap-2 pl-1.5 sm:pl-2 flex-1 bg-white/80 rounded-xl py-1.5 px-2.5 sm:px-3 border transition-all relative ${
                                             errorMsg
                                                 ? "border-rose-400 ring-2 ring-rose-100 bg-white"
                                                 : "border-[#E3E8F4] focus-within:border-indigo-400 focus-within:bg-white focus-within:shadow-xs"
@@ -434,19 +479,19 @@ export function Hero() {
                                             <button
                                                 type="button"
                                                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                                                className="flex items-center gap-1.5 pr-2 border-r border-neutral-200 select-none cursor-pointer hover:opacity-80 transition-opacity"
+                                                className="flex items-center gap-1 sm:gap-1.5 pr-1.5 sm:pr-2 border-r border-neutral-200 select-none cursor-pointer hover:opacity-80 transition-opacity"
                                                 aria-label="Выбрать страну"
                                                 aria-expanded={isDropdownOpen}
                                             >
-                                                <span className="text-base leading-none">{selectedCountry.flag}</span>
-                                                <span className="text-[14px] font-mono font-semibold text-[#0A1A2F]">
+                                                <span className="text-sm sm:text-base leading-none">{selectedCountry.flag}</span>
+                                                <span className="text-[13px] sm:text-[14px] font-mono font-semibold text-[#0A1A2F]">
                                                     {selectedCountry.code}
                                                 </span>
-                                                <ChevronDown className={`text-neutral-400 transition-transform ${isDropdownOpen ? "rotate-180" : ""}`} size={14} />
+                                                <ChevronDown className={`text-neutral-400 transition-transform ${isDropdownOpen ? "rotate-180" : ""}`} size={13} />
                                             </button>
 
                                             {isDropdownOpen && (
-                                                <div className="absolute top-full left-0 mt-3 w-64 bg-white rounded-2xl shadow-[0_16px_40px_rgba(10,26,47,0.14)] border border-[#E2E8F4] p-1.5 z-50 flex flex-col gap-0.5 animate-fadeIn max-h-60 overflow-y-auto">
+                                                <div className="absolute top-full left-0 mt-3 w-64 max-w-[calc(100vw-3rem)] bg-white rounded-2xl shadow-[0_16px_40px_rgba(10,26,47,0.14)] border border-[#E2E8F4] p-1.5 z-50 flex flex-col gap-0.5 animate-fadeIn max-h-60 overflow-y-auto">
                                                     {COUNTRIES.map((c) => (
                                                         <button
                                                             key={c.name}
@@ -469,6 +514,7 @@ export function Hero() {
                                             )}
                                         </div>
 
+                                        {/* text-[16px] предотвращает зум на iOS Safari при фокусе */}
                                         <input
                                             ref={inputRef}
                                             type="tel"
@@ -476,17 +522,18 @@ export function Hero() {
                                             onChange={handlePhoneChange}
                                             placeholder={selectedCountry.mask}
                                             aria-label="Номер телефона"
-                                            className="w-full bg-transparent text-[15px] sm:text-[16px] text-[#0A1A2F] placeholder:text-neutral-300 focus:outline-none font-mono tracking-tight font-medium pl-1"
+                                            className="w-full bg-transparent text-[16px] sm:text-[16px] text-[#0A1A2F] placeholder:text-neutral-300 focus:outline-none font-mono tracking-tight font-medium pl-1 min-w-0"
                                         />
                                     </div>
 
                                     <button
                                         type="submit"
-                                        className={`h-11 px-5 rounded-xl bg-[#0A1A2F] hover:bg-black text-white text-[13px] font-semibold flex items-center gap-2 transition-all shrink-0 cursor-pointer shadow-[0_4px_14px_rgba(10,26,47,0.16)] active:scale-95 group ${
+                                        className={`h-11 px-3.5 sm:px-5 rounded-xl bg-[#0A1A2F] hover:bg-black text-white text-[12px] sm:text-[13px] font-semibold flex items-center gap-1.5 sm:gap-2 transition-all shrink-0 cursor-pointer shadow-[0_4px_14px_rgba(10,26,47,0.16)] active:scale-95 group ${
                                             isShaking ? "animate-[shake_0.4s_ease-in-out]" : ""
                                         }`}
                                     >
-                                        <span>{isSubmitted ? "Принято" : "Подтвердить"}</span>
+                                        <span className="hidden xs:inline">{isSubmitted ? "Принято" : "Подтвердить"}</span>
+                                        <span className="xs:hidden">{isSubmitted ? "ОК" : "Отправить"}</span>
                                         {isSubmitted ? (
                                             <Check className="text-emerald-400" size={15} />
                                         ) : (
@@ -495,14 +542,14 @@ export function Hero() {
                                     </button>
                                 </form>
                             ) : (
-                                <div className="flex items-center justify-between gap-2 p-1 pl-2">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-1.5 sm:p-1 sm:pl-2">
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 rounded-xl bg-white border border-[#DFE4F0] flex items-center justify-center text-emerald-600 shadow-xs shrink-0">
                                             <PhoneCall size={17} />
                                         </div>
                                         <div>
                                             <div className="flex items-center gap-2">
-                                                <span className="text-[16px] font-mono font-bold text-[#0A1A2F] tracking-tight">
+                                                <span className="text-[15px] sm:text-[16px] font-mono font-bold text-[#0A1A2F] tracking-tight">
                                                     {directNumberDisplay}
                                                 </span>
                                                 <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Линия свободна" />
@@ -510,11 +557,11 @@ export function Hero() {
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-2 w-full sm:w-auto">
                                         <button
                                             type="button"
                                             onClick={handleCopy}
-                                            className="h-10 px-3 rounded-xl bg-white hover:bg-neutral-50 border border-[#DFE4F0] text-neutral-700 text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs active:scale-95"
+                                            className="flex-1 sm:flex-initial h-10 px-3 rounded-xl bg-white hover:bg-neutral-50 border border-[#DFE4F0] text-neutral-700 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs active:scale-95"
                                             title="Скопировать номер"
                                         >
                                             {copied ? <Check className="text-emerald-500" size={14} /> : <Copy size={14} />}
@@ -522,10 +569,10 @@ export function Hero() {
                                         </button>
 
                                         <a
-                                            href={`https://wa.me/${directNumberRaw}?text=${encodeURIComponent("Здравствуйте! Хочу обсудить проект с Vital Tech.")}`}
+                                            href={`https://wa.me/${directNumberRaw}?text=${encodeURIComponent("Здравствуйте! Хочу обсудить проект с Asman Tech.")}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="h-10 px-4 rounded-xl bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-[#128C7E] text-xs font-semibold flex items-center gap-2 transition-all shadow-xs active:scale-95 group"
+                                            className="flex-1 sm:flex-initial h-10 px-4 rounded-xl bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-[#128C7E] text-xs font-semibold flex items-center justify-center gap-2 transition-all shadow-xs active:scale-95 group"
                                         >
                                             <svg className="w-4 h-4 fill-[#25D366] group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
                                                 <path d="M12.031 2C6.51 2 2.016 6.494 2.016 12.015c0 1.954.566 3.778 1.545 5.32L2 22.031l4.838-1.527c1.478.89 3.208 1.405 5.193 1.405 5.521 0 10.015-4.494 10.015-10.015C22.046 6.494 17.552 2 12.031 2zm5.82 14.288c-.244.685-1.42 1.309-1.968 1.393-.523.08-1.206.115-1.957-.127-.482-.155-1.103-.36-1.905-.71-3.37-1.464-5.576-4.9-5.744-5.127-.168-.227-1.371-1.824-1.371-3.48 0-1.656.866-2.47 1.173-2.812.308-.342.671-.428.895-.428.224 0 .448.002.643.012.207.01.482-.078.754.576.28.673.957 2.336 1.042 2.508.084.172.14.373.028.598-.112.224-.168.365-.335.565-.168.2-.352.447-.504.6-.168.168-.343.351-.147.688.196.336.872 1.439 1.872 2.33 1.285 1.144 2.368 1.5 2.704 1.668.336.168.532.14.728-.084.196-.224.84-0.98 1.064-1.316.224-.336.448-.28.756-.168.308.112 1.96.924 2.296 1.092.336.168.56.252.644.392.084.14.084.812-.16 1.497z" />
@@ -567,23 +614,26 @@ export function Hero() {
 
                 {/* ПРАВАЯ КОЛОНКА: ИНЖЕНЕРНЫЙ 3D-БАРАБАН */}
                 <div
-                    className="w-full lg:w-auto flex-1 flex flex-col items-center lg:items-end  pr-1 sm:pr-3"
+                    className="w-full lg:w-auto flex-1 flex flex-col items-center lg:items-end pr-0 sm:pr-1 lg:pr-3"
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
                     role="region"
                     aria-roledescription="carousel"
-                    aria-label="Направления разработки Vital Tech"
+                    aria-label="Направления разработки Asman Tech"
                 >
                     <div className="relative w-full max-w-[480px] flex flex-col items-center">
 
                         {/* Фоновое свечение */}
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-gradient-to-tr from-sky-400/[0.07] via-indigo-500/[0.05] to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 sm:w-80 h-64 sm:h-80 bg-gradient-to-tr from-sky-400/[0.07] via-indigo-500/[0.05] to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
 
                         {/* 3D СЦЕНА С ЦИЛИНДРОМ */}
-                        <div className="relative w-full h-[430px] flex items-center justify-center [perspective:1400px] overflow-visible">
+                        <div className="relative w-full h-[370px] xs:h-[400px] sm:h-[430px] flex items-center justify-center [perspective:1400px] overflow-visible">
                             <div
                                 ref={cylinderRef}
-                                className="relative w-full max-w-[430px] h-[92px] [transform-style:preserve-3d] will-change-transform [transform-origin:center_center]"
+                                className="relative w-[calc(100vw-3rem)] xs:w-[350px] sm:w-[430px] max-w-[430px] h-[86px] sm:h-[92px] [transform-style:preserve-3d] will-change-transform [transform-origin:center_center]"
                             >
                                 {SERVICES.map((service, index) => {
                                     const IconComponent = service.icon;
@@ -608,32 +658,32 @@ export function Hero() {
                                                 pointerEvents: isVisible ? "auto" : "none",
                                                 visibility: isVisible ? "visible" : "hidden",
                                             }}
-                                            className={`wheel-panel absolute inset-0 rounded-[22px] px-5 py-4 flex items-center justify-between text-left cursor-pointer transition-opacity duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${
+                                            className={`wheel-panel absolute inset-0 rounded-[20px] sm:rounded-[22px] px-3.5 sm:px-5 py-3 sm:py-4 flex items-center justify-between text-left cursor-pointer transition-opacity duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${
                                                 isCurrent
-                                                    ? "bg-white border-t border-x border-white border-b-[5px] border-b-[#94A3B8] shadow-[0_24px_50px_-12px_rgba(10,26,47,0.18)] ring-1 ring-slate-900/[0.08]"
-                                                    : "bg-white border-t border-x border-white border-b-[4px] border-b-[#CBD5E1] shadow-[0_12px_28px_-10px_rgba(10,26,47,0.08)] ring-1 ring-slate-900/[0.05]"
+                                                    ? "bg-white border-t border-x border-white border-b-[4px] sm:border-b-[5px] border-b-[#94A3B8] shadow-[0_24px_50px_-12px_rgba(10,26,47,0.18)] ring-1 ring-slate-900/[0.08]"
+                                                    : "bg-white border-t border-x border-white border-b-[3px] sm:border-b-[4px] border-b-[#CBD5E1] shadow-[0_12px_28px_-10px_rgba(10,26,47,0.08)] ring-1 ring-slate-900/[0.05]"
                                             }`}
                                             role="group"
                                             aria-selected={isCurrent}
                                             aria-label={`${service.title} — ${service.badge}`}
                                         >
                                             {/* Чёткий индекс */}
-                                            <span className="absolute top-2.5 left-3.5 text-[11px] font-mono font-bold tracking-wider text-slate-400 select-none">
+                                            <span className="absolute top-2 sm:top-2.5 left-2.5 sm:left-3.5 text-[10px] sm:text-[11px] font-mono font-bold tracking-wider text-slate-400 select-none">
                                                 {service.indexStr}
                                             </span>
 
-                                            <div className="flex items-center gap-4 min-w-0 pr-2 pt-1.5">
-                                                <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 border ${service.iconBg} ${service.accentColor}`}>
-                                                    <IconComponent size={20} className="stroke-[2.2]" />
+                                            <div className="flex items-center gap-3 sm:gap-4 min-w-0 pr-2 pt-1">
+                                                <div className={`w-9 h-9 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 border ${service.iconBg} ${service.accentColor}`}>
+                                                    <IconComponent size={18} className="stroke-[2.2] sm:w-5 sm:h-5" />
                                                 </div>
                                                 <div className="truncate">
-                                                    <p className="text-[16px] font-extrabold text-[#0A1A2F] tracking-tight leading-tight truncate">
+                                                    <p className="text-[14px] xs:text-[15px] sm:text-[16px] font-extrabold text-[#0A1A2F] tracking-tight leading-tight truncate">
                                                         {service.title}
                                                     </p>
                                                 </div>
                                             </div>
 
-                                            <span className="px-3 py-1.5 rounded-lg bg-neutral-100/90 border border-neutral-200 text-[11px] font-mono font-bold text-neutral-800 shadow-2xs shrink-0 tracking-tight">
+                                            <span className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg bg-neutral-100/90 border border-neutral-200 text-[10px] sm:text-[11px] font-mono font-bold text-neutral-800 shadow-2xs shrink-0 tracking-tight">
                                                 {service.badge}
                                             </span>
                                         </button>
@@ -644,18 +694,18 @@ export function Hero() {
 
                         {/* ДОК ОПИСАНИЯ СПЕЦИФИКАЦИИ */}
                         <div
-                            className="w-full mt-2 p-5 sm:p-6 min-h-[150px] sm:min-h-[158px] rounded-2xl bg-neutral-50/95 border border-neutral-200/80 shadow-[0_6px_20px_rgba(0,0,0,0.03)] flex items-center justify-between gap-5 transition-all duration-200"
+                            className="w-full mt-2 p-4 sm:p-6 min-h-[140px] sm:min-h-[158px] rounded-2xl bg-neutral-50/95 border border-neutral-200/80 shadow-[0_6px_20px_rgba(0,0,0,0.03)] flex items-center justify-between gap-4 sm:gap-5 transition-all duration-200"
                             aria-live="polite"
                         >
-                            <div className="space-y-2 overflow-hidden flex-1">
+                            <div className="space-y-1.5 sm:space-y-2 overflow-hidden flex-1">
                                 <div className="flex items-center gap-2">
                                     <Layers size={15} className="text-[#D84C69] shrink-0" />
-                                    <span className="text-[13px] sm:text-[14px] font-mono uppercase tracking-wider text-[#0A1A2F] font-bold">
-                {activeService.title}
-            </span>
+                                    <span className="text-[12px] sm:text-[14px] font-mono uppercase tracking-wider text-[#0A1A2F] font-bold">
+                                        {activeService.title}
+                                    </span>
                                 </div>
                                 <div key={activeService.id} className="animate-fadeIn">
-                                    <p className="text-[14px] sm:text-[15px] text-neutral-700 leading-relaxed font-medium line-clamp-3">
+                                    <p className="text-[13px] sm:text-[15px] text-neutral-700 leading-relaxed font-medium line-clamp-3">
                                         {activeService.description}
                                     </p>
                                 </div>
@@ -664,11 +714,11 @@ export function Hero() {
                             <Link
                                 href="/solutions"
                                 aria-label={`Подробнее о ${activeService.title}`}
-                                className="group/btn shrink-0 w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white hover:bg-neutral-100 border border-neutral-200/90 text-[#0A1A2F] shadow-2xs flex items-center justify-center transition-all active:scale-95 cursor-pointer hover:border-neutral-300"
+                                className="group/btn shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white hover:bg-neutral-100 border border-neutral-200/90 text-[#0A1A2F] shadow-2xs flex items-center justify-center transition-all active:scale-95 cursor-pointer hover:border-neutral-300"
                             >
                                 <ArrowUpRight
-                                    size={18}
-                                    className="transition-transform duration-200 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5"
+                                    size={17}
+                                    className="transition-transform duration-200 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 sm:w-[18px] sm:h-[18px]"
                                 />
                             </Link>
                         </div>
@@ -684,6 +734,7 @@ export function Hero() {
                     -webkit-font-smoothing: antialiased;
                     -moz-osx-font-smoothing: grayscale;
                     text-rendering: geometricPrecision;
+                    touch-action: pan-y;
                 }
 
                 @keyframes shake {
