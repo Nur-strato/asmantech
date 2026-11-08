@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { ArrowUpRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 
+// Заголовки и описания берутся из словаря: ServicesSection.items.<num>
 interface ServiceItem {
     num: string;
-    title: string;
-    description: string;
     href: string;
     visualType: "bars" | "pyramid" | "sphere" | "waves" | "shield" | "radial";
 }
@@ -15,55 +15,38 @@ interface ServiceItem {
 const SERVICES: ServiceItem[] = [
     {
         num: "01",
-        title: "Website Development",
-        description:
-            "We design and build digital products from early concepts to scalable systems. Combining product strategy, UX and interface design, we help startups and established companies turn complex ideas into clear, usable experiences.",
         href: "/solutions/web-dev",
         visualType: "bars",
     },
     {
         num: "02",
-        title: "Web Design & Development",
-        description:
-            "We create marketing websites that explain products clearly, strengthen brands and support business growth. From structure and content to responsive design and development, every website is built around a specific goal.",
         href: "/solutions/mobile-apps",
         visualType: "pyramid",
     },
     {
         num: "03",
-        title: "3D Design & WebGL",
-        description:
-            "Фотореалистичные предметные рендеры в 4K и интерактивные 3D-конфигураторы прямо на сайте с плавной частотой 60 кадров в секунду без установки сторонних плагинов.",
         href: "/solutions/3d-design",
         visualType: "sphere",
     },
     {
         num: "04",
-        title: "AI Chatbots & Automation",
-        description:
-            "Умные диалоговые ассистенты для WhatsApp и Telegram на базе современных LLM. Ответы строго по регламенту компании без галлюцинаций (RAG) и автоматическая запись лидов в CRM 24/7.",
         href: "/solutions/ai-chatbots",
         visualType: "waves",
     },
     {
         num: "05",
-        title: "Security & Quality Audit",
-        description:
-            "Глубокий анализ исходного кода, поиск уязвимостей по стандартам OWASP Top 10, стресс-тесты на отказ серверов и выдача готовых патчей безопасности под строгим NDA.",
         href: "/solutions/security-audit",
         visualType: "shield",
     },
     {
         num: "06",
-        title: "SEO Optimization",
-        description:
-            "Комплексная внутренняя оптимизация для выхода в ТОП Google и Яндекс белыми методами. Зеленая зона PageSpeed 95+, чистая семантика и структурированные данные Schema.org.",
-        href: "/solutions/seo-optimization",
+        href: "/solutions/seo-opt",
         visualType: "radial",
     },
 ];
 
 export function Services() {
+    const t = useTranslations("ServicesSection");
     const [openedSet, setOpenedSet] = useState<Set<number>>(new Set([0]));
     const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
     const sectionRef = useRef<HTMLElement | null>(null);
@@ -289,7 +272,7 @@ export function Services() {
                                                 : "text-[18px] xs:text-[20px] sm:text-3xl lg:text-[40px] text-neutral-900"
                                         }`}
                                     >
-                                        {service.title}
+                                        {t(`items.${service.num}.title`)}
                                     </h3>
 
                                     <span
@@ -326,7 +309,7 @@ export function Services() {
                                             }`}
                                         >
                                             <p className="text-neutral-300 text-[13.5px] xs:text-[14.5px] sm:text-base lg:text-[16px] leading-[1.6] sm:leading-[1.65] font-normal tracking-[-0.01em]">
-                                                {service.description}
+                                                {t(`items.${service.num}.description`)}
                                             </p>
 
                                             <div className="pt-1">
@@ -336,7 +319,7 @@ export function Services() {
                                                     className="inline-flex items-center gap-3 py-1.5 text-sm sm:text-base font-medium text-white hover:text-sky-300 transition-colors group select-none cursor-pointer"
                                                 >
                                                     <span className="underline underline-offset-4 decoration-neutral-600 group-hover:decoration-sky-400 transition-colors">
-                                                        Explore
+                                                        {t("explore")}
                                                     </span>
                                                     <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white text-[#08090D] group-hover:bg-sky-400 group-hover:text-black flex items-center justify-center transition-all duration-300 group-hover:translate-x-1 group-hover:-translate-y-1 shrink-0">
                                                         <ArrowUpRight size={16} strokeWidth={2.4} />

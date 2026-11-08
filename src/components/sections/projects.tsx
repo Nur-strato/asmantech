@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { ArrowUpRight, Play, Pause, RotateCcw, MoveHorizontal } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface ExhibitItem {
     id: string;
@@ -10,8 +11,6 @@ interface ExhibitItem {
     title: string;
     shortTitle: string;
     screenTitle: string;
-    platformType: string;
-    description: string;
     link: string;
     screenTheme: {
         bg: string;
@@ -28,9 +27,6 @@ const EXHIBITS: ExhibitItem[] = [
         title: "AUCAHACK",
         shortTitle: "AUCAHACK",
         screenTitle: "AUCAHACK",
-        platformType: "Website",
-        description:
-            "Цифровая среда университета: регистрация на курсы с нулевым трением, предиктивный расчет академического рейтинга GPA и бесконфликтная матрица расписания.",
         link: "https://aucahack.com",
         screenTheme: {
             bg: "bg-[#0A0A0B]",
@@ -45,9 +41,6 @@ const EXHIBITS: ExhibitItem[] = [
         title: "Conurat Construction",
         shortTitle: "Conurat Construction",
         screenTitle: "CONURAT",
-        platformType: "Website",
-        description:
-            "Оцифровка строительного цикла: от сметных чертежей до сквозной координации поставок бетона и 14 действующих стройплощадок столицы.",
         link: "https://Conurat-Construction.kg",
         screenTheme: {
             bg: "bg-[#060D0A]",
@@ -62,9 +55,6 @@ const EXHIBITS: ExhibitItem[] = [
         title: "ProQuizKG",
         shortTitle: "ProQuizKG",
         screenTitle: "PROQUIZKG",
-        platformType: "Website",
-        description:
-            "Киберспортивный турнирный движок: микросекундная синхронизация бэззеров для 24 университетских команд одновременно без задержек сети.",
         link: "https://proquiz.kg",
         screenTheme: {
             bg: "bg-[#060A14]",
@@ -79,9 +69,6 @@ const EXHIBITS: ExhibitItem[] = [
         title: "AlfaPark",
         shortTitle: "AlfaPark",
         screenTitle: "ALFAPARK",
-        platformType: "Веб-сайт + Мобильное приложение",
-        description:
-            "Высоконагруженная экосистема для таксопарка: автоматические моментальные выплаты сотням водителей и круглосуточный учет парка.",
         link: "https://alfapark.kg",
         screenTheme: {
             bg: "bg-[#100714]",
@@ -93,6 +80,7 @@ const EXHIBITS: ExhibitItem[] = [
 ];
 
 export function Projects() {
+    const t = useTranslations("ProjectsSection");
     const [selectedIdx, setSelectedIdx] = useState(0);
     const [rotationY, setRotationY] = useState(-25);
     const [isAutoSpin, setIsAutoSpin] = useState(true);
@@ -134,7 +122,7 @@ export function Projects() {
     return (
         <section
             id="projects"
-            aria-label="Витрина работ"
+            aria-label={t("title")}
             className="w-full bg-[#FAF9F6] text-neutral-900 pt-8 sm:pt-14 pb-14 sm:pb-28 border-t border-neutral-200 select-none overflow-x-clip"
         >
             <div className="max-w-[1412px] mx-auto px-4 xs:px-5 md:px-8 space-y-6 sm:space-y-8">
@@ -143,7 +131,7 @@ export function Projects() {
                 <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 sm:gap-6 pb-5 sm:pb-6 border-b border-neutral-300">
                     <div>
                         <h2 className="font-serif italic text-3xl xs:text-4xl sm:text-6xl md:text-7xl font-normal tracking-tight text-neutral-900 leading-none">
-                            Витрина работ
+                            {t("title")}
                         </h2>
                     </div>
 
@@ -152,7 +140,7 @@ export function Projects() {
                             href="/projects"
                             className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full border border-neutral-300 hover:border-neutral-900 font-mono text-[11px] sm:text-xs font-bold uppercase tracking-wider text-neutral-700 hover:text-black transition-all"
                         >
-                            <span>Все проекты</span>
+                            <span>{t("allProjects")}</span>
                             <ArrowUpRight size={14} />
                         </Link>
                     </div>
@@ -202,12 +190,12 @@ export function Projects() {
                                 </h3>
 
                                 <div className="inline-block px-2.5 sm:px-3 py-1 rounded-lg bg-neutral-200/70 border border-neutral-300 text-neutral-800 font-mono text-[11px] sm:text-xs font-semibold">
-                                    {current.platformType}
+                                    {t(`items.${current.id}.platform`)}
                                 </div>
                             </div>
 
                             <p className="text-neutral-600 text-sm sm:text-base leading-relaxed max-w-lg font-sans">
-                                {current.description}
+                                {t(`items.${current.id}.description`)}
                             </p>
                         </div>
 
@@ -219,7 +207,7 @@ export function Projects() {
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center justify-center gap-2.5 w-full sm:w-auto px-7 py-3.5 rounded-xl bg-neutral-900 hover:bg-black text-white font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-md active:scale-95"
                             >
-                                <span>Открыть проект</span>
+                                <span>{t("openProject")}</span>
                                 <ArrowUpRight size={15} />
                             </a>
                         </div>
@@ -266,7 +254,7 @@ export function Projects() {
                                             setRotationY(-25);
                                         }}
                                         className="p-1 text-neutral-500 hover:text-black transition-colors cursor-pointer"
-                                        title="Сбросить угол"
+                                        title={t("resetAngle")}
                                     >
                                         <RotateCcw size={12} />
                                     </button>
@@ -348,7 +336,7 @@ export function Projects() {
                             <div className="absolute bottom-2.5 sm:bottom-3.5 z-20 flex items-center gap-2 pointer-events-none text-neutral-800">
                                 <MoveHorizontal size={13} className="text-neutral-700 animate-pulse sm:w-3.5 sm:h-3.5" />
                                 <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.24em] font-semibold">
-                                    Drag to rotate 360°
+                                    {t("dragToRotate")}
                                 </span>
                             </div>
                         </div>

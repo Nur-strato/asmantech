@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { ArrowUp } from "lucide-react";
 
 // Деликатный микро-индикатор без фоновой плашки
@@ -24,6 +25,8 @@ function LiveGlobalIndicator() {
 }
 
 export function Footer() {
+    const t = useTranslations("Footer");
+    const tNav = useTranslations("Nav");
     const [time, setTime] = useState<string>("");
 
     useEffect(() => {
@@ -57,11 +60,11 @@ export function Footer() {
                         {time && (
                             <div className="inline-flex items-center gap-2 text-[14px] font-mono text-neutral-500">
                                 <LiveGlobalIndicator />
-                                <span>Bishkek {time} (UTC+6)</span>
+                                <span>{t("bishkek")} {time} (UTC+6)</span>
                             </div>
                         )}
                         <span className="text-[12px] text-neutral-400 font-normal">
-                            © {new Date().getFullYear()} Asman Tech. All rights reserved.
+                            © {new Date().getFullYear()} Asman Tech. {t("rights")}
                         </span>
                     </div>
 
@@ -71,25 +74,25 @@ export function Footer() {
                             href="/solutions"
                             className="hover:text-neutral-950 transition-colors relative py-1 hover:after:w-full after:w-0 after:h-[1.5px] after:bg-neutral-950 after:absolute after:bottom-0 after:left-0 after:transition-all after:duration-200"
                         >
-                            Solutions
+                            {tNav("solutions")}
                         </Link>
                         <Link
                             href="/projects"
                             className="hover:text-neutral-950 transition-colors relative py-1 hover:after:w-full after:w-0 after:h-[1.5px] after:bg-neutral-950 after:absolute after:bottom-0 after:left-0 after:transition-all after:duration-200"
                         >
-                            Projects
+                            {tNav("projects")}
                         </Link>
                         <Link
                             href="/guarantee"
                             className="hover:text-neutral-950 transition-colors relative py-1 hover:after:w-full after:w-0 after:h-[1.5px] after:bg-neutral-950 after:absolute after:bottom-0 after:left-0 after:transition-all after:duration-200"
                         >
-                            Guarantee
+                            {tNav("guarantee")}
                         </Link>
                         <Link
                             href="/contacts"
                             className="hover:text-neutral-950 transition-colors relative py-1 hover:after:w-full after:w-0 after:h-[1.5px] after:bg-neutral-950 after:absolute after:bottom-0 after:left-0 after:transition-all after:duration-200"
                         >
-                            Contacts
+                            {tNav("contacts")}
                         </Link>
                     </nav>
 
@@ -100,7 +103,7 @@ export function Footer() {
                             onClick={scrollToTop}
                             className="group inline-flex items-center gap-2.5 text-[14.5px] font-medium text-neutral-500 hover:text-neutral-950 transition-colors cursor-pointer"
                         >
-                            <span>Back to top</span>
+                            <span>{t("backToTop")}</span>
                             <span className="w-8 h-8 rounded-full bg-neutral-100 border border-neutral-200/60 group-hover:bg-neutral-200/80 group-hover:border-neutral-300 flex items-center justify-center transition-all duration-200 group-hover:-translate-y-0.5">
                                 <ArrowUp size={14} className="text-neutral-600 group-hover:text-neutral-950 transition-colors" />
                             </span>

@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { Send, AtSign, Copy, Check, X, ArrowUpRight } from "lucide-react";
 
 // Официальный оригинальный вектор WhatsApp (size = 36.8)
@@ -138,6 +139,7 @@ const channels: SocialChannel[] = [
 ];
 
 export function SocialChannels() {
+    const t = useTranslations("Social");
     const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
     const [activeDevChannel, setActiveDevChannel] = useState<string | null>(null);
 
@@ -183,8 +185,8 @@ export function SocialChannels() {
                             type="button"
                             onClick={() => setActiveDevChannel(null)}
                             className="absolute top-4 right-4 p-2 rounded-full text-neutral-400 hover:text-neutral-900 active:bg-neutral-100 transition-colors cursor-pointer"
-                            title="Закрыть"
-                            aria-label="Закрыть уведомление"
+                            title={t("close")}
+                            aria-label={t("closeNotice")}
                         >
                             <X size={18} />
                         </button>
@@ -194,7 +196,7 @@ export function SocialChannels() {
                         </h4>
 
                         <p className="mt-2 font-sans text-base font-semibold text-neutral-500">
-                            В разработке
+                            {t("underDev")}
                         </p>
                     </div>
                 </>
@@ -207,10 +209,10 @@ export function SocialChannels() {
                     className="group w-full flex items-center justify-between px-6 sm:px-8 py-4 sm:py-5 rounded-2xl sm:rounded-3xl bg-neutral-900 hover:bg-neutral-800 text-white transition-all active:scale-[0.99] shadow-sm [touch-action:manipulation]"
                 >
                     <span className="text-sm sm:text-base md:text-lg text-neutral-300">
-                        Sound like a fit?
+                        {t("ctaQuestion")}
                     </span>
                     <span className="text-sm sm:text-base md:text-lg font-bold text-white inline-flex items-center gap-2">
-                        Let&apos;s Talk
+                        {t("ctaAction")}
                         <ArrowUpRight size={18} className="transition-transform duration-200 group-hover:translate-x-1 group-hover:-translate-y-1" />
                     </span>
                 </Link>
@@ -219,7 +221,7 @@ export function SocialChannels() {
             {/* Верхний заголовок */}
             <div>
                 <h3 className="text-2xl sm:text-3xl font-extrabold text-neutral-900 tracking-tight mt-1">
-                    Всегда на связи
+                    {t("title")}
                 </h3>
             </div>
 
@@ -256,8 +258,8 @@ export function SocialChannels() {
                                     <button
                                         type="button"
                                         onClick={(e) => handleCopy(e, channel, index)}
-                                        title="Скопировать"
-                                        aria-label={`Скопировать ${channel.name}`}
+                                        title={t("copy")}
+                                        aria-label={`${t("copy")} ${channel.name}`}
                                         className="p-2 sm:p-1.5 rounded-lg text-neutral-900/40 hover:text-neutral-900 hover:bg-neutral-100 active:bg-neutral-200 active:scale-90 transition-all cursor-pointer touch-manipulation"
                                     >
                                         {copiedIndex === index ? (
