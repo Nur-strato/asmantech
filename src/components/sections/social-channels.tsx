@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { Send, AtSign, Copy, Check, X } from "lucide-react";
+import Link from "next/link";
+import { Send, AtSign, Copy, Check, X, ArrowUpRight } from "lucide-react";
 
 // Официальный оригинальный вектор WhatsApp (size = 36.8)
 function WhatsAppOfficialIcon({ size = 36.8, className = "" }: { size?: number; className?: string }) {
@@ -198,6 +199,22 @@ export function SocialChannels() {
                     </div>
                 </>
             )}
+
+            {/* Широкая кнопка-ссылка сверху */}
+            <div className="w-full mb-8 sm:mb-10">
+                <Link
+                    href="/contacts"
+                    className="group w-full flex items-center justify-between px-6 sm:px-8 py-4 sm:py-5 rounded-2xl sm:rounded-3xl bg-neutral-900 hover:bg-neutral-800 text-white transition-all active:scale-[0.99] shadow-sm [touch-action:manipulation]"
+                >
+                    <span className="text-sm sm:text-base md:text-lg text-neutral-300">
+                        Sound like a fit?
+                    </span>
+                    <span className="text-sm sm:text-base md:text-lg font-bold text-white inline-flex items-center gap-2">
+                        Let&apos;s Talk
+                        <ArrowUpRight size={18} className="transition-transform duration-200 group-hover:translate-x-1 group-hover:-translate-y-1" />
+                    </span>
+                </Link>
+            </div>
 
             {/* Верхний заголовок */}
             <div>

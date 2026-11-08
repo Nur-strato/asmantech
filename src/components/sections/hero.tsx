@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
     ArrowRight,
     ArrowUpRight,
@@ -10,13 +11,7 @@ import {
     PhoneCall,
     ChevronDown,
     AlertCircle,
-    Code2,
-    Smartphone,
-    Box,
-    Bot,
-    ShieldCheck,
-    Search,
-    Layers
+    Clock,
 } from "lucide-react";
 
 interface CountryConfig {
@@ -131,74 +126,15 @@ interface ServiceItem {
     id: string;
     indexStr: string;
     title: string;
-    badge: string;
-    description: string;
-    icon: React.ComponentType<{ size?: number; className?: string }>;
-    accentColor: string;
-    iconBg: string;
 }
 
 const SERVICES: ServiceItem[] = [
-    {
-        id: "web-dev",
-        indexStr: "01",
-        title: "Website Development",
-        badge: "Next.js",
-        description: "Разработка сайтов на Next.js с продуманной архитектурой, адаптивным дизайном и 100% гарантией качества и скорости.",
-        icon: Code2,
-        accentColor: "text-blue-600",
-        iconBg: "bg-blue-50 border-blue-200/80 shadow-[0_2px_8px_rgba(37,99,235,0.08)]",
-    },
-    {
-        id: "mobile-apps",
-        indexStr: "02",
-        title: "Mobile Apps",
-        badge: "iOS & Android",
-        description: "Создание приложений для iOS и Android с плавным интерфейсом и продуманным пользовательским опытом.",
-        icon: Smartphone,
-        accentColor: "text-emerald-600",
-        iconBg: "bg-emerald-50 border-emerald-200/80 shadow-[0_2px_8px_rgba(5,150,105,0.08)]",
-    },
-    {
-        id: "3d-design",
-        indexStr: "03",
-        title: "3D Design",
-        badge: "Ultra Design",
-        description: "Инновационный 3D-дизайн и реалистичная графика, не имеющие аналогов в Кыргызстане.",
-        icon: Box,
-        accentColor: "text-fuchsia-600",
-        iconBg: "bg-fuchsia-50 border-fuchsia-200/80 shadow-[0_2px_8px_rgba(192,38,211,0.08)]",
-    },
-    {
-        id: "ai-chatbots",
-        indexStr: "04",
-        title: "AI Chatbots",
-        badge: "Web & WhatsApp",
-        description: "AI-ассистенты для круглосуточной поддержки клиентов и автоматизации общения на сайтах и в WhatsApp.",
-        icon: Bot,
-        accentColor: "text-purple-600",
-        iconBg: "bg-purple-50 border-purple-200/80 shadow-[0_2px_8px_rgba(147,51,234,0.08)]",
-    },
-    {
-        id: "security-audit",
-        indexStr: "05",
-        title: "Security & Quality Audit",
-        badge: "Code Audit",
-        description: "Аудит безопасности и качества кода для выявления критических ошибок и повышения надёжности сайтов и приложений.",
-        icon: ShieldCheck,
-        accentColor: "text-rose-600",
-        iconBg: "bg-rose-50 border-rose-200/80 shadow-[0_2px_8px_rgba(225,29,72,0.08)]",
-    },
-    {
-        id: "seo-opt",
-        indexStr: "06",
-        title: "SEO Optimization",
-        badge: "Google Rankings",
-        description: "SEO-оптимизация и продвижение сайтов для повышения позиций в Google и привлечения новых клиентов.",
-        icon: Search,
-        accentColor: "text-indigo-600",
-        iconBg: "bg-indigo-50 border-indigo-200/80 shadow-[0_2px_8px_rgba(79,70,229,0.08)]",
-    },
+    { id: "web-dev", indexStr: "01", title: "Website Development" },
+    { id: "mobile-apps", indexStr: "02", title: "Mobile Apps" },
+    { id: "3d-design", indexStr: "03", title: "3D Design" },
+    { id: "ai-chatbots", indexStr: "04", title: "AI Chatbots" },
+    { id: "security-audit", indexStr: "05", title: "Security & Quality Audit" },
+    { id: "seo-opt", indexStr: "06", title: "SEO Optimization" },
 ];
 
 export function Hero() {
@@ -211,136 +147,84 @@ export function Hero() {
     const [isShaking, setIsShaking] = useState(false);
     const [copied, setCopied] = useState(false);
 
-    // 3D-карусель
-    const [activeIndex, setActiveIndex] = useState(0);
-    const [isHovered, setIsHovered] = useState(false);
-    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-    const [currentRotAngle, setCurrentRotAngle] = useState(0);
-    const [radius, setRadius] = useState(195); // Адаптивный 3D-радиус
+    const [activeTab, setActiveTab] = useState<"services" | "promos">("services");
+    const [timeLeft, setTimeLeft] = useState(5);
+
+    const cursorRef = useRef<HTMLDivElement>(null);
+    const badgeRef = useRef<HTMLDivElement>(null);
 
     const dropdownRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
-    const cylinderRef = useRef<HTMLDivElement>(null);
-
-    const animAngleRef = useRef(0);
-    const targetAngleRef = useRef(0);
-    const isTargetingRef = useRef(false);
-    const lastTimestampRef = useRef<number | null>(null);
-    const touchStartYRef = useRef<number | null>(null);
 
     const directNumberDisplay = "+996 (500) 275-270";
     const directNumberRaw = "996500275270";
     const isInternational = selectedCountry.code !== "+996";
 
-    const count = SERVICES.length;
-    const stepAngle = 360 / count; // 60 deg
-
-    // Адаптация радиуса барабана под мобильные устройства (предотвращает выход за экран)
     useEffect(() => {
-        const handleResize = () => {
-            if (window.innerWidth < 480) {
-                setRadius(160);
-            } else if (window.innerWidth < 640) {
-                setRadius(175);
-            } else {
-                setRadius(195);
-            }
+        const cursor = cursorRef.current;
+        if (!cursor) return;
+
+        let mouseX = -100;
+        let mouseY = -100;
+        let currentX = -100;
+        let currentY = -100;
+        let rafId: number;
+
+        const handleMouseMove = (e: MouseEvent) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
         };
 
-        handleResize();
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
+        const render = () => {
+            currentX += (mouseX - currentX) * 0.22;
+            currentY += (mouseY - currentY) * 0.22;
 
-    useEffect(() => {
-        const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-        setPrefersReducedMotion(mediaQuery.matches);
-
-        const handleChange = (e: MediaQueryListEvent) => {
-            setPrefersReducedMotion(e.matches);
-        };
-        mediaQuery.addEventListener("change", handleChange);
-        return () => mediaQuery.removeEventListener("change", handleChange);
-    }, []);
-
-    // Исправленный алгоритм поворота к ближайшему индексу
-    const selectService = useCallback((index: number) => {
-        setActiveIndex(index);
-        const desiredTarget = -index * stepAngle;
-        const current = animAngleRef.current;
-        const diff = (((desiredTarget - current) % 360 + 540) % 360) - 180;
-        targetAngleRef.current = current + diff;
-        isTargetingRef.current = true;
-    }, [stepAngle]);
-
-    useEffect(() => {
-        let frameId: number;
-
-        const updateLoop = (timestamp: number) => {
-            if (lastTimestampRef.current === null) {
-                lastTimestampRef.current = timestamp;
-            }
-            const dt = Math.min((timestamp - lastTimestampRef.current) / 1000, 0.1);
-            lastTimestampRef.current = timestamp;
-
-            if (isTargetingRef.current) {
-                const diff = targetAngleRef.current - animAngleRef.current;
-                if (Math.abs(diff) < 0.04) {
-                    animAngleRef.current = targetAngleRef.current;
-                    isTargetingRef.current = false;
-                } else {
-                    animAngleRef.current += diff * Math.min(dt * 7.2, 1);
-                }
-            } else if (!isHovered && !prefersReducedMotion) {
-                const autoSpeed = 7.0;
-                animAngleRef.current -= autoSpeed * dt;
-
-                const normalizedAngle = ((-animAngleRef.current % 360) + 360) % 360;
-                const closestIdx = Math.round(normalizedAngle / stepAngle) % count;
-                setActiveIndex(closestIdx);
-            }
-
-            if (cylinderRef.current) {
-                cylinderRef.current.style.transform = `rotateX(${animAngleRef.current}deg)`;
-            }
-
-            setCurrentRotAngle(animAngleRef.current);
-
-            frameId = requestAnimationFrame(updateLoop);
+            cursor.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+            rafId = requestAnimationFrame(render);
         };
 
-        frameId = requestAnimationFrame(updateLoop);
+        window.addEventListener("mousemove", handleMouseMove, { passive: true });
+        rafId = requestAnimationFrame(render);
+
         return () => {
-            cancelAnimationFrame(frameId);
-            lastTimestampRef.current = null;
+            window.removeEventListener("mousemove", handleMouseMove);
+            cancelAnimationFrame(rafId);
         };
-    }, [isHovered, prefersReducedMotion, stepAngle, count]);
+    }, []);
 
-    // Тач-жесты для мобильного управления барабаном
-    const handleTouchStart = (e: React.TouchEvent) => {
-        touchStartYRef.current = e.touches[0].clientY;
-        setIsHovered(true);
-    };
-
-    const handleTouchMove = (e: React.TouchEvent) => {
-        if (touchStartYRef.current === null) return;
-        const currentY = e.touches[0].clientY;
-        const deltaY = currentY - touchStartYRef.current;
-        touchStartYRef.current = currentY;
-
-        animAngleRef.current += deltaY * 0.45;
-        if (cylinderRef.current) {
-            cylinderRef.current.style.transform = `rotateX(${animAngleRef.current}deg)`;
+    const onCardEnter = () => {
+        if (badgeRef.current) {
+            badgeRef.current.style.opacity = "1";
+            badgeRef.current.style.transform = "scale(1)";
         }
-        setCurrentRotAngle(animAngleRef.current);
     };
 
-    const handleTouchEnd = () => {
-        touchStartYRef.current = null;
-        setIsHovered(false);
-        const normalizedAngle = ((-animAngleRef.current % 360) + 360) % 360;
-        const closestIdx = Math.round(normalizedAngle / stepAngle) % count;
-        selectService(closestIdx);
+    const onCardLeave = () => {
+        if (badgeRef.current) {
+            badgeRef.current.style.opacity = "0";
+            badgeRef.current.style.transform = "scale(0.3)";
+        }
+    };
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+        }, 1000);
+        return () => clearInterval(interval);
+    }, []);
+
+    useEffect(() => {
+        if (timeLeft === 0) {
+            onCardLeave();
+            setActiveTab((current) => (current === "services" ? "promos" : "services"));
+            setTimeLeft(5);
+        }
+    }, [timeLeft]);
+
+    const handleTabChange = (tab: "services" | "promos") => {
+        onCardLeave();
+        setActiveTab(tab);
+        setTimeLeft(5);
     };
 
     useEffect(() => {
@@ -398,17 +282,37 @@ export function Hero() {
         setTimeout(() => setCopied(false), 2000);
     };
 
-    const activeService = useMemo(() => SERVICES[activeIndex] || SERVICES[0], [activeIndex]);
-
     return (
         <section
             aria-label="Hero Section"
-            className="relative w-full bg-white text-neutral-900 pt-28 sm:pt-36 lg:pt-[15vh] pb-12 sm:pb-16 overflow-x-clip"
+            className="relative w-full bg-white text-neutral-900 pt-28 sm:pt-36 lg:pt-[15vh] pb-6 overflow-x-clip"
         >
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-12 lg:gap-14 w-full">
+            {/* Глобальный аппаратный оптический курсор-тепловизор */}
+            <div
+                ref={cursorRef}
+                className="pointer-events-none fixed top-0 left-0 z-50 hidden md:block will-change-transform"
+                style={{ transform: "translate3d(-100px, -100px, 0)" }}
+            >
+                <div
+                    ref={badgeRef}
+                    className="flex items-center justify-center w-16 h-16 -translate-x-1/2 -translate-y-1/2 rounded-full bg-transparent border-[1.8px] border-white/95 ring-1 ring-black/40 shadow-[0_8px_32px_rgba(0,0,0,0.35)] transition-all duration-200 ease-out opacity-0 scale-50"
+                    style={{
+                        backdropFilter: "contrast(240%) saturate(300%) hue-rotate(180deg)",
+                        WebkitBackdropFilter: "contrast(240%) saturate(300%) hue-rotate(180deg)",
+                    }}
+                >
+                    <ArrowUpRight
+                        size={24}
+                        strokeWidth={2.5}
+                        className="text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]"
+                    />
+                </div>
+            </div>
+
+            <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-12 lg:gap-14 w-full">
 
                 {/* ЛЕВАЯ КОЛОНКА */}
-                <div className="w-full lg:max-w-[640px] flex flex-col items-start space-y-8 sm:space-y-10 lg:space-y-12">
+                <div className="w-full lg:max-w-[640px] shrink-0 flex flex-col items-start space-y-8 sm:space-y-10 lg:space-y-12">
 
                     {/* Заголовок */}
                     <div className="space-y-3 sm:space-y-3.5">
@@ -514,7 +418,6 @@ export function Hero() {
                                             )}
                                         </div>
 
-                                        {/* text-[16px] предотвращает зум на iOS Safari при фокусе */}
                                         <input
                                             ref={inputRef}
                                             type="tel"
@@ -592,7 +495,7 @@ export function Hero() {
                             </div>
                         )}
 
-                        {/* Уведомление о звонке через WhatsApp */}
+                        {/* WhatsApp для международных номеров */}
                         {!errorMsg && mode === "callback" && isInternational && !isSubmitted && (
                             <div className="flex items-center gap-2 pl-2 pt-2.5 text-[11px] sm:text-[12px] text-neutral-500 font-medium">
                                 <svg className="w-3.5 h-3.5 fill-[#25D366] shrink-0" viewBox="0 0 24 24">
@@ -612,115 +515,106 @@ export function Hero() {
 
                 </div>
 
-                {/* ПРАВАЯ КОЛОНКА: ИНЖЕНЕРНЫЙ 3D-БАРАБАН */}
-                <div
-                    className="w-full lg:w-auto flex-1 flex flex-col items-center lg:items-end pr-0 sm:pr-1 lg:pr-3"
-                    onMouseEnter={() => setIsHovered(true)}
-                    onMouseLeave={() => setIsHovered(false)}
-                    onTouchStart={handleTouchStart}
-                    onTouchMove={handleTouchMove}
-                    onTouchEnd={handleTouchEnd}
-                    role="region"
-                    aria-roledescription="carousel"
-                    aria-label="Направления разработки Asman Tech"
-                >
-                    <div className="relative w-full max-w-[480px] flex flex-col items-center">
+                {/* ПРАВАЯ КОЛОНКА */}
+                <div className="w-full lg:w-auto flex-1 flex flex-col items-center lg:items-end pr-0 sm:pr-1 lg:pr-3">
+                    <div
+                        className={`relative w-full flex flex-col justify-start transition-all duration-300 ease-out ${
+                            activeTab === "promos"
+                                ? "max-w-[480px] sm:max-w-[500px] lg:max-w-[520px] lg:-mt-[110px]"
+                                : "max-w-[480px] mt-0"
+                        }`}
+                    >
+                        {/* Верхняя строка управления */}
+                        <div className="flex items-center justify-between pb-3.5 mb-2.5 border-b border-neutral-200/80">
+                            <div className="flex items-center gap-1.5 bg-neutral-100 p-1 rounded-xl">
+                                <button
+                                    type="button"
+                                    onClick={() => handleTabChange("services")}
+                                    className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                                        activeTab === "services"
+                                            ? "bg-white text-[#0A1A2F] shadow-xs font-bold"
+                                            : "bg-transparent text-neutral-500 hover:text-neutral-900"
+                                    }`}
+                                >
+                                    Услуги
+                                </button>
 
-                        {/* Фоновое свечение */}
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 sm:w-80 h-64 sm:h-80 bg-gradient-to-tr from-sky-400/[0.07] via-indigo-500/[0.05] to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
+                                <button
+                                    type="button"
+                                    onClick={() => handleTabChange("promos")}
+                                    className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                                        activeTab === "promos"
+                                            ? "bg-white text-[#0A1A2F] shadow-xs font-bold"
+                                            : "bg-transparent text-neutral-500 hover:text-neutral-900"
+                                    }`}
+                                >
+                                    Акции
+                                </button>
+                            </div>
 
-                        {/* 3D СЦЕНА С ЦИЛИНДРОМ */}
-                        <div className="relative w-full h-[370px] xs:h-[400px] sm:h-[430px] flex items-center justify-center [perspective:1400px] overflow-visible">
-                            <div
-                                ref={cylinderRef}
-                                className="relative w-[calc(100vw-3rem)] xs:w-[350px] sm:w-[430px] max-w-[430px] h-[86px] sm:h-[92px] [transform-style:preserve-3d] will-change-transform [transform-origin:center_center]"
-                            >
-                                {SERVICES.map((service, index) => {
-                                    const IconComponent = service.icon;
-                                    const cardAngle = stepAngle * index;
-                                    const isCurrent = activeIndex === index;
-
-                                    const totalAngle = (cardAngle + currentRotAngle) % 360;
-                                    const normalized = ((totalAngle % 360) + 360) % 360;
-                                    const angleFromFront = Math.abs(normalized > 180 ? normalized - 360 : normalized);
-
-                                    // Скрываем карточки с обратной стороны
-                                    const isVisible = angleFromFront < 85;
-
-                                    return (
-                                        <button
-                                            key={service.id}
-                                            type="button"
-                                            onClick={() => selectService(index)}
-                                            style={{
-                                                transform: `rotateX(${cardAngle}deg) translateZ(${radius}px) translate3d(0,0,0)`,
-                                                opacity: isVisible ? (isCurrent ? 1 : 0.82) : 0,
-                                                pointerEvents: isVisible ? "auto" : "none",
-                                                visibility: isVisible ? "visible" : "hidden",
-                                            }}
-                                            className={`wheel-panel absolute inset-0 rounded-[20px] sm:rounded-[22px] px-3.5 sm:px-5 py-3 sm:py-4 flex items-center justify-between text-left cursor-pointer transition-opacity duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${
-                                                isCurrent
-                                                    ? "bg-white border-t border-x border-white border-b-[4px] sm:border-b-[5px] border-b-[#94A3B8] shadow-[0_24px_50px_-12px_rgba(10,26,47,0.18)] ring-1 ring-slate-900/[0.08]"
-                                                    : "bg-white border-t border-x border-white border-b-[3px] sm:border-b-[4px] border-b-[#CBD5E1] shadow-[0_12px_28px_-10px_rgba(10,26,47,0.08)] ring-1 ring-slate-900/[0.05]"
-                                            }`}
-                                            role="group"
-                                            aria-selected={isCurrent}
-                                            aria-label={`${service.title} — ${service.badge}`}
-                                        >
-                                            {/* Чёткий индекс */}
-                                            <span className="absolute top-2 sm:top-2.5 left-2.5 sm:left-3.5 text-[10px] sm:text-[11px] font-mono font-bold tracking-wider text-slate-400 select-none">
-                                                {service.indexStr}
-                                            </span>
-
-                                            <div className="flex items-center gap-3 sm:gap-4 min-w-0 pr-2 pt-1">
-                                                <div className={`w-9 h-9 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 border ${service.iconBg} ${service.accentColor}`}>
-                                                    <IconComponent size={18} className="stroke-[2.2] sm:w-5 sm:h-5" />
-                                                </div>
-                                                <div className="truncate">
-                                                    <p className="text-[14px] xs:text-[15px] sm:text-[16px] font-extrabold text-[#0A1A2F] tracking-tight leading-tight truncate">
-                                                        {service.title}
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            <span className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg bg-neutral-100/90 border border-neutral-200 text-[10px] sm:text-[11px] font-mono font-bold text-neutral-800 shadow-2xs shrink-0 tracking-tight">
-                                                {service.badge}
-                                            </span>
-                                        </button>
-                                    );
-                                })}
+                            {/* Иконка часов + таймер */}
+                            <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-neutral-500 select-none bg-neutral-50 px-2.5 py-1 rounded-lg border border-neutral-200/70">
+                                <Clock size={13} className="text-neutral-400" />
+                                <span>{timeLeft}s</span>
                             </div>
                         </div>
 
-                        {/* ДОК ОПИСАНИЯ СПЕЦИФИКАЦИИ */}
+                        {/* ОСНОВНАЯ ОБЛАСТЬ */}
                         <div
-                            className="w-full mt-2 p-4 sm:p-6 min-h-[140px] sm:min-h-[158px] rounded-2xl bg-neutral-50/95 border border-neutral-200/80 shadow-[0_6px_20px_rgba(0,0,0,0.03)] flex items-center justify-between gap-4 sm:gap-5 transition-all duration-200"
-                            aria-live="polite"
+                            className={`relative w-full flex flex-col justify-center overflow-hidden transition-all duration-300 ease-out ${
+                                activeTab === "promos"
+                                    ? "h-[540px] sm:h-[600px] lg:h-[650px]"
+                                    : "h-[540px]"
+                            }`}
                         >
-                            <div className="space-y-1.5 sm:space-y-2 overflow-hidden flex-1">
-                                <div className="flex items-center gap-2">
-                                    <Layers size={15} className="text-[#D84C69] shrink-0" />
-                                    <span className="text-[12px] sm:text-[14px] font-mono uppercase tracking-wider text-[#0A1A2F] font-bold">
-                                        {activeService.title}
-                                    </span>
-                                </div>
-                                <div key={activeService.id} className="animate-fadeIn">
-                                    <p className="text-[13px] sm:text-[15px] text-neutral-700 leading-relaxed font-medium line-clamp-3">
-                                        {activeService.description}
-                                    </p>
-                                </div>
-                            </div>
+                            {/* ОКНО 1: НАШИ УСЛУГИ */}
+                            {activeTab === "services" && (
+                                <div key="tab-services" className="w-full h-full flex flex-col justify-center divide-y divide-neutral-200/90 border-y border-neutral-200/90 animate-fadeIn">
+                                    {SERVICES.map((service) => (
+                                        <Link
+                                            key={service.id}
+                                            href="/solutions"
+                                            className="group py-4 xs:py-5 sm:py-[22px] px-2 flex items-center justify-between gap-4 transition-colors duration-200 hover:bg-neutral-50/80"
+                                        >
+                                            <div className="flex items-center gap-4 sm:gap-5 min-w-0">
+                                                <span className="font-mono text-xs sm:text-sm font-bold text-neutral-400 group-hover:text-[#0A1A2F] transition-colors shrink-0">
+                                                    {service.indexStr}
+                                                </span>
+                                                <span className="text-base sm:text-lg font-extrabold text-[#0A1A2F] tracking-tight truncate">
+                                                    {service.title}
+                                                </span>
+                                            </div>
 
-                            <Link
-                                href="/solutions"
-                                aria-label={`Подробнее о ${activeService.title}`}
-                                className="group/btn shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white hover:bg-neutral-100 border border-neutral-200/90 text-[#0A1A2F] shadow-2xs flex items-center justify-center transition-all active:scale-95 cursor-pointer hover:border-neutral-300"
-                            >
-                                <ArrowUpRight
-                                    size={17}
-                                    className="transition-transform duration-200 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 sm:w-[18px] sm:h-[18px]"
-                                />
-                            </Link>
+                                            <ArrowUpRight
+                                                size={18}
+                                                className="text-neutral-300 group-hover:text-[#0A1A2F] transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 shrink-0"
+                                            />
+                                        </Link>
+                                    ))}
+                                </div>
+                            )}
+
+                            {/* ОКНО 2: АКЦИИ (ЧИСТАЯ КАРТИНКА + ОПТИЧЕСКАЯ ЛИНЗА-КУРСОР) */}
+                            {activeTab === "promos" && (
+                                <div key="tab-promos" className="w-full h-full flex items-center justify-center animate-fadeIn py-0.5">
+                                    <Link
+                                        href="/contacts"
+                                        onMouseEnter={onCardEnter}
+                                        onMouseLeave={onCardLeave}
+                                        className="relative h-full aspect-[1/1.4] rounded-2xl overflow-hidden border border-neutral-200/90 shadow-[0_12px_36px_rgba(10,26,47,0.08)] hover:shadow-xl transition-all duration-300 block bg-white md:cursor-none select-none"
+                                    >
+                                        <Image
+                                            src="/images/sales.png"
+                                            alt="Акции и спецпредложения Asman Tech"
+                                            fill
+                                            priority
+                                            sizes="(max-width: 640px) 100vw, 520px"
+                                            className="object-cover group-hover:scale-[1.015] transition-transform duration-500 ease-out"
+                                        />
+                                    </Link>
+                                </div>
+                            )}
+
                         </div>
 
                     </div>
@@ -729,14 +623,6 @@ export function Hero() {
             </div>
 
             <style jsx>{`
-                .wheel-panel {
-                    transform-style: preserve-3d;
-                    -webkit-font-smoothing: antialiased;
-                    -moz-osx-font-smoothing: grayscale;
-                    text-rendering: geometricPrecision;
-                    touch-action: pan-y;
-                }
-
                 @keyframes shake {
                     0%, 100% { transform: translateX(0); }
                     20%, 60% { transform: translateX(-4px); }
@@ -746,7 +632,7 @@ export function Hero() {
                 @keyframes fadeIn {
                     from {
                         opacity: 0;
-                        transform: translateY(2px);
+                        transform: translateY(3px);
                     }
                     to {
                         opacity: 1;
@@ -755,9 +641,11 @@ export function Hero() {
                 }
 
                 .animate-fadeIn {
-                    animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                    animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
                 }
             `}</style>
         </section>
     );
 }
+
+export default Hero;

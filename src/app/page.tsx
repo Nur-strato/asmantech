@@ -1,43 +1,50 @@
-"use client";
-
 import { Hero } from "@/components/sections/hero";
+import { TrustedBy } from "@/components/sections/trusted-by";
 import { Services } from "@/components/sections/services";
-import { Partners } from "@/components/sections/partners";
 import { Projects } from "@/components/sections/projects";
 import { WhyUs } from "@/components/sections/why-us";
+import { GuaranteeSupport } from "@/components/sections/guarantee-support";
 import { SocialChannels } from "@/components/sections/social-channels";
 import { Footer } from "@/components/sections/footer";
 
 export default function Home() {
     return (
-        <main className="w-full pt-24 md:pt-28 pb-0 space-y-24 overflow-x-hidden">
-            {/* БЛОК 1: Hero, Наши услуги & Партнеры */}
-            <div className="w-full max-w-[1412px] mx-auto px-5 md:px-8 space-y-24">
-                {/* 1. HERO SECTION */}
-                <Hero />
+        <main className="w-full pt-20 sm:pt-24 md:pt-28 pb-0 space-y-16 sm:space-y-20 lg:space-y-28 overflow-x-clip selection:bg-neutral-900 selection:text-white">
 
-                {/* 2. OUR SERVICES (НАШИ УСЛУГИ) */}
+            {/* БЛОК 1: Hero (+5% ширины) и сразу под ним TrustedBy */}
+            <div className="w-full space-y-8 sm:space-y-10">
+                <div className="w-full max-w-[1483px] mx-auto px-4 xs:px-5 md:px-8">
+                    <Hero />
+                </div>
+                <div className="w-full">
+                    <TrustedBy />
+                </div>
+            </div>
+
+            {/* 2. SERVICES SECTION (исходные max-w-[1412px]) */}
+            <div className="w-full max-w-[1412px] mx-auto px-4 xs:px-5 md:px-8">
                 <Services />
-
-                {/* 3. OUR PARTNERS (ПАРТНЕРЫ СРАЗУ ПОСЛЕ УСЛУГ) */}
-                <Partners />
             </div>
 
-            {/* 4. PROJECTS SECTION (Полноэкранный блок проектов) */}
-            <div className="w-full">
+            {/* 3. PROJECTS SECTION (Полноэкранная 3D-витрина) */}
+            <section className="w-full">
                 <Projects />
-            </div>
+            </section>
 
-            {/* 5. WHY US SECTION (Bento Grid 01—06) */}
-            <div className="w-full">
+            {/* 4. WHY US SECTION (Принципы 01—06) */}
+            <section className="w-full">
                 <WhyUs />
-            </div>
+            </section>
 
-            {/* БЛОК 2: Каналы связи */}
-            <div className="w-full max-w-[1412px] mx-auto px-5 md:px-8 space-y-24">
-                {/* 6. DIRECT CONNECT */}
+            {/* 5. GUARANTEE & SUPPORT */}
+            <section className="w-full">
+                <GuaranteeSupport />
+            </section>
+
+            {/* 6. DIRECT CONNECT (исходные max-w-[1412px]) */}
+            <section aria-label="Каналы связи" className="w-full max-w-[1412px] mx-auto px-4 xs:px-5 md:px-8">
                 <SocialChannels />
-            </div>
+            </section>
 
             {/* 7. FOOTER */}
             <Footer />
