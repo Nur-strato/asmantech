@@ -7,8 +7,8 @@ const handleI18nRouting = createMiddleware(routing);
 export default function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
-    // 1. Если в URL попал язык перед admin (/en/admin или /ky/admin) -> редиректим на чистый /admin
-    if (pathname.match(/^\/(?:en|ky|ru)\/admin(?:\/.*)?$/)) {
+    // 1. Если в URL попал язык перед admin (/en/admin или /kg/admin) -> редиректим на чистый /admin
+    if (pathname.match(/^\/(?:en|kg|ru)\/admin(?:\/.*)?$/)) {
         return NextResponse.redirect(new URL("/admin", request.url));
     }
 
