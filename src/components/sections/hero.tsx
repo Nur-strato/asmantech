@@ -156,8 +156,8 @@ export function Hero() {
     const dropdownRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
-    const directNumberDisplay = "+996 (500) 275-270";
-    const directNumberRaw = "996500275270";
+    const directNumberDisplay = "+996 (755) 275-270";
+    const directNumberRaw = "996755275270";
     const isInternational = selectedCountry.code !== "+996";
 
     useEffect(() => {
