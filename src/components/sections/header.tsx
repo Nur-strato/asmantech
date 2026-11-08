@@ -1,4 +1,3 @@
-
 "use client";
 
 import Image from "next/image";
@@ -6,7 +5,7 @@ import { usePathname, useRouter, Link } from "@/i18n/navigation";
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { LocaleSwitcher } from "@/components/locale-switcher";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, X } from "lucide-react";
 import { Curtain, CurtainState } from "@/components/ui/curtain";
 
 const NAV_LINKS = [
@@ -200,45 +199,57 @@ export function Header() {
                         </div>
                     </nav>
 
-                    {/* Mobile menu button */}
+                    {/* Mobile menu trigger button */}
                     <button
                         type="button"
-                        onClick={() => setMobileOpen(!mobileOpen)}
-                        aria-label={mobileOpen ? t("closeMenu") : t("openMenu")}
-                        aria-expanded={mobileOpen}
-                        className="lg:hidden relative z-50 p-2.5 -mr-1.5 rounded-full text-neutral-950 hover:bg-neutral-100/80 active:scale-90 transition-all flex flex-col justify-center items-center w-11 h-11 cursor-pointer focus:outline-none"
+                        onClick={() => setMobileOpen(true)}
+                        aria-label={t("openMenu")}
+                        className="lg:hidden relative z-40 p-2.5 -mr-1.5 rounded-full text-neutral-950 hover:bg-neutral-100/80 active:scale-90 transition-all flex flex-col justify-center items-center w-11 h-11 cursor-pointer focus:outline-none"
                     >
-                        <span
-                            className={`w-6 h-[2px] bg-neutral-950 rounded-full transition-all duration-300 ease-out ${
-                                mobileOpen
-                                    ? "rotate-45 translate-y-[3.5px]"
-                                    : "-translate-y-1"
-                            }`}
-                        />
-                        <span
-                            className={`w-6 h-[2px] bg-neutral-950 rounded-full transition-all duration-300 ease-out ${
-                                mobileOpen
-                                    ? "-rotate-45 -translate-y-[1.5px]"
-                                    : "translate-y-1"
-                            }`}
-                        />
+                        <span className="w-6 h-[2px] bg-neutral-950 rounded-full -translate-y-1" />
+                        <span className="w-6 h-[2px] bg-neutral-950 rounded-full translate-y-1" />
                     </button>
                 </div>
 
-                {/* Mobile navigation */}
+                {/* Mobile full-screen overlay */}
                 <div
-                    className={`lg:hidden fixed inset-0 z-40 bg-white/98 backdrop-blur-2xl transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col justify-between px-6 sm:px-10 pt-28 pb-8 h-[100dvh] overflow-y-auto ${
+                    className={`lg:hidden fixed inset-0 z-50 bg-[#FAFAFA]/98 backdrop-blur-2xl transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col justify-between px-6 sm:px-10 pt-4 pb-8 h-[100dvh] overflow-y-auto ${
                         mobileOpen
                             ? "opacity-100 pointer-events-auto translate-y-0"
-                            : "opacity-0 pointer-events-none -translate-y-4"
+                            : "opacity-0 pointer-events-none -translate-y-3"
                     }`}
                 >
-                    <div className="space-y-6 pt-4">
-                        <span className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-400 block pb-2 border-b border-neutral-100">
-                            {t("navigation")}
-                        </span>
+                    <div className="space-y-6">
+                        {/* Mobile Top Bar: Logo on the left, X button on the right */}
+                        <div className="flex items-center justify-between pb-4 border-b border-neutral-200/60">
+                            <Link
+                                href="/"
+                                onClick={handleHomeClick}
+                                aria-label={t("homeAria")}
+                                className="relative h-9 w-36 flex items-center cursor-pointer"
+                            >
+                                <Image
+                                    src="/images/logo.png?v=2"
+                                    alt="Asman Tech Logo"
+                                    fill
+                                    priority
+                                    sizes="150px"
+                                    className="object-contain object-left scale-[1.18] origin-left"
+                                />
+                            </Link>
 
-                        <div className="flex flex-col space-y-4">
+                            <button
+                                type="button"
+                                onClick={() => setMobileOpen(false)}
+                                aria-label={t("closeMenu")}
+                                className="w-10 h-10 rounded-full bg-white border border-neutral-200/80 hover:bg-neutral-100 active:scale-90 shadow-2xs flex items-center justify-center text-neutral-900 transition-all cursor-pointer focus:outline-none"
+                            >
+                                <X size={20} strokeWidth={2.2} />
+                            </button>
+                        </div>
+
+                        {/* Nav Links */}
+                        <div className="flex flex-col space-y-3 pt-2">
                             {NAV_LINKS.map((item) => {
                                 const isActive =
                                     pathname === item.href ||
@@ -269,7 +280,7 @@ export function Header() {
                     </div>
 
                     {/* Mobile footer */}
-                    <div className="space-y-5 pt-8 border-t border-neutral-100">
+                    <div className="space-y-5 pt-6 border-t border-neutral-200/60">
                         <LocaleSwitcher className="text-[13px]" />
 
                         <div className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-neutral-500">
