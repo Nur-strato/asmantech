@@ -1,4 +1,3 @@
-cat << 'EOF' > src/app/api/leads/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { verifyAdminSession } from "@/lib/auth";
 
@@ -133,4 +132,3 @@ export async function DELETE(req: NextRequest) {
         return NextResponse.json({ success: false, error: "Ошибка при удалении" }, { status: 500 });
     }
 }
-EOF
