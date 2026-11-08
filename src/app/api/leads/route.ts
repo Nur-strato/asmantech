@@ -1,4 +1,6 @@
-import { NextResponse } from "next/server";
+cat << 'EOF' > src/app/api/leads/route.ts
+import { NextRequest, NextResponse } from "next/server";
+import { verifyAdminSession } from "@/lib/auth";
 
 export interface Lead {
     id: string;
@@ -14,7 +16,6 @@ export interface Lead {
     status: "new" | "in_progress" | "closed";
 }
 
-// In-memory хранилище с тестовыми данными для старта
 let leadsStorage: Lead[] = [
     {
         id: "lead_1729831000000",
@@ -44,12 +45,15 @@ let leadsStorage: Lead[] = [
     },
 ];
 
-// Получение списка всех заявок
-export async function GET() {
+// Получение списка всех заявок (только с сессией админа)
+export async function GET(req: NextRequest) {
+    if (!verifyAdminSession(req)) {
+        return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    }
     return NextResponse.json({ success: true, leads: leadsStorage });
 }
 
-// Создание новой заявки с формы
+// Создание новой заявки с формы (публичный эндпоинт)
 export async function POST(req: Request) {
     try {
         const body = await req.json();
@@ -88,8 +92,12 @@ export async function POST(req: Request) {
     }
 }
 
-// Обновление статуса заявки
-export async function PATCH(req: Request) {
+// Обновление статуса заявки (только с сессией админа)
+export async function PATCH(req: NextRequest) {
+    if (!verifyAdminSession(req)) {
+        return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    }
+
     try {
         const { id, status } = await req.json();
         const lead = leadsStorage.find((l) => l.id === id);
@@ -105,8 +113,12 @@ export async function PATCH(req: Request) {
     }
 }
 
-// Удаление заявки
-export async function DELETE(req: Request) {
+// Удаление заявки (только с сессией админа)
+export async function DELETE(req: NextRequest) {
+    if (!verifyAdminSession(req)) {
+        return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    }
+
     try {
         const { searchParams } = new URL(req.url);
         const id = searchParams.get("id");
@@ -121,3 +133,4 @@ export async function DELETE(req: Request) {
         return NextResponse.json({ success: false, error: "Ошибка при удалении" }, { status: 500 });
     }
 }
+EOF

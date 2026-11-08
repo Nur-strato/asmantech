@@ -105,7 +105,7 @@ export default function Solutions() {
     const ActiveIcon = activeService.icon;
 
     const handleSecretAdminAccess = () => {
-        router.push("/admin");
+        window.location.href = "/admin";
     };
 
     const handleServiceSelect = (id: string) => {

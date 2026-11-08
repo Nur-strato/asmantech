@@ -15,16 +15,16 @@ import {
 
 interface Lead {
     id: string;
-    serviceId: string;
-    serviceName: string;
-    clientName: string;
+    serviceId?: string;
+    serviceName?: string;
+    clientName?: string;
     aboutDetails?: string;
-    countryCode: string;
-    phoneNumber: string;
-    fullPhone: string;
-    contactPreference: "message" | "call";
-    createdAt: string;
-    status: "new" | "in_progress" | "closed";
+    countryCode?: string;
+    phoneNumber?: string;
+    fullPhone?: string;
+    contactPreference?: "message" | "call";
+    createdAt?: string;
+    status?: "new" | "in_progress" | "closed";
 }
 
 function WhatsAppIcon({ size = 16, className = "" }: { size?: number; className?: string }) {
@@ -46,67 +46,81 @@ function WhatsAppIcon({ size = 16, className = "" }: { size?: number; className?
     );
 }
 
-const DEFAULT_ADMIN_PIN = "2026";
-
 export default function AdminPage() {
     const [isMounted, setIsMounted] = useState<boolean>(false);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [pinInput, setPinInput] = useState<string>("");
     const [pinError, setPinError] = useState<boolean>(false);
+    const [isSubmittingPin, setIsSubmittingPin] = useState<boolean>(false);
 
     const [leads, setLeads] = useState<Lead[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [statusFilter, setStatusFilter] = useState<"all" | "new" | "in_progress" | "closed">("all");
 
-    // Предотвращение Hydration Mismatch
-    useEffect(() => {
-        setIsMounted(true);
-        const storedAuth = sessionStorage.getItem("vt_admin_auth");
-        if (storedAuth === "true") {
-            setIsAuthenticated(true);
-        }
-    }, []);
-
-    // Стабильная функция загрузки
     const fetchLeads = useCallback(async () => {
         setLoading(true);
         try {
             const res = await fetch("/api/leads");
-            if (!res.ok) throw new Error("Ошибка ответа сервера");
-            const data = await res.json();
-            if (data.success) {
-                setLeads(data.leads || []);
+            if (res.status === 401) {
+                setIsAuthenticated(false);
+                setLeads([]);
+                return;
             }
-        } catch (err) {
-            console.error("Ошибка загрузки заявок:", err);
+            if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+            const data = await res.json();
+            setIsAuthenticated(true);
+            if (data?.success && Array.isArray(data.leads)) {
+                setLeads(data.leads);
+            } else {
+                setLeads([]);
+            }
+        } catch {
+            setLeads([]);
         } finally {
             setLoading(false);
         }
     }, []);
 
     useEffect(() => {
-        if (isAuthenticated) {
-            fetchLeads();
-        }
-    }, [isAuthenticated, fetchLeads]);
+        setIsMounted(true);
+        fetchLeads();
+    }, [fetchLeads]);
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (pinInput.trim() === DEFAULT_ADMIN_PIN) {
-            sessionStorage.setItem("vt_admin_auth", "true");
-            setIsAuthenticated(true);
-            setPinError(false);
-        } else {
+        setIsSubmittingPin(true);
+        setPinError(false);
+
+        try {
+            const res = await fetch("/api/admin/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ pin: pinInput.trim() }),
+            });
+
+            if (res.ok) {
+                setIsAuthenticated(true);
+                setPinInput("");
+                fetchLeads();
+            } else {
+                setPinError(true);
+                setPinInput("");
+            }
+        } catch {
             setPinError(true);
-            setPinInput("");
+        } finally {
+            setIsSubmittingPin(false);
         }
     };
 
-    const handleLogout = () => {
-        sessionStorage.removeItem("vt_admin_auth");
+    const handleLogout = async () => {
+        try {
+            await fetch("/api/admin/logout", { method: "POST" });
+        } catch {}
         setIsAuthenticated(false);
         setPinInput("");
+        setLeads([]);
     };
 
     const handleStatusChange = async (id: string, newStatus: "new" | "in_progress" | "closed") => {
@@ -117,12 +131,10 @@ export default function AdminPage() {
                 body: JSON.stringify({ id, status: newStatus }),
             });
             const data = await res.json();
-            if (data.success) {
+            if (data?.success) {
                 setLeads((prev) =>
                     prev.map((l) => (l.id === id ? { ...l, status: newStatus } : l))
                 );
-            } else {
-                alert("Не удалось изменить статус");
             }
         } catch (err) {
             console.error("Ошибка обновления статуса:", err);
@@ -134,10 +146,8 @@ export default function AdminPage() {
         try {
             const res = await fetch(`/api/leads?id=${id}`, { method: "DELETE" });
             const data = await res.json();
-            if (data.success) {
+            if (data?.success) {
                 setLeads((prev) => prev.filter((l) => l.id !== id));
-            } else {
-                alert("Ошибка при удалении заявки");
             }
         } catch (err) {
             console.error("Ошибка удаления:", err);
@@ -146,26 +156,29 @@ export default function AdminPage() {
 
     const filteredLeads = useMemo(() => {
         return leads.filter((item) => {
-            const matchesStatus = statusFilter === "all" || item.status === statusFilter;
+            const currentStatus = item?.status || "new";
+            const matchesStatus = statusFilter === "all" || currentStatus === statusFilter;
             const q = searchQuery.toLowerCase().trim();
             if (!q) return matchesStatus;
 
-            const matchesQuery =
-                item.clientName.toLowerCase().includes(q) ||
-                item.phoneNumber.includes(q) ||
-                item.serviceName.toLowerCase().includes(q) ||
-                Boolean(item.aboutDetails && item.aboutDetails.toLowerCase().includes(q));
+            const name = (item?.clientName || "").toLowerCase();
+            const phone = (item?.phoneNumber || "").toLowerCase();
+            const service = (item?.serviceName || "").toLowerCase();
+            const details = (item?.aboutDetails || "").toLowerCase();
 
-            return matchesStatus && matchesQuery;
+            return (
+                matchesStatus &&
+                (name.includes(q) || phone.includes(q) || service.includes(q) || details.includes(q))
+            );
         });
     }, [leads, statusFilter, searchQuery]);
 
     const stats = useMemo(() => {
         return {
             total: leads.length,
-            newCount: leads.filter((l) => l.status === "new").length,
-            inProgress: leads.filter((l) => l.status === "in_progress").length,
-            whatsappPreference: leads.filter((l) => l.contactPreference === "message").length,
+            newCount: leads.filter((l) => (l?.status || "new") === "new").length,
+            inProgress: leads.filter((l) => l?.status === "in_progress").length,
+            whatsappPreference: leads.filter((l) => l?.contactPreference === "message").length,
         };
     }, [leads]);
 
@@ -173,7 +186,6 @@ export default function AdminPage() {
         return <div className="min-h-screen bg-neutral-950" />;
     }
 
-    // Экран ввода пароля
     if (!isAuthenticated) {
         return (
             <main className="min-h-screen bg-neutral-950 flex items-center justify-center p-6 text-white font-sans select-none">
@@ -184,7 +196,7 @@ export default function AdminPage() {
 
                     <div className="space-y-1">
                         <h2 className="text-xl font-bold tracking-tight text-white uppercase font-mono">
-                            Vital Tech Admin
+                            Admin Access
                         </h2>
                         <p className="text-xs text-neutral-400 font-mono">
                             Введите PIN для доступа к панели
@@ -198,12 +210,13 @@ export default function AdminPage() {
                                 maxLength={6}
                                 autoFocus
                                 value={pinInput}
+                                disabled={isSubmittingPin}
                                 onChange={(e) => {
                                     setPinInput(e.target.value);
                                     if (pinError) setPinError(false);
                                 }}
                                 placeholder="••••"
-                                className="w-full text-center tracking-[0.4em] text-2xl font-mono py-3.5 px-4 rounded-xl bg-neutral-950 border border-neutral-700 text-white placeholder:text-neutral-600 focus:outline-hidden focus:border-white transition-colors"
+                                className="w-full text-center tracking-[0.4em] text-2xl font-mono py-3.5 px-4 rounded-xl bg-neutral-950 border border-neutral-700 text-white placeholder:text-neutral-600 focus:outline-none focus:border-white transition-colors disabled:opacity-50"
                             />
                         </div>
 
@@ -215,9 +228,10 @@ export default function AdminPage() {
 
                         <button
                             type="submit"
-                            className="w-full py-3.5 rounded-xl bg-white text-neutral-950 font-mono text-xs uppercase font-bold tracking-wider hover:bg-neutral-200 transition-colors cursor-pointer"
+                            disabled={isSubmittingPin}
+                            className="w-full py-3.5 rounded-xl bg-white text-neutral-950 font-mono text-xs uppercase font-bold tracking-wider hover:bg-neutral-200 transition-colors cursor-pointer disabled:opacity-50"
                         >
-                            Войти
+                            {isSubmittingPin ? "Проверка..." : "Войти"}
                         </button>
                     </form>
 
@@ -233,7 +247,6 @@ export default function AdminPage() {
         );
     }
 
-    // Экран дашборда
     return (
         <main className="min-h-screen bg-[#F8FAFD] text-neutral-900 font-sans pb-24 select-none">
             <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-neutral-200/90 px-6 sm:px-12 py-4">
@@ -249,7 +262,7 @@ export default function AdminPage() {
                         <span className="text-neutral-300">/</span>
                         <div className="flex items-center gap-2">
                             <span className="font-mono text-xs uppercase font-bold tracking-wider text-neutral-950">
-                                Vital Tech Control
+                                Asman Tech Control
                             </span>
                             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                         </div>
@@ -260,7 +273,7 @@ export default function AdminPage() {
                             type="button"
                             onClick={fetchLeads}
                             title="Обновить список"
-                            className="p-2.5 rounded-xl border border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-700 transition-colors cursor-pointer shadow-2xs"
+                            className="p-2.5 rounded-xl border border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-700 transition-colors cursor-pointer shadow-xs"
                         >
                             <RefreshCw size={15} className={loading ? "animate-spin" : ""} />
                         </button>
@@ -282,12 +295,12 @@ export default function AdminPage() {
                             Входящие заявки
                         </h1>
                         <p className="text-sm font-mono text-neutral-500 mt-1">
-                            Все запросы, отправленные через форму контактов
+                            Все запросы, отправленные через сайт
                         </p>
                     </div>
 
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                        <div className="p-5 rounded-2xl bg-white border border-neutral-200 shadow-2xs space-y-1">
+                        <div className="p-5 rounded-2xl bg-white border border-neutral-200 shadow-xs space-y-1">
                             <div className="text-xs font-mono uppercase text-neutral-400 font-semibold flex items-center justify-between">
                                 <span>Всего заявок</span>
                                 <Inbox size={15} />
@@ -297,7 +310,7 @@ export default function AdminPage() {
                             </div>
                         </div>
 
-                        <div className="p-5 rounded-2xl bg-white border border-neutral-200 shadow-2xs space-y-1">
+                        <div className="p-5 rounded-2xl bg-white border border-neutral-200 shadow-xs space-y-1">
                             <div className="text-xs font-mono uppercase text-rose-500 font-semibold flex items-center justify-between">
                                 <span>Новые</span>
                                 <span className="w-2 h-2 rounded-full bg-rose-500" />
@@ -307,7 +320,7 @@ export default function AdminPage() {
                             </div>
                         </div>
 
-                        <div className="p-5 rounded-2xl bg-white border border-neutral-200 shadow-2xs space-y-1">
+                        <div className="p-5 rounded-2xl bg-white border border-neutral-200 shadow-xs space-y-1">
                             <div className="text-xs font-mono uppercase text-amber-600 font-semibold flex items-center justify-between">
                                 <span>В обработке</span>
                                 <Clock size={15} />
@@ -317,7 +330,7 @@ export default function AdminPage() {
                             </div>
                         </div>
 
-                        <div className="p-5 rounded-2xl bg-white border border-neutral-200 shadow-2xs space-y-1">
+                        <div className="p-5 rounded-2xl bg-white border border-neutral-200 shadow-xs space-y-1">
                             <div className="text-xs font-mono uppercase text-emerald-600 font-semibold flex items-center justify-between">
                                 <span>Через WhatsApp</span>
                                 <WhatsAppIcon size={15} className="text-[#25D366]" />
@@ -329,7 +342,7 @@ export default function AdminPage() {
                     </div>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-white border border-neutral-200 shadow-2xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+                <div className="p-4 rounded-2xl bg-white border border-neutral-200 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
                     <div className="relative flex-1">
                         <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400" />
                         <input
@@ -337,7 +350,7 @@ export default function AdminPage() {
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             placeholder="Поиск по имени, номеру телефона или услуге..."
-                            className="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl bg-neutral-50 border border-neutral-200 focus:outline-hidden focus:border-neutral-900 focus:bg-white transition-colors"
+                            className="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl bg-neutral-50 border border-neutral-200 focus:outline-none focus:border-neutral-900 focus:bg-white transition-colors"
                         />
                     </div>
 
@@ -346,7 +359,7 @@ export default function AdminPage() {
                             type="button"
                             onClick={() => setStatusFilter("all")}
                             className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                                statusFilter === "all" ? "bg-white text-neutral-950 font-bold shadow-2xs" : "text-neutral-500 hover:text-neutral-900"
+                                statusFilter === "all" ? "bg-white text-neutral-950 font-bold shadow-xs" : "text-neutral-500 hover:text-neutral-900"
                             }`}
                         >
                             Все ({leads.length})
@@ -355,7 +368,7 @@ export default function AdminPage() {
                             type="button"
                             onClick={() => setStatusFilter("new")}
                             className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                                statusFilter === "new" ? "bg-white text-neutral-950 font-bold shadow-2xs" : "text-neutral-500 hover:text-neutral-900"
+                                statusFilter === "new" ? "bg-white text-neutral-950 font-bold shadow-xs" : "text-neutral-500 hover:text-neutral-900"
                             }`}
                         >
                             Новые ({stats.newCount})
@@ -364,7 +377,7 @@ export default function AdminPage() {
                             type="button"
                             onClick={() => setStatusFilter("in_progress")}
                             className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                                statusFilter === "in_progress" ? "bg-white text-neutral-950 font-bold shadow-2xs" : "text-neutral-500 hover:text-neutral-900"
+                                statusFilter === "in_progress" ? "bg-white text-neutral-950 font-bold shadow-xs" : "text-neutral-500 hover:text-neutral-900"
                             }`}
                         >
                             В работе
@@ -373,7 +386,7 @@ export default function AdminPage() {
                             type="button"
                             onClick={() => setStatusFilter("closed")}
                             className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                                statusFilter === "closed" ? "bg-white text-neutral-950 font-bold shadow-2xs" : "text-neutral-500 hover:text-neutral-900"
+                                statusFilter === "closed" ? "bg-white text-neutral-950 font-bold shadow-xs" : "text-neutral-500 hover:text-neutral-900"
                             }`}
                         >
                             Закрытые
@@ -409,18 +422,32 @@ export default function AdminPage() {
                                 </tr>
                             ) : (
                                 filteredLeads.map((lead) => {
-                                    // Надежная санитизация телефонных ссылок
-                                    const cleanDigits = lead.phoneNumber.replace(/\D/g, "");
-                                    const cleanCountry = lead.countryCode.replace(/\D/g, "");
+                                    const rawPhone = lead?.phoneNumber || "";
+                                    const rawCountry = lead?.countryCode || "";
+                                    const cleanDigits = rawPhone.replace(/\D/g, "");
+                                    const cleanCountry = rawCountry.replace(/\D/g, "");
                                     const fullPhoneClean = cleanCountry ? `${cleanCountry}${cleanDigits}` : cleanDigits;
                                     const waLink = `https://wa.me/${fullPhoneClean}`;
                                     const telLink = `tel:+${fullPhoneClean}`;
+
+                                    let formattedDate = "—";
+                                    if (lead?.createdAt) {
+                                        const d = new Date(lead.createdAt);
+                                        if (!isNaN(d.getTime())) {
+                                            formattedDate = d.toLocaleDateString("ru-RU", {
+                                                day: "2-digit",
+                                                month: "short",
+                                                hour: "2-digit",
+                                                minute: "2-digit",
+                                            });
+                                        }
+                                    }
 
                                     return (
                                         <tr key={lead.id} className="hover:bg-neutral-50/70 transition-colors">
                                             <td className="py-4 px-6">
                                                 <div className="font-bold text-neutral-950 text-[15px]">
-                                                    {lead.clientName}
+                                                    {lead.clientName || "Без имени"}
                                                 </div>
                                                 {lead.aboutDetails && (
                                                     <div className="text-xs text-neutral-500 max-w-xs truncate mt-0.5" title={lead.aboutDetails}>
@@ -430,49 +457,44 @@ export default function AdminPage() {
                                             </td>
 
                                             <td className="py-4 px-6">
-                                                    <span className="inline-block px-3 py-1 rounded-lg bg-neutral-100 text-neutral-800 text-xs font-semibold">
-                                                        {lead.serviceName}
-                                                    </span>
+                                                <span className="inline-block px-3 py-1 rounded-lg bg-neutral-100 text-neutral-800 text-xs font-semibold">
+                                                    {lead.serviceName || "Консультация"}
+                                                </span>
                                             </td>
 
                                             <td className="py-4 px-6">
                                                 <div className="font-mono font-medium text-neutral-950">
-                                                    {lead.countryCode} {lead.phoneNumber}
+                                                    {rawCountry} {rawPhone || "Нет номера"}
                                                 </div>
                                                 <div className="flex items-center gap-1.5 mt-1">
                                                     {lead.contactPreference === "message" ? (
                                                         <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">
-                                                                <WhatsAppIcon size={12} className="text-[#25D366]" />
-                                                                <span>Ждёт сообщение</span>
-                                                            </span>
+                                                            <WhatsAppIcon size={12} className="text-[#25D366]" />
+                                                            <span>Ждёт сообщение</span>
+                                                        </span>
                                                     ) : (
                                                         <span className="inline-flex items-center gap-1 text-[11px] font-medium text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md">
-                                                                <PhoneCall size={11} />
-                                                                <span>Ждёт телефонный звонок</span>
-                                                            </span>
+                                                            <PhoneCall size={11} />
+                                                            <span>Ждёт телефонный звонок</span>
+                                                        </span>
                                                     )}
                                                 </div>
                                             </td>
 
                                             <td className="py-4 px-6 font-mono text-xs text-neutral-500">
-                                                {new Date(lead.createdAt).toLocaleDateString("ru-RU", {
-                                                    day: "2-digit",
-                                                    month: "short",
-                                                    hour: "2-digit",
-                                                    minute: "2-digit",
-                                                })}
+                                                {formattedDate}
                                             </td>
 
                                             <td className="py-4 px-6">
                                                 <select
-                                                    value={lead.status}
+                                                    value={lead.status || "new"}
                                                     onChange={(e) =>
                                                         handleStatusChange(
                                                             lead.id,
                                                             e.target.value as "new" | "in_progress" | "closed"
                                                         )
                                                     }
-                                                    className={`text-xs font-semibold px-2.5 py-1.5 rounded-lg border focus:outline-hidden cursor-pointer ${
+                                                    className={`text-xs font-semibold px-2.5 py-1.5 rounded-lg border focus:outline-none cursor-pointer ${
                                                         lead.status === "new"
                                                             ? "bg-rose-50 text-rose-700 border-rose-200"
                                                             : lead.status === "in_progress"
@@ -488,23 +510,27 @@ export default function AdminPage() {
 
                                             <td className="py-4 px-6 text-right">
                                                 <div className="flex items-center justify-end gap-2">
-                                                    <a
-                                                        href={waLink}
-                                                        target="_blank"
-                                                        rel="noreferrer"
-                                                        title="Написать в WhatsApp"
-                                                        className="p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 transition-colors cursor-pointer"
-                                                    >
-                                                        <WhatsAppIcon size={16} />
-                                                    </a>
+                                                    {fullPhoneClean && (
+                                                        <>
+                                                            <a
+                                                                href={waLink}
+                                                                target="_blank"
+                                                                rel="noreferrer"
+                                                                title="Написать в WhatsApp"
+                                                                className="p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 transition-colors cursor-pointer"
+                                                            >
+                                                                <WhatsAppIcon size={16} />
+                                                            </a>
 
-                                                    <a
-                                                        href={telLink}
-                                                        title="Позвонить"
-                                                        className="p-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 transition-colors cursor-pointer"
-                                                    >
-                                                        <PhoneCall size={16} />
-                                                    </a>
+                                                            <a
+                                                                href={telLink}
+                                                                title="Позвонить"
+                                                                className="p-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 transition-colors cursor-pointer"
+                                                            >
+                                                                <PhoneCall size={16} />
+                                                            </a>
+                                                        </>
+                                                    )}
 
                                                     <button
                                                         type="button"
