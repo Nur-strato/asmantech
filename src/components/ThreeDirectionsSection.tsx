@@ -14,11 +14,13 @@ import {
     Maximize2,
     X,
 } from "lucide-react";
+import { useTr } from "@/i18n/tr";
 
 // =========================================================================
 // 01. РЕАЛЬНЫЙ 3D МОКАП: АРХИТЕКТУРНАЯ ВИЛЛА (CANTILEVER LUXURY VILLA)
 // =========================================================================
 function RealArchCanvas({ onZoom }: { onZoom: () => void }) {
+    const tr = useTr();
     const mountRef = useRef<HTMLDivElement>(null);
     const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
     const targetAngleRef = useRef<{ x: number; y: number; z: number }>({ x: 0, y: 1.4, z: 6.2 });
@@ -302,7 +304,7 @@ function RealArchCanvas({ onZoom }: { onZoom: () => void }) {
             {/* Бейдж 3D RENDER слева снизу */}
             <div className="absolute bottom-3.5 left-3.5 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white font-mono text-[9px] uppercase tracking-wider font-semibold z-10 pointer-events-none">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#38bdf8] shadow-[0_0_8px_#38bdf8] animate-pulse" />
-                <span className="font-sans font-medium text-[9.5px]">3D RENDER</span>
+                <span className="font-sans font-medium text-[9.5px]">{tr("3D RENDER")}</span>
             </div>
 
             {/* Кнопка «Увеличить» по центру снизу */}
@@ -312,7 +314,7 @@ function RealArchCanvas({ onZoom }: { onZoom: () => void }) {
                 className="absolute bottom-3.5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-black/55 hover:bg-black/80 text-white/90 hover:text-white backdrop-blur-md border border-white/20 text-[10.5px] font-sans font-medium tracking-wide transition-all duration-200 shadow-md hover:scale-105 cursor-pointer z-20 active:scale-95"
             >
                 <Maximize2 size={12} className="opacity-80" />
-                <span>Увеличить</span>
+                <span>{tr("Увеличить")}</span>
             </button>
 
             {/* Боковой стек переключения ракурсов камеры */}
@@ -328,9 +330,9 @@ function RealArchCanvas({ onZoom }: { onZoom: () => void }) {
                             type="button"
                             onClick={() => setPresetAngle(item.preset)}
                             className="w-full aspect-square rounded-[10px] bg-white/10 hover:bg-white/25 border border-white/30 backdrop-blur-md flex flex-col items-center justify-center text-[7.5px] font-mono text-white/90 font-bold transition-all shadow-xs cursor-pointer active:scale-95"
-                            title={`Камера: ${item.label}`}
+                            title={`${tr("Камера:")} ${tr(item.label)}`}
                         >
-                            <span>CAM</span>
+                            <span>{tr("CAM")}</span>
                             <span className="text-[9px] text-[#38bdf8]">0{idx + 1}</span>
                         </button>
                     ))}
@@ -348,6 +350,7 @@ function RealArchCanvas({ onZoom }: { onZoom: () => void }) {
 // 02. РЕАЛЬНЫЙ 3D МОКАП: WEB 3D DESIGN (ХРОМИРОВАННАЯ 3D-ЛЕНТА)
 // =========================================================================
 function RealWeb3DCanvas({ onZoom }: { onZoom: () => void }) {
+    const tr = useTr();
     const mountRef = useRef<HTMLDivElement>(null);
     const knotRef = useRef<THREE.Mesh | null>(null);
     const knotMatRef = useRef<THREE.MeshPhysicalMaterial | null>(null);
@@ -493,28 +496,28 @@ function RealWeb3DCanvas({ onZoom }: { onZoom: () => void }) {
             {/* Верхний бар интерфейса */}
             <div className="flex items-center justify-between border-b border-white/10 pb-2 z-10">
                 <span className="font-extrabold text-[9px] tracking-wider uppercase text-white font-sans">
-                    ASMAN TECH
+                    {tr("ASMAN TECH")}
                 </span>
                 <div className="flex items-center gap-2 sm:gap-2.5 text-[7px] text-neutral-400 font-sans">
-                    <span>Home</span>
-                    <span>Services</span>
-                    <span>About</span>
-                    <span>Contact</span>
+                    <span>{tr("Home")}</span>
+                    <span>{tr("Services")}</span>
+                    <span>{tr("About")}</span>
+                    <span>{tr("Contact")}</span>
                 </div>
                 <div className="px-2 py-0.5 rounded-full bg-[#2563eb] text-[7px] font-bold text-white shadow-xs">
-                    Get Started
+                    {tr("Get Started")}
                 </div>
             </div>
 
             {/* Левый заголовок поверх Three.js */}
             <div className="absolute top-14 left-4 z-10 pointer-events-none space-y-1">
                 <h4 className="text-base sm:text-[18px] font-black leading-[1.05] tracking-tight font-sans">
-                    Ideas <br />
-                    into <br />
-                    <span className="text-[#3b82f6]">3D Reality</span>
+                    {tr("Ideas")} <br />
+                    {tr("into")} <br />
+                    <span className="text-[#3b82f6]">{tr("3D Reality")}</span>
                 </h4>
                 <p className="text-[6.5px] sm:text-[7px] text-neutral-400 leading-tight max-w-[110px]">
-                    Interactive 3D experiences for your digital products.
+                    {tr("Interactive 3D experiences for your digital products.")}
                 </p>
             </div>
 
@@ -538,7 +541,7 @@ function RealWeb3DCanvas({ onZoom }: { onZoom: () => void }) {
                             className="flex items-center gap-1.5 px-2 py-1 rounded-[7px] bg-[#161d2b]/90 hover:bg-[#20293d] border border-white/15 text-[7px] font-sans text-neutral-200 shadow-sm transition-all cursor-pointer active:scale-95"
                         >
                             <ToolIcon size={9} className="text-[#38bdf8] shrink-0" />
-                            <span className="font-medium">{tool.label}</span>
+                            <span className="font-medium">{tr(tool.label)}</span>
                         </button>
                     );
                 })}
@@ -551,13 +554,13 @@ function RealWeb3DCanvas({ onZoom }: { onZoom: () => void }) {
                 className="absolute bottom-3.5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white/90 hover:text-white backdrop-blur-md border border-white/20 text-[10.5px] font-sans font-medium tracking-wide transition-all duration-200 shadow-md hover:scale-105 cursor-pointer z-20 active:scale-95"
             >
                 <Maximize2 size={12} className="opacity-80" />
-                <span>Увеличить</span>
+                <span>{tr("Увеличить")}</span>
             </button>
 
             {/* Нижний статус-бар */}
             <div className="flex items-center justify-between pt-1 border-t border-white/5 text-[6.5px] font-mono text-neutral-500 z-10 pointer-events-none">
-                <span>WebGL 2.0 • Three.js</span>
-                <span className="text-emerald-400 font-bold">60 FPS Locked</span>
+                <span>{tr("WebGL 2.0 • Three.js")}</span>
+                <span className="text-emerald-400 font-bold">{tr("60 FPS Locked")}</span>
             </div>
         </div>
     );
@@ -567,6 +570,7 @@ function RealWeb3DCanvas({ onZoom }: { onZoom: () => void }) {
 // 03. РЕАЛЬНЫЙ 3D МОКАП: 3D PRODUCT (НАУШНИКИ 360° СО СМЕНОЙ МАТЕРИАЛА)
 // =========================================================================
 function RealProductCanvas({ onZoom }: { onZoom: () => void }) {
+    const tr = useTr();
     const mountRef = useRef<HTMLDivElement>(null);
     const productGroupRef = useRef<THREE.Group | null>(null);
     const bodyMatRef = useRef<THREE.MeshStandardMaterial | null>(null);
@@ -755,7 +759,7 @@ function RealProductCanvas({ onZoom }: { onZoom: () => void }) {
                 className="absolute bottom-3.5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-black/55 hover:bg-black/80 text-white/90 hover:text-white backdrop-blur-md border border-white/20 text-[10.5px] font-sans font-medium tracking-wide transition-all duration-200 shadow-md hover:scale-105 cursor-pointer z-20 active:scale-95"
             >
                 <Maximize2 size={12} className="opacity-80" />
-                <span>Увеличить</span>
+                <span>{tr("Увеличить")}</span>
             </button>
 
             {/* Интерактивная палитра цветов справа (меняет цвет 3D-наушников) */}
@@ -772,7 +776,7 @@ function RealProductCanvas({ onZoom }: { onZoom: () => void }) {
                             type="button"
                             onClick={() => changeProductColor(item.hex)}
                             className={`w-6 h-6 rounded-full ${item.color} border-2 border-white/80 shadow-xs cursor-pointer hover:scale-115 transition-transform active:scale-90`}
-                            title={`Перекрасить: ${item.name}`}
+                            title={`${tr("Перекрасить:")} ${tr(item.name)}`}
                         />
                     ))}
                 </div>
@@ -855,6 +859,7 @@ const THREE_DIRECTIONS: DirectionItem[] = [
 ];
 
 export function ThreeDirectionsSection() {
+    const tr = useTr();
     const [zoomItem, setZoomItem] = useState<DirectionItem | null>(null);
 
     return (
@@ -876,17 +881,17 @@ export function ThreeDirectionsSection() {
                                         <Icon size={21} strokeWidth={2.2} />
                                     </div>
                                     <span className="font-mono text-xs font-bold text-neutral-400">
-                                        {item.num}
+                                        {tr(item.num)}
                                     </span>
                                 </div>
 
                                 {/* Заголовок и подзаголовок */}
                                 <div className="space-y-1.5">
                                     <h3 className="text-[23px] sm:text-[25px] font-extrabold tracking-[-0.03em] text-[#09090b] leading-tight">
-                                        {item.title}
+                                        {tr(item.title)}
                                     </h3>
                                     <p className="text-neutral-500 text-[13.5px] sm:text-[14px] leading-relaxed min-h-[42px]">
-                                        {item.description}
+                                        {tr(item.description)}
                                     </p>
                                 </div>
 
@@ -907,13 +912,13 @@ export function ThreeDirectionsSection() {
                             {/* Список задач */}
                             <div className="pt-5 border-t border-neutral-100 space-y-2.5 mt-5">
                                 <span className="font-mono text-[11px] text-neutral-400 uppercase tracking-wider font-semibold block">
-                                    ПРИМЕРЫ ЗАДАЧ:
+                                    {tr("ПРИМЕРЫ ЗАДАЧ:")}
                                 </span>
                                 <ul className="space-y-2 text-[13px] sm:text-[13.5px] text-neutral-600 leading-snug">
                                     {item.examples.map((ex, idx) => (
                                         <li key={idx} className="flex items-start gap-2.5">
                                             <span className="w-1.5 h-1.5 rounded-full bg-[#38bdf8] mt-1.5 shrink-0" />
-                                            <span>{ex}</span>
+                                            <span>{tr(ex)}</span>
                                         </li>
                                     ))}
                                 </ul>
@@ -937,7 +942,7 @@ export function ThreeDirectionsSection() {
                     >
                         <div className="flex items-center justify-between p-4 px-6 border-b border-white/10 text-white font-mono text-xs">
                             <span className="font-bold uppercase tracking-wider">
-                                {zoomItem.num} // {zoomItem.title}
+                                {tr(zoomItem.num)} // {zoomItem.title}
                             </span>
                             <button
                                 type="button"

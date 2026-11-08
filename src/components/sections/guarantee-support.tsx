@@ -1,38 +1,19 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { ArrowUpRight, ShieldCheck } from "lucide-react";
+import { useTranslations } from "next-intl";
 
-interface GuaranteeClause {
-    title: string;
-    text: string;
-}
-
-const CLAUSES: GuaranteeClause[] = [
-    {
-        title: "Опоздали — платите меньше",
-        text: "Получили проект на 3 дня позже — скидка 10%. Опоздали еще на 3 — скидка уже 20%. Просто платите меньше.",
-    },
-    {
-        title: "Цена в договоре — окончательная",
-        text: "Если мы ошиблись в оценке или задача оказалась сложнее — все переработки оплачиваем мы, а не вы.",
-    },
-    {
-        title: "Безусловная гарантия 45 дней",
-        text: "Любые дефекты или отклонения от ТЗ устраняются вне очереди в приоритетном порядке в день обращения.",
-    },
-    {
-        title: "100% исходного кода и доступов",
-        text: "После завершения работы передаем вам весь исходный код и все доступы. Проект и все права на него на 100% принадлежат вам.",
-    },
-];
+// Тексты пунктов берутся из словаря: Guarantee.clauses.<key>
+const CLAUSES = ["late", "fixedPrice", "warranty", "sourceCode"] as const;
 
 export function GuaranteeSupport() {
+    const t = useTranslations("Guarantee");
     return (
         <section
             id="guarantee"
-            aria-label="Гарантии Asman Tech"
+            aria-label={t("ariaLabel")}
             className="w-full py-12 sm:py-20 md:py-24 overflow-x-clip"
         >
             <div className="w-full max-w-[1412px] mx-auto px-4 xs:px-5 md:px-8">
@@ -45,14 +26,14 @@ export function GuaranteeSupport() {
                             <div className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-neutral-50/90 border border-neutral-200/90 shadow-2xs">
                                 <ShieldCheck size={18} className="text-emerald-600 shrink-0" strokeWidth={2.2} />
                                 <span className="text-xs sm:text-[13.5px] font-normal text-neutral-800 tracking-tight">
-                                    Никаких предоплат до NDA и твердой сметы
+                                    {t("badge")}
                                 </span>
                             </div>
 
                             {/* Заголовок */}
                             <h2 className="text-3xl xs:text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-neutral-950 leading-[1.02]">
-                                100% качество. <br className="hidden sm:inline" />
-                                Или вернём всю сумму.
+                                {t("titleLine1")} <br className="hidden sm:inline" />
+                                {t("titleLine2")}
                             </h2>
                         </div>
 
@@ -61,7 +42,7 @@ export function GuaranteeSupport() {
                                 href="/contacts"
                                 className="group inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-neutral-950 hover:bg-neutral-800 text-white text-xs uppercase tracking-wider font-semibold transition-all active:scale-95"
                             >
-                                <span>Запросить образец договора</span>
+                                <span>{t("requestContract")}</span>
                                 <ArrowUpRight
                                     size={15}
                                     className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
@@ -74,16 +55,16 @@ export function GuaranteeSupport() {
                     <div className="lg:col-span-7 divide-y divide-neutral-200/90 border-y border-neutral-200/90">
                         {CLAUSES.map((item) => (
                             <div
-                                key={item.title}
+                                key={item}
                                 className="py-7 sm:py-9 transition-colors duration-200 hover:bg-neutral-50/50 px-2 sm:px-4 -mx-2 sm:-mx-4 rounded-xl"
                             >
                                 <div className="space-y-2.5 sm:space-y-3">
                                     <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-950 leading-snug">
-                                        {item.title}
+                                        {t(`clauses.${item}.title`)}
                                     </h3>
 
                                     <p className="text-neutral-600 text-sm sm:text-base leading-relaxed font-normal">
-                                        {item.text}
+                                        {t(`clauses.${item}.text`)}
                                     </p>
                                 </div>
                             </div>

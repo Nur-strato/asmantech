@@ -1,18 +1,23 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link } from "@/i18n/navigation";
+import { usePathname } from "@/i18n/navigation";
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
+import { LocaleSwitcher } from "@/components/locale-switcher";
 import { ArrowUpRight } from "lucide-react";
 
+// Подписи берутся из словаря: Nav.<key>
 const NAV_LINKS = [
-    { label: "Solutions", href: "/solutions" },
-    { label: "Projects", href: "/projects" },
-    { label: "Guarantee", href: "/guarantee" },
-    { label: "Offers", href: "/offers", badge: "−40%" },
+    { key: "solutions", href: "/solutions" },
+    { key: "projects", href: "/projects" },
+    { key: "guarantee", href: "/guarantee" },
+    { key: "offers", href: "/offers", badge: "−40%" },
 ];
 
 export function Header() {
+    const t = useTranslations("Header");
+    const tNav = useTranslations("Nav");
     const pathname = usePathname();
     const [scrolled, setScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -47,10 +52,6 @@ export function Header() {
         };
     }, [mobileOpen]);
 
-    if (pathname.startsWith("/admin")) {
-        return null;
-    }
-
     const isContactsActive = pathname === "/contacts" || pathname.startsWith("/contacts/");
 
     return (
@@ -65,7 +66,7 @@ export function Header() {
                 {/* Логотип: 3D Flip-эффект Asman Tech -> Home */}
                 <Link
                     href="/"
-                    aria-label="Asman Tech Home"
+                    aria-label={t("homeAria")}
                     className="group relative inline-flex items-center select-none active:scale-95 transition-transform font-serif text-[28px] sm:text-[32px] md:text-[36px] font-bold tracking-tight [perspective:1000px] z-50"
                 >
                     <span className="text-neutral-900 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] origin-bottom group-hover:opacity-0 group-hover:[transform:rotateX(90deg)_translateY(-8px)]">
@@ -74,7 +75,7 @@ export function Header() {
 
                     <span className="absolute inset-0 flex items-center translate-x-[14%] text-black pointer-events-none">
                         <span className="relative inline-block transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] origin-top opacity-0 [transform:rotateX(-90deg)_translateY(8px)] group-hover:opacity-100 group-hover:[transform:rotateX(0deg)_translateY(0)]">
-                            Home
+                            {t("home")}
                             <span className="absolute left-0 -bottom-1 w-full h-[2.5px] bg-black rounded-full transition-transform duration-500 delay-100 scale-x-0 group-hover:scale-x-100 origin-left" />
                         </span>
                     </span>
@@ -93,7 +94,7 @@ export function Header() {
                                     isActive ? "text-black font-medium" : "text-neutral-800 hover:text-black font-normal"
                                 }`}
                             >
-                                <span>{item.label}</span>
+                                <span>{tNav(item.key)}</span>
 
                                 {item.badge && (
                                     <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-[9px] bg-[#E7F8EE] text-[#058447] font-sans text-[12px] md:text-[13px] font-black tracking-tight leading-none -translate-y-2 select-none shadow-2xs transition-transform duration-200 group-hover:scale-105">
@@ -110,8 +111,10 @@ export function Header() {
                         );
                     })}
 
+                    <LocaleSwitcher />
+
                     {/* Просторная премиальная кнопка Contacts (Desktop) */}
-                    <div className="pl-2 xl:pl-4">
+                    <div className="pl-1 xl:pl-2">
                         <Link
                             href="/contacts"
                             className={`group relative overflow-hidden inline-flex items-center justify-center gap-2.5 border-[1.8px] border-neutral-950 px-8 py-3 rounded-full active:scale-95 transition-all duration-300 shadow-sm ${
@@ -129,7 +132,7 @@ export function Header() {
                                     isContactsActive ? "text-neutral-950 font-semibold" : "text-white group-hover:text-neutral-950"
                                 }`}
                             >
-                                Contacts
+                                {tNav("contacts")}
                             </span>
                             <ArrowUpRight
                                 size={15}
@@ -145,7 +148,7 @@ export function Header() {
                 <button
                     type="button"
                     onClick={() => setMobileOpen(!mobileOpen)}
-                    aria-label={mobileOpen ? "Закрыть меню" : "Открыть меню"}
+                    aria-label={mobileOpen ? t("closeMenu") : t("openMenu")}
                     aria-expanded={mobileOpen}
                     className="lg:hidden relative z-50 p-2.5 -mr-1.5 rounded-full text-neutral-950 hover:bg-neutral-100/80 active:scale-90 transition-all flex flex-col justify-center items-center w-11 h-11 cursor-pointer focus:outline-none"
                 >
@@ -173,7 +176,7 @@ export function Header() {
                 {/* Список ссылок */}
                 <div className="space-y-6 pt-4">
                     <span className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-400 block pb-2 border-b border-neutral-100">
-                        Навигация
+                        {t("navigation")}
                     </span>
 
                     <div className="flex flex-col space-y-4">
@@ -189,7 +192,7 @@ export function Header() {
                                         isActive ? "text-neutral-950 font-bold" : "text-neutral-500 hover:text-neutral-950"
                                     }`}
                                 >
-                                    <span>{item.label}</span>
+                                    <span>{tNav(item.key)}</span>
 
                                     {item.badge && (
                                         <span className="inline-flex items-center justify-center px-3 py-1 rounded-[10px] bg-[#E7F8EE] text-[#058447] font-sans text-sm font-black tracking-tight leading-none shadow-2xs">
@@ -204,8 +207,10 @@ export function Header() {
 
                 {/* Нижняя часть: обновленный статус + просторный Contacts CTA */}
                 <div className="space-y-5 pt-8 border-t border-neutral-100">
+                    <LocaleSwitcher className="text-[13px]" />
+
                     <div className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-neutral-500">
-                        <span className="font-medium text-neutral-600">IT-Solutions</span>
+                        <span className="font-medium text-neutral-600">{t("itSolutions")}</span>
                         <span className="font-semibold text-neutral-950">ASMAN TECH 2026</span>
                     </div>
 
@@ -218,9 +223,9 @@ export function Header() {
                                 : "bg-neutral-950 text-white hover:bg-neutral-900"
                         }`}
                     >
-                        <span>Связаться с нами</span>
+                        <span>{t("contactUs")}</span>
                         <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider">
-                            <span className="opacity-70">Contacts</span>
+                            <span className="opacity-70">{tNav("contacts")}</span>
                             <ArrowUpRight size={17} />
                         </div>
                     </Link>

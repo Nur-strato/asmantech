@@ -1,18 +1,20 @@
 "use client";
 
 import React from "react";
+import { useTranslations } from "next-intl";
 
 export function TrustedBy() {
+    const t = useTranslations("TrustedBy");
     return (
         <section
-            aria-label="Нам доверяют"
+            aria-label={t("ariaLabel")}
             className="w-full border-y border-neutral-200/80 bg-white/60 backdrop-blur-xs py-4 sm:py-5 select-none overflow-x-clip"
         >
             <div className="w-full px-4 xs:px-6 sm:px-8 md:px-12 lg:px-16 flex flex-col md:flex-row items-start md:items-center justify-between gap-[48px]">
 
                 {/* Лейбл: жестко выровнен по центру высоты без паразитных отступов шрифта */}
                 <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#0A1A2F]/60 shrink-0 inline-flex items-center leading-none">
-                    TRUSTED BY COMPANIES
+                    {t("title")}
                 </span>
 
                 {/* Логотипы компаний по единой центральной оси */}

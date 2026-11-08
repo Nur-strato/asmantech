@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import {
     ArrowRight,
@@ -15,7 +16,7 @@ import {
 } from "lucide-react";
 
 interface CountryConfig {
-    name: string;
+    id: string;
     code: string;
     flag: string;
     mask: string;
@@ -25,7 +26,7 @@ interface CountryConfig {
 
 const COUNTRIES: CountryConfig[] = [
     {
-        name: "Кыргызстан",
+        id: "kg",
         code: "+996",
         flag: "🇰🇬",
         mask: "(700) 000-000",
@@ -38,7 +39,7 @@ const COUNTRIES: CountryConfig[] = [
         },
     },
     {
-        name: "Казахстан",
+        id: "kz",
         code: "+7",
         flag: "🇰🇿",
         mask: "(777) 000-00-00",
@@ -52,7 +53,7 @@ const COUNTRIES: CountryConfig[] = [
         },
     },
     {
-        name: "Узбекистан",
+        id: "uz",
         code: "+998",
         flag: "🇺🇿",
         mask: "(90) 000-00-00",
@@ -66,7 +67,7 @@ const COUNTRIES: CountryConfig[] = [
         },
     },
     {
-        name: "Россия",
+        id: "ru",
         code: "+7",
         flag: "🇷🇺",
         mask: "(999) 000-00-00",
@@ -80,7 +81,7 @@ const COUNTRIES: CountryConfig[] = [
         },
     },
     {
-        name: "США",
+        id: "us",
         code: "+1",
         flag: "🇺🇸",
         mask: "(555) 000-0000",
@@ -93,7 +94,7 @@ const COUNTRIES: CountryConfig[] = [
         },
     },
     {
-        name: "Беларусь",
+        id: "by",
         code: "+375",
         flag: "🇧🇾",
         mask: "(29) 000-00-00",
@@ -107,7 +108,7 @@ const COUNTRIES: CountryConfig[] = [
         },
     },
     {
-        name: "Армения",
+        id: "am",
         code: "+374",
         flag: "🇦🇲",
         mask: "(91) 00-00-00",
@@ -122,22 +123,19 @@ const COUNTRIES: CountryConfig[] = [
     },
 ];
 
-interface ServiceItem {
-    id: string;
-    indexStr: string;
-    title: string;
-}
-
-const SERVICES: ServiceItem[] = [
-    { id: "web-dev", indexStr: "01", title: "Website Development" },
-    { id: "mobile-apps", indexStr: "02", title: "Mobile Apps" },
-    { id: "3d-design", indexStr: "03", title: "3D Design" },
-    { id: "ai-chatbots", indexStr: "04", title: "AI Chatbots" },
-    { id: "security-audit", indexStr: "05", title: "Security & Quality Audit" },
-    { id: "seo-opt", indexStr: "06", title: "SEO Optimization" },
+// Названия услуг берутся из словаря: ServiceTitles.<id>
+const SERVICES = [
+    { id: "web-dev", indexStr: "01" },
+    { id: "mobile-apps", indexStr: "02" },
+    { id: "3d-design", indexStr: "03" },
+    { id: "ai-chatbots", indexStr: "04" },
+    { id: "security-audit", indexStr: "05" },
+    { id: "seo-opt", indexStr: "06" },
 ];
 
 export function Hero() {
+    const t = useTranslations("Hero");
+    const tService = useTranslations("ServiceTitles");
     const [mode, setMode] = useState<"callback" | "direct">("callback");
     const [selectedCountry, setSelectedCountry] = useState<CountryConfig>(COUNTRIES[0]);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -261,7 +259,7 @@ export function Hero() {
         e.preventDefault();
 
         if (rawDigits.length < selectedCountry.digitsLength) {
-            setErrorMsg("Пожалуйста, укажите полный номер телефона");
+            setErrorMsg(t("errorPhone"));
             setIsShaking(true);
             setTimeout(() => setIsShaking(false), 500);
             if (inputRef.current) inputRef.current.focus();
@@ -284,7 +282,7 @@ export function Hero() {
 
     return (
         <section
-            aria-label="Hero Section"
+            aria-label={t("sectionAria")}
             className="relative w-full bg-white text-neutral-900 pt-28 sm:pt-36 lg:pt-[15vh] pb-6 overflow-x-clip"
         >
             {/* Глобальный аппаратный оптический курсор-тепловизор */}
@@ -322,8 +320,8 @@ export function Hero() {
                             </span>
                         </div>
                         <h1 className="font-serif text-[46px] xs:text-[54px] sm:text-[84px] md:text-[98px] lg:text-[108px] font-normal text-[#0A1A2F] tracking-[-0.04em] leading-[0.96] sm:leading-[0.98]">
-                            IT-Solutions <br />
-                            for you
+                            {t("titleLine1")} <br />
+                            {t("titleLine2")}
                         </h1>
                     </div>
 
@@ -342,7 +340,7 @@ export function Hero() {
                                         : "bg-transparent text-neutral-400 hover:text-neutral-700"
                                 }`}
                             >
-                                <span>Заказать звонок</span>
+                                <span>{t("tabCallback")}</span>
                             </button>
 
                             <button
@@ -357,7 +355,7 @@ export function Hero() {
                                         : "bg-transparent text-neutral-400 hover:text-neutral-700"
                                 }`}
                             >
-                                <span>Набрать самому</span>
+                                <span>{t("tabDirect")}</span>
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                             </button>
                         </div>
@@ -384,7 +382,7 @@ export function Hero() {
                                                 type="button"
                                                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                                                 className="flex items-center gap-1 sm:gap-1.5 pr-1.5 sm:pr-2 border-r border-neutral-200 select-none cursor-pointer hover:opacity-80 transition-opacity"
-                                                aria-label="Выбрать страну"
+                                                aria-label={t("chooseCountry")}
                                                 aria-expanded={isDropdownOpen}
                                             >
                                                 <span className="text-sm sm:text-base leading-none">{selectedCountry.flag}</span>
@@ -398,18 +396,18 @@ export function Hero() {
                                                 <div className="absolute top-full left-0 mt-3 w-64 max-w-[calc(100vw-3rem)] bg-white rounded-2xl shadow-[0_16px_40px_rgba(10,26,47,0.14)] border border-[#E2E8F4] p-1.5 z-50 flex flex-col gap-0.5 animate-fadeIn max-h-60 overflow-y-auto">
                                                     {COUNTRIES.map((c) => (
                                                         <button
-                                                            key={c.name}
+                                                            key={c.id}
                                                             type="button"
                                                             onClick={() => handleCountrySelect(c)}
                                                             className={`w-full px-3 py-2 rounded-xl text-left flex items-center justify-between text-xs font-medium transition-colors cursor-pointer ${
-                                                                selectedCountry.name === c.name
+                                                                selectedCountry.id === c.id
                                                                     ? "bg-[#F3F5FA] text-[#0A1A2F] font-bold"
                                                                     : "text-neutral-700 hover:bg-neutral-50"
                                                             }`}
                                                         >
                                                             <div className="flex items-center gap-2.5">
                                                                 <span className="text-base leading-none">{c.flag}</span>
-                                                                <span>{c.name}</span>
+                                                                <span>{t(`countries.${c.id}`)}</span>
                                                             </div>
                                                             <span className="font-mono text-neutral-400 font-semibold">{c.code}</span>
                                                         </button>
@@ -424,7 +422,7 @@ export function Hero() {
                                             value={getFormattedValue()}
                                             onChange={handlePhoneChange}
                                             placeholder={selectedCountry.mask}
-                                            aria-label="Номер телефона"
+                                            aria-label={t("phoneLabel")}
                                             className="w-full bg-transparent text-[16px] sm:text-[16px] text-[#0A1A2F] placeholder:text-neutral-300 focus:outline-none font-mono tracking-tight font-medium pl-1 min-w-0"
                                         />
                                     </div>
@@ -435,8 +433,8 @@ export function Hero() {
                                             isShaking ? "animate-[shake_0.4s_ease-in-out]" : ""
                                         }`}
                                     >
-                                        <span className="hidden xs:inline">{isSubmitted ? "Принято" : "Подтвердить"}</span>
-                                        <span className="xs:hidden">{isSubmitted ? "ОК" : "Отправить"}</span>
+                                        <span className="hidden xs:inline">{isSubmitted ? t("submitted") : t("submit")}</span>
+                                        <span className="xs:hidden">{isSubmitted ? t("submittedShort") : t("submitShort")}</span>
                                         {isSubmitted ? (
                                             <Check className="text-emerald-400" size={15} />
                                         ) : (
@@ -455,7 +453,7 @@ export function Hero() {
                                                 <span className="text-[15px] sm:text-[16px] font-mono font-bold text-[#0A1A2F] tracking-tight">
                                                     {directNumberDisplay}
                                                 </span>
-                                                <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Линия свободна" />
+                                                <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title={t("lineFree")} />
                                             </div>
                                         </div>
                                     </div>
@@ -465,14 +463,14 @@ export function Hero() {
                                             type="button"
                                             onClick={handleCopy}
                                             className="flex-1 sm:flex-initial h-10 px-3 rounded-xl bg-white hover:bg-neutral-50 border border-[#DFE4F0] text-neutral-700 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs active:scale-95"
-                                            title="Скопировать номер"
+                                            title={t("copyTitle")}
                                         >
                                             {copied ? <Check className="text-emerald-500" size={14} /> : <Copy size={14} />}
-                                            <span>{copied ? "Скопировано" : "Копия"}</span>
+                                            <span>{copied ? t("copied") : t("copy")}</span>
                                         </button>
 
                                         <a
-                                            href={`https://wa.me/${directNumberRaw}?text=${encodeURIComponent("Здравствуйте! Хочу обсудить проект с Asman Tech.")}`}
+                                            href={`https://wa.me/${directNumberRaw}?text=${encodeURIComponent(t("whatsappText"))}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="flex-1 sm:flex-initial h-10 px-4 rounded-xl bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-[#128C7E] text-xs font-semibold flex items-center justify-center gap-2 transition-all shadow-xs active:scale-95 group"
@@ -501,14 +499,14 @@ export function Hero() {
                                 <svg className="w-3.5 h-3.5 fill-[#25D366] shrink-0" viewBox="0 0 24 24">
                                     <path d="M12.031 2C6.51 2 2.016 6.494 2.016 12.015c0 1.954.566 3.778 1.545 5.32L2 22.031l4.838-1.527c1.478.89 3.208 1.405 5.193 1.405 5.521 0 10.015-4.494 10.015-10.015C22.046 6.494 17.552 2 12.031 2zm5.82 14.288c-.244.685-1.42 1.309-1.968 1.393-.523.08-1.206.115-1.957-.127-.482-.155-1.103-.36-1.905-.71-3.37-1.464-5.576-4.9-5.744-5.127-.168-.227-1.371-1.824-1.371-3.48 0-1.656.866-2.47 1.173-2.812.308-.342.671-.428.895-.428.224 0 .448.002.643.012.207.01.482-.078.754.576.28.673.957 2.336 1.042 2.508.084.172.14.373.028.598-.112.224-.168.365-.335.565-.168.2-.352.447-.504.6-.168.168-.343.351-.147.688.196.336.872 1.439 1.872 2.33 1.285 1.144 2.368 1.5 2.704 1.668.336.168.532.14.728-.084.196-.224.84-0.98 1.064-1.316.224-.336.448-.28.756-.168.308.112 1.96.924 2.296 1.092.336.168.56.252.644.392.084.14.084.812-.16 1.497z" />
                                 </svg>
-                                <span>Международный звонок будет произведён через WhatsApp</span>
+                                <span>{t("international")}</span>
                             </div>
                         )}
 
                         {/* Уведомление после отправки */}
                         {isSubmitted && mode === "callback" && (
                             <p className="text-[12px] text-emerald-600 font-medium pl-2 pt-2.5 flex items-center gap-1.5 animate-fadeIn">
-                                <Check size={14} /> Заявка принята! Инженер свяжется с вами в течение 10 минут.
+                                <Check size={14} /> {t("success")}
                             </p>
                         )}
                     </div>
@@ -536,7 +534,7 @@ export function Hero() {
                                             : "bg-transparent text-neutral-500 hover:text-neutral-900"
                                     }`}
                                 >
-                                    Услуги
+                                    {t("tabServices")}
                                 </button>
 
                                 <button
@@ -548,7 +546,7 @@ export function Hero() {
                                             : "bg-transparent text-neutral-500 hover:text-neutral-900"
                                     }`}
                                 >
-                                    Акции
+                                    {t("tabPromos")}
                                 </button>
                             </div>
 
@@ -581,7 +579,7 @@ export function Hero() {
                                                     {service.indexStr}
                                                 </span>
                                                 <span className="text-base sm:text-lg font-extrabold text-[#0A1A2F] tracking-tight truncate">
-                                                    {service.title}
+                                                    {tService(service.id)}
                                                 </span>
                                             </div>
 
@@ -605,7 +603,7 @@ export function Hero() {
                                     >
                                         <Image
                                             src="/images/sales.png"
-                                            alt="Акции и спецпредложения Asman Tech"
+                                            alt={t("promoAlt")}
                                             fill
                                             priority
                                             sizes="(max-width: 640px) 100vw, 520px"

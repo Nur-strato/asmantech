@@ -2,8 +2,10 @@
 
 import React from "react";
 import { Check } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export function WhyUs() {
+    const t = useTranslations("WhyUs");
     return (
         <section
             id="why-us"
@@ -16,13 +18,13 @@ export function WhyUs() {
                 <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 sm:gap-6 pb-5 sm:pb-6 border-b border-neutral-200">
                     <div className="space-y-2 sm:space-y-3 max-w-2xl">
                         <h2 className="font-serif italic text-3xl xs:text-4xl sm:text-6xl md:text-7xl font-normal tracking-tight text-neutral-950 leading-[1.02] sm:leading-none">
-                            Почему Asman Tech
+                            {t("title")}
                         </h2>
                     </div>
 
                     <div className="text-left sm:text-right max-w-sm">
                         <p className="font-mono text-[13px] xs:text-[14px] sm:text-[16px] uppercase tracking-wider text-neutral-600 leading-snug font-semibold">
-                            ШЕСТЬ ПРИНЦИПОВ, КОТОРЫЕ ДЕЛАЮТ НАШУ РАБОТУ ОСОБЕННОЙ
+                            {t("subtitle")}
                         </p>
                     </div>
                 </div>
@@ -38,10 +40,10 @@ export function WhyUs() {
 
                             <div className="relative z-10 space-y-2.5 sm:space-y-3 max-w-full sm:max-w-sm pr-6 sm:pr-0">
                                 <h3 className="font-serif italic text-[22px] xs:text-[25px] sm:text-[33px] font-normal tracking-tight text-white leading-snug">
-                                    Следим за технологиями будущего
+                                    {t("p1.title")}
                                 </h3>
                                 <p className="text-neutral-300 text-[13.5px] xs:text-[14.5px] sm:text-[17px] leading-[1.6] sm:leading-[1.7] font-sans font-medium">
-                                    Изучаем передовые технологии и мировые тренды, чтобы создавать современные цифровые продукты.
+                                    {t("p1.text")}
                                 </p>
                             </div>
 
@@ -75,10 +77,10 @@ export function WhyUs() {
 
                             <div className="relative z-10 space-y-2.5 sm:space-y-3 max-w-full sm:max-w-xs pr-6 sm:pr-0">
                                 <h3 className="font-sans text-[22px] xs:text-[25px] sm:text-[33px] font-bold tracking-tight text-neutral-950 leading-tight">
-                                    Внедряем инновации
+                                    {t("p2.title")}
                                 </h3>
                                 <p className="text-neutral-600 text-[13.5px] xs:text-[14.5px] sm:text-[17px] leading-[1.6] sm:leading-[1.7] font-sans font-medium">
-                                    Не просто следим за новинками — применяем современные технологии там, где они действительно дают преимущество.
+                                    {t("p2.text")}
                                 </p>
                             </div>
 
@@ -122,10 +124,10 @@ export function WhyUs() {
 
                             <div className="relative z-10 space-y-2.5 sm:space-y-3 max-w-full sm:max-w-xs pr-6 sm:pr-0">
                                 <h3 className="font-sans text-[22px] xs:text-[25px] sm:text-[33px] font-bold tracking-tight text-neutral-950 leading-tight">
-                                    Находим нестандартные решения
+                                    {t("p3.title")}
                                 </h3>
                                 <p className="text-neutral-600 text-[13.5px] xs:text-[14.5px] sm:text-[17px] leading-[1.6] sm:leading-[1.7] font-sans font-medium">
-                                    Продумываем интеллектуальные решения, которые улучшают функциональность, удобство и эффективность вашего сайта.
+                                    {t("p3.text")}
                                 </p>
                             </div>
 
@@ -166,10 +168,10 @@ export function WhyUs() {
 
                             <div className="relative z-10 space-y-2.5 sm:space-y-3 max-w-full sm:max-w-sm pr-6 sm:pr-0">
                                 <h3 className="font-serif italic text-[22px] xs:text-[25px] sm:text-[33px] font-normal tracking-tight text-white leading-snug">
-                                    Гарантируем результат
+                                    {t("p4.title")}
                                 </h3>
                                 <p className="text-neutral-300 text-[13.5px] xs:text-[14.5px] sm:text-[17px] leading-[1.6] sm:leading-[1.7] font-sans font-medium">
-                                    Предоставляем гарантию на выполненные работы в соответствии с условиями договора.
+                                    {t("p4.text")}
                                 </p>
                             </div>
 
@@ -197,13 +199,13 @@ export function WhyUs() {
 
                             <div className="md:col-span-5 space-y-1.5 sm:space-y-2">
                                 <h3 className="font-serif italic text-[22px] xs:text-[25px] sm:text-[33px] md:text-[39px] font-normal tracking-tight text-neutral-950">
-                                    Работаем по договору
+                                    {t("p5.title")}
                                 </h3>
                             </div>
 
                             <div className="md:col-span-4">
                                 <p className="text-neutral-600 text-[13.5px] xs:text-[14.5px] sm:text-[17px] leading-[1.6] sm:leading-[1.7] font-sans max-w-sm font-medium">
-                                    Фиксируем стоимость, сроки, объём работ и обязательства сторон до начала проекта.
+                                    {t("p5.text")}
                                 </p>
                             </div>
 
@@ -236,13 +238,13 @@ export function WhyUs() {
 
                             <div className="md:col-span-5 space-y-1.5 sm:space-y-2">
                                 <h3 className="font-serif italic text-[22px] xs:text-[25px] sm:text-[33px] md:text-[39px] font-normal tracking-tight text-white">
-                                    Отвечаем за качество
+                                    {t("p6.title")}
                                 </h3>
                             </div>
 
                             <div className="md:col-span-4">
                                 <p className="text-neutral-300 text-[13.5px] xs:text-[14.5px] sm:text-[17px] leading-[1.6] sm:leading-[1.7] font-sans max-w-sm font-medium">
-                                    Если результат не соответствует согласованным требованиям и мы не можем устранить недостатки в установленном порядке, возвращаем деньги на условиях договора.
+                                    {t("p6.text")}
                                 </p>
                             </div>
 
