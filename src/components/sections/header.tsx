@@ -1,4 +1,3 @@
-
 "use client";
 
 import Image from "next/image";
@@ -15,7 +14,7 @@ import { ArrowUpRight, X } from "lucide-react";
 import { Curtain, type CurtainState } from "@/components/ui/curtain";
 
 // --------------------------------------------------
-// CONSTANTS
+// CONSTANTS & TYPES
 // --------------------------------------------------
 
 const CURTAIN_TIMINGS = {
@@ -26,12 +25,18 @@ const CURTAIN_TIMINGS = {
 
 const SCROLL_THRESHOLD = 20;
 
-const NAV_LINKS = [
+interface NavItem {
+    key: "solutions" | "projects" | "guarantee" | "offers";
+    href: string;
+    badge?: string;
+}
+
+const NAV_LINKS: readonly NavItem[] = [
     { key: "solutions", href: "/solutions" },
     { key: "projects", href: "/projects" },
     { key: "guarantee", href: "/guarantee" },
     { key: "offers", href: "/offers", badge: "−40%" },
-] as const;
+];
 
 const MOBILE_MENU_ID = "mobile-navigation";
 
@@ -59,7 +64,6 @@ function useScrollPosition(threshold: number) {
             animationFrame = null;
         };
 
-        // Correct initial state.
         updateScrollPosition();
 
         const handleScroll = () => {
@@ -96,11 +100,9 @@ function useBodyScrollLock(isLocked: boolean) {
 
         const body = document.body;
 
-        // Preserve original inline styles.
         const originalOverflow = body.style.overflow;
         const originalPaddingRight = body.style.paddingRight;
 
-        // Prevent layout shift when the scrollbar disappears.
         const scrollbarWidth =
             window.innerWidth -
             document.documentElement.clientWidth;
@@ -142,7 +144,6 @@ function useMobileMenuAccessibility(
             | HTMLElement
             | null;
 
-        // Move focus inside the menu after it opens.
         closeButtonRef.current?.focus();
 
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -198,7 +199,6 @@ function useMobileMenuAccessibility(
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
 
-            // Restore focus to the menu trigger.
             if (triggerRef.current?.isConnected) {
                 triggerRef.current.focus();
             } else if (previouslyFocused?.isConnected) {
@@ -287,7 +287,6 @@ export function Header() {
     const handleHomeClick = (
         event: MouseEvent<HTMLAnchorElement>
     ) => {
-        // Preserve native browser link behavior.
         const isModifiedClick =
             event.metaKey ||
             event.ctrlKey ||
@@ -316,7 +315,6 @@ export function Header() {
         event.preventDefault();
         closeMobileMenu();
 
-        // Respect reduced motion preferences.
         const prefersReducedMotion =
             window.matchMedia(
                 "(prefers-reduced-motion: reduce)"
