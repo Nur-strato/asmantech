@@ -23,6 +23,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         title: t("title"),
         description: t("description"),
         keywords: t("keywords").split(", "),
+        icons: {
+            icon: [
+                { url: "/icon.png", sizes: "512x512", type: "image/png" },
+            ],
+            apple: [
+                { url: "/icon.png", sizes: "512x512", type: "image/png" },
+            ],
+        },
     };
 }
 

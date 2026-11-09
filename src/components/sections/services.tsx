@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "@/i18n/navigation";
 import { ArrowUpRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-// Заголовки и описания берутся из словаря: ServicesSection.items.<num>
 interface ServiceItem {
     num: string;
     href: string;
@@ -13,36 +12,12 @@ interface ServiceItem {
 }
 
 const SERVICES: ServiceItem[] = [
-    {
-        num: "01",
-        href: "/solutions/web-dev",
-        visualType: "bars",
-    },
-    {
-        num: "02",
-        href: "/solutions/mobile-apps",
-        visualType: "pyramid",
-    },
-    {
-        num: "03",
-        href: "/solutions/3d-design",
-        visualType: "sphere",
-    },
-    {
-        num: "04",
-        href: "/solutions/ai-chatbots",
-        visualType: "waves",
-    },
-    {
-        num: "05",
-        href: "/solutions/security-audit",
-        visualType: "shield",
-    },
-    {
-        num: "06",
-        href: "/solutions/seo-opt",
-        visualType: "radial",
-    },
+    { num: "01", href: "/solutions/web-dev", visualType: "bars" },
+    { num: "02", href: "/solutions/mobile-apps", visualType: "pyramid" },
+    { num: "03", href: "/solutions/3d-design", visualType: "sphere" },
+    { num: "04", href: "/solutions/ai-chatbots", visualType: "waves" },
+    { num: "05", href: "/solutions/security-audit", visualType: "shield" },
+    { num: "06", href: "/solutions/seo-opt", visualType: "radial" },
 ];
 
 export function Services() {
@@ -51,48 +26,60 @@ export function Services() {
     const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
     const sectionRef = useRef<HTMLElement | null>(null);
 
+    const toggleCard = useCallback((index: number) => {
+        setOpenedSet((prev) => {
+            const updated = new Set(prev);
+            if (updated.has(index)) {
+                if (updated.size > 1) updated.delete(index);
+            } else {
+                updated.add(index);
+            }
+            return updated;
+        });
+    }, []);
+
     useEffect(() => {
-        const observers: IntersectionObserver[] = [];
         const isMobile = window.innerWidth < 768;
+        const dynamicMargin = isMobile ? "-12% 0px -18% 0px" : "-25% 0px -35% 0px";
+        const targetThreshold = isMobile ? 0.15 : 0.2;
 
-        // На мобильных экранах уменьшаем мертвые зоны, исключая дерганье аккордеона при быстром свайпе
-        const dynamicMargin = isMobile
-            ? "-12% 0px -18% 0px"
-            : "-25% 0px -35% 0px";
+        const observer = new IntersectionObserver(
+            (entries) => {
+                setOpenedSet((prev) => {
+                    let updated = new Set(prev);
+                    let changed = false;
 
-        itemRefs.current.forEach((el, index) => {
-            if (!el) return;
+                    entries.forEach((entry) => {
+                        const index = Number(entry.target.getAttribute("data-index"));
+                        if (isNaN(index)) return;
 
-            const observer = new IntersectionObserver(
-                ([entry]) => {
-                    const rect = entry.boundingClientRect;
-                    const isVisibleInFocus = entry.isIntersecting;
+                        const rect = entry.boundingClientRect;
 
-                    if (isVisibleInFocus) {
-                        setOpenedSet((prev) => {
-                            if (prev.has(index)) return prev;
-                            const updated = new Set(prev);
-                            updated.add(index);
-                            return updated;
-                        });
-                    } else if (rect.top > 0 && index !== 0) {
-                        setOpenedSet((prev) => {
-                            if (!prev.has(index)) return prev;
-                            const updated = new Set(prev);
-                            updated.delete(index);
-                            return updated;
-                        });
-                    }
-                },
-                {
-                    root: null,
-                    rootMargin: dynamicMargin,
-                    threshold: isMobile ? 0.15 : 0.2,
-                }
-            );
+                        if (entry.intersectionRatio >= targetThreshold) {
+                            if (!updated.has(index)) {
+                                updated.add(index);
+                                changed = true;
+                            }
+                        } else if (entry.intersectionRatio === 0 && rect.top > 0 && index !== 0) {
+                            if (updated.has(index)) {
+                                updated.delete(index);
+                                changed = true;
+                            }
+                        }
+                    });
 
-            observer.observe(el);
-            observers.push(observer);
+                    return changed ? updated : prev;
+                });
+            },
+            {
+                root: null,
+                rootMargin: dynamicMargin,
+                threshold: [0, targetThreshold],
+            }
+        );
+
+        itemRefs.current.forEach((el) => {
+            if (el) observer.observe(el);
         });
 
         const sectionEl = sectionRef.current;
@@ -111,30 +98,16 @@ export function Services() {
         }
 
         return () => {
-            observers.forEach((obs) => obs.disconnect());
+            observer.disconnect();
             if (sectionObserver) sectionObserver.disconnect();
         };
     }, []);
 
-    const toggleCard = (index: number) => {
-        setOpenedSet((prev) => {
-            const updated = new Set(prev);
-            if (updated.has(index)) {
-                if (updated.size > 1) updated.delete(index);
-            } else {
-                updated.add(index);
-            }
-            return updated;
-        });
-    };
-
     const renderVisual = (type: ServiceItem["visualType"], isOpen: boolean) => {
         return (
             <div
-                style={{
-                    transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
-                }}
-                className={`absolute right-0 top-0 bottom-0 w-[68%] xs:w-[60%] sm:w-[55%] md:w-[48%] overflow-hidden pointer-events-none select-none transition-all duration-[1000ms] ease-out ${
+                style={{ transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)" }}
+                className={`absolute right-0 top-0 bottom-0 w-[68%] xs:w-[60%] sm:w-[55%] md:w-[48%] overflow-hidden pointer-events-none select-none transition-[transform,opacity] duration-[1000ms] ease-out transform-gpu will-change-[transform,opacity] ${
                     isOpen
                         ? "opacity-35 sm:opacity-100 scale-100 translate-x-0"
                         : "opacity-0 scale-95 translate-x-10 sm:translate-x-14"
@@ -245,14 +218,13 @@ export function Services() {
                     return (
                         <div
                             key={service.num}
+                            data-index={index}
                             ref={(el) => {
                                 itemRefs.current[index] = el;
                             }}
                             onClick={() => toggleCard(index)}
-                            style={{
-                                transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
-                            }}
-                            className={`relative rounded-[24px] sm:rounded-[32px] lg:rounded-[40px] transition-all duration-[1000ms] ease-out cursor-pointer overflow-hidden border select-none [touch-action:manipulation] ${
+                            style={{ transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)" }}
+                            className={`relative rounded-[24px] sm:rounded-[32px] lg:rounded-[40px] transition-all duration-[1000ms] ease-out cursor-pointer overflow-hidden border select-none [touch-action:manipulation] transform-gpu ${
                                 isOpen
                                     ? "bg-[#08090D] text-white border-neutral-800/90 shadow-[0_30px_70px_rgba(0,102,255,0.08)] scale-[1.002] sm:scale-[1.004]"
                                     : "bg-[#F8F9FA] hover:bg-[#F1F3F5] text-neutral-900 border-neutral-200/80 scale-100"
@@ -263,10 +235,8 @@ export function Services() {
                             <div className="relative z-10 p-6 xs:p-7 sm:p-12 lg:p-14">
                                 <div className="flex items-start sm:items-center justify-between gap-4 sm:gap-6">
                                     <h3
-                                        style={{
-                                            transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
-                                        }}
-                                        className={`font-sans font-bold tracking-[-0.035em] transition-all duration-700 leading-[1.12] sm:leading-[1.08] pr-2 ${
+                                        style={{ transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)" }}
+                                        className={`font-sans font-bold tracking-[-0.035em] transition-colors duration-700 leading-[1.12] sm:leading-[1.08] pr-2 ${
                                             isOpen
                                                 ? "text-[21px] xs:text-[23px] sm:text-4xl lg:text-[50px] text-white"
                                                 : "text-[18px] xs:text-[20px] sm:text-3xl lg:text-[40px] text-neutral-900"
@@ -276,9 +246,6 @@ export function Services() {
                                     </h3>
 
                                     <span
-                                        style={{
-                                            transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
-                                        }}
                                         className={`font-mono text-sm sm:text-xl font-bold select-none shrink-0 transition-colors duration-700 pt-0.5 sm:pt-0 ${
                                             isOpen ? "text-sky-400" : "text-neutral-400"
                                         }`}
@@ -288,9 +255,7 @@ export function Services() {
                                 </div>
 
                                 <div
-                                    style={{
-                                        transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
-                                    }}
+                                    style={{ transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)" }}
                                     className={`grid transition-[grid-template-rows,opacity] duration-[1000ms] ease-out ${
                                         isOpen
                                             ? "grid-rows-[1fr] opacity-100"
@@ -299,10 +264,9 @@ export function Services() {
                                 >
                                     <div className="overflow-hidden">
                                         <div
-                                            style={{
-                                                transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
-                                            }}
-                                            className={`pt-5 sm:pt-8 lg:pt-10 space-y-6 sm:space-y-8 max-w-xl transition-all duration-[1000ms] delay-100 transform ${
+                                            style={{ transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)" }}
+                                            // ВОЗВРАЩЕН БЛЮР С АППАРАТНЫМ УСКОРЕНИЕМ (transform-gpu + will-change-filter)
+                                            className={`pt-5 sm:pt-8 lg:pt-10 space-y-6 sm:space-y-8 max-w-xl transition-all duration-[1000ms] delay-100 transform-gpu will-change-[transform,opacity,filter] ${
                                                 isOpen
                                                     ? "translate-y-0 opacity-100 filter blur-0"
                                                     : "translate-y-6 opacity-0 filter blur-[4px]"
@@ -321,7 +285,7 @@ export function Services() {
                                                     <span className="underline underline-offset-4 decoration-neutral-600 group-hover:decoration-sky-400 transition-colors">
                                                         {t("explore")}
                                                     </span>
-                                                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white text-[#08090D] group-hover:bg-sky-400 group-hover:text-black flex items-center justify-center transition-all duration-300 group-hover:translate-x-1 group-hover:-translate-y-1 shrink-0">
+                                                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white text-[#08090D] group-hover:bg-sky-400 group-hover:text-black flex items-center justify-center transition-all duration-300 group-hover:translate-x-1 group-hover:-translate-y-1 shrink-0 transform-gpu">
                                                         <ArrowUpRight size={16} strokeWidth={2.4} />
                                                     </div>
                                                 </Link>
@@ -329,7 +293,6 @@ export function Services() {
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     );
