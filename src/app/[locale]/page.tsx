@@ -1,7 +1,7 @@
 import { Hero } from "@/components/sections/hero";
 import { TrustedBy } from "@/components/sections/trusted-by";
 import { Services } from "@/components/sections/services";
-import { Projects } from "@/components/sections/projects";
+import { ProjectsSection } from "@/components/sections/projects";
 import { WhyUs } from "@/components/sections/why-us";
 import { GuaranteeSupport } from "@/components/sections/guarantee-support";
 import { SocialChannels } from "@/components/sections/social-channels";
@@ -29,9 +29,9 @@ export default function Home() {
                 <Services />
             </div>
 
-            {/* 3. PROJECTS SECTION (Полноэкранная 3D-витрина) */}
+            {/* 3. PROJECTS SECTION (Cases Studies карусель) */}
             <section className="w-full">
-                <Projects />
+                <ProjectsSection />
             </section>
 
             {/* 4. WHY US SECTION (Принципы 01—06) */}

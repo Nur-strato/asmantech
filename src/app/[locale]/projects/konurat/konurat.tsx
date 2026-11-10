@@ -112,3 +112,5 @@ export function ConuratSandbox({ isZoomed }: { isZoomed: boolean }) {
         </div>
     );
 }
+
+export default ConuratSandbox;

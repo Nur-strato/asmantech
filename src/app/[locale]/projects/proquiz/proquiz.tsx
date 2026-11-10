@@ -217,15 +217,15 @@ export function ProQuizSandbox({ isZoomed }: { isZoomed: boolean }) {
 
                             <div className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 text-right font-mono text-[9px] sm:text-[10px] text-blue-400/25 pointer-events-none select-none hidden md:block leading-relaxed">
                                 [CINEMA]<br />
-                                • Bananas are...<br />
+                                Bananas are...<br />
                                 [SPORTS] F...<br />
-                                • The Pacific...<br />
+                                The Pacific...<br />
                                 [IT] Python...<br />
-                                • Sound travel...<br />
+                                Sound travel...<br />
                                 [SCIENCE]<br />
-                                • An octopus...<br />
+                                An octopus...<br />
                                 [ART] V...<br />
-                                • Cleopatra...
+                                Cleopatra...
                             </div>
 
                             <div className="space-y-5 z-10 my-auto">
@@ -469,3 +469,5 @@ export function ProQuizSandbox({ isZoomed }: { isZoomed: boolean }) {
         </div>
     );
 }
+
+export default ProQuizSandbox;

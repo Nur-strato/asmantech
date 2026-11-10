@@ -2,9 +2,9 @@
 
 import React from "react";
 import { ProjectItem } from "./part2";
-import { AucahackSandbox } from "./inter_aucahack";
-import { ProQuizSandbox } from "./inter_proquiz";
-import { ConuratSandbox } from "./inter_conurat";
+import { AucahackSandbox } from "./aucahack/aucahack";
+import { ProQuizSandbox } from "./proquiz/proquiz";
+import { ConuratSandbox } from "./konurat/konurat";
 
 export interface SandboxProps {
     project: ProjectItem;
