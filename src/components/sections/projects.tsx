@@ -4,15 +4,9 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { ArrowLeft, ArrowRight, ArrowUpRight, X, Monitor, Smartphone } from "lucide-react";
 
-// ── Импорты компонентов проектов ──────────────────────────────
-import { AucahackSandbox } from "@/app/[locale]/projects/aucahack/aucahack";
-import { ConuratSandbox } from "@/app/[locale]/projects/konurat/konurat";
-import { ProQuizSandbox } from "@/app/[locale]/projects/proquiz/proquiz";
-// ──────────────────────────────────────────────────────────────
-
 const AUTOPLAY_MS = 8000;
 
-interface CaseItem {
+export interface CaseItem {
     id: string;
     name: string;
     tagline: string;
@@ -20,9 +14,10 @@ interface CaseItem {
     category: string;
     imageUrl: string;
     accent: string;
+    embedUrl?: string;
 }
 
-const CASES: CaseItem[] = [
+const DEFAULT_CASES: CaseItem[] = [
     {
         id: "aucahack",
         name: "AUCAHACK",
@@ -32,6 +27,7 @@ const CASES: CaseItem[] = [
         category: "AUCA Student Hub",
         imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000&auto=format&fit=crop",
         accent: "#FACC15",
+        embedUrl: "/embed/aucahack",
     },
     {
         id: "konurat",
@@ -42,6 +38,7 @@ const CASES: CaseItem[] = [
         category: "Сайт Строительной компании",
         imageUrl: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2000&auto=format&fit=crop",
         accent: "#22C55E",
+        embedUrl: "/embed/konurat",
     },
     {
         id: "proquiz",
@@ -52,6 +49,7 @@ const CASES: CaseItem[] = [
         category: "Сайт для Межвузовской лиги",
         imageUrl: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=2000&auto=format&fit=crop",
         accent: "#3B82F6",
+        embedUrl: "/embed/proquiz",
     },
     {
         id: "knopka",
@@ -62,47 +60,50 @@ const CASES: CaseItem[] = [
         category: "Бухгалтерская компания",
         imageUrl: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=2000&auto=format&fit=crop",
         accent: "#B28CFF",
+        embedUrl: "/embed/knopka",
     },
 ];
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
-function renderProjectContent(id: string) {
-    switch (id) {
-        case "aucahack":
-            return <AucahackSandbox isZoomed={true} />;
-        case "konurat":
-            return <ConuratSandbox isZoomed={true} />;
-        case "proquiz":
-            return <ProQuizSandbox isZoomed={true} />;
-        case "knopka":
-        default:
-            return (
-                <div className="flex h-full flex-col items-center justify-center p-8 text-center font-mono">
-                    <span className="text-xs uppercase tracking-wider text-neutral-400">
-                        Knopka // Бухгалтерская компания
-                    </span>
-                    <p className="mt-2 text-sm text-neutral-600">
-                        Интерактивный прототип находится в процессе подготовки.
-                    </p>
-                </div>
-            );
-    }
-}
-
 export function Projects() {
+    const [cases, setCases] = useState<CaseItem[]>(DEFAULT_CASES);
     const [index, setIndex] = useState(0);
     const [paused, setPaused] = useState(false);
     const [reduced, setReduced] = useState(false);
     const [modalCase, setModalCase] = useState<CaseItem | null>(null);
 
     const stageRef = useRef<HTMLDivElement>(null);
-    const modalRef = useRef<HTMLDivElement>(null);
     const startX = useRef<number | null>(null);
 
-    const go = useCallback((i: number) => setIndex((i + CASES.length) % CASES.length), []);
+    // ── Синхронизация с архивом проектов из /admin ────────────────
+    useEffect(() => {
+        const saved = localStorage.getItem("asman_archive_projects");
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    const normalized: CaseItem[] = parsed.map((p) => ({
+                        id: p.id,
+                        name: p.title || p.name,
+                        tagline: p.tagline || "Custom engineered digital product.",
+                        link: p.externalLink || p.link || "#",
+                        category: p.category || "Проект",
+                        imageUrl: p.imageUrl || "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000&auto=format&fit=crop",
+                        accent: p.accent || "#3B82F6",
+                        embedUrl: p.embedUrl || `/embed/${p.id}`,
+                    }));
+                    setCases(normalized);
+                }
+            } catch (err) {
+                console.error("Ошибка загрузки архива проектов:", err);
+            }
+        }
+    }, []);
 
-    // ── Изоляция скролла: фоновый сайт заблокирован, внутри экранов скролл свободен ──
+    const go = useCallback((i: number) => setIndex((i + cases.length) % cases.length), [cases.length]);
+
+    // ── Изоляция скролла: фоновый сайт заблокирован намертво ──────
     useEffect(() => {
         if (!modalCase) return;
 
@@ -111,51 +112,17 @@ export function Projects() {
         document.body.style.overflow = "hidden";
         document.documentElement.style.overflow = "hidden";
 
-        const modalEl = modalRef.current;
-        if (!modalEl) return;
-
-        const onWheel = (e: WheelEvent) => {
-            // Останавливаем всплытие к window, чтобы smooth-scroll провайдеры не двигали страницу
-            e.stopPropagation();
-
-            const target = e.target as HTMLElement | null;
-            const isOverDevice = target?.closest(".device-screen-frame");
-
-            // Если курсор над темным фоном модалки — блокируем скролл полностью
-            if (!isOverDevice) {
-                e.preventDefault();
-            }
-            // Если курсор внутри устройства — НЕ вызываем preventDefault, давая браузеру нативно скроллить
-        };
-
-        const onTouchMove = (e: TouchEvent) => {
-            e.stopPropagation();
-            const target = e.target as HTMLElement | null;
-            const isOverDevice = target?.closest(".device-screen-frame");
-            if (!isOverDevice) {
-                e.preventDefault();
-            }
-        };
-
-        modalEl.addEventListener("wheel", onWheel, { passive: false });
-        modalEl.addEventListener("touchmove", onTouchMove, { passive: false });
-
-        return () => {
-            document.body.style.overflow = originalBodyOverflow;
-            document.documentElement.style.overflow = originalHtmlOverflow;
-            modalEl.removeEventListener("wheel", onWheel);
-            modalEl.removeEventListener("touchmove", onTouchMove);
-        };
-    }, [modalCase]);
-
-    // Закрытие по Escape
-    useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === "Escape") setModalCase(null);
         };
         window.addEventListener("keydown", handleKeyDown);
-        return () => window.removeEventListener("keydown", handleKeyDown);
-    }, []);
+
+        return () => {
+            document.body.style.overflow = originalBodyOverflow;
+            document.documentElement.style.overflow = originalHtmlOverflow;
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [modalCase]);
 
     useEffect(() => {
         const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -180,12 +147,12 @@ export function Projects() {
         const py = (e.clientY - r.top) / r.height;
         el.style.setProperty("--px", px.toFixed(3));
         el.style.setProperty("--py", py.toFixed(3));
-        el.style.setProperty("--mx", (((px - 0.5) * 2)).toFixed(3));
-        el.style.setProperty("--my", (((py - 0.5) * 2)).toFixed(3));
+        el.style.setProperty("--mx", ((px - 0.5) * 2).toFixed(3));
+        el.style.setProperty("--my", ((py - 0.5) * 2).toFixed(3));
     };
 
-    const current = CASES[index];
-    const words = current.name.split(" ");
+    const current = cases[index] || cases[0];
+    const words = (current?.name || "").split(" ");
 
     return (
         <section
@@ -203,25 +170,8 @@ export function Projects() {
                 .pj-bar { transform-origin: left; animation: pj-bar ${AUTOPLAY_MS}ms linear forwards; }
                 @media (prefers-reduced-motion: reduce) { .pj-ch, .pj-fade { animation: none; } .pj-bar { animation: none; transform: scaleX(1); } }
 
-                /* Нативная изоляция скролла внутри девайсов */
-                .device-screen-frame,
-                .device-screen-frame * {
+                .device-screen-frame {
                     overscroll-behavior: contain !important;
-                }
-                .device-screen-frame *::-webkit-scrollbar {
-                    width: 5px !important;
-                    height: 5px !important;
-                    display: block !important;
-                }
-                .device-screen-frame *::-webkit-scrollbar-track {
-                    background: rgba(0, 0, 0, 0.04) !important;
-                }
-                .device-screen-frame *::-webkit-scrollbar-thumb {
-                    background: rgba(0, 0, 0, 0.25) !important;
-                    border-radius: 9999px !important;
-                }
-                .device-screen-frame *::-webkit-scrollbar-thumb:hover {
-                    background: rgba(0, 0, 0, 0.45) !important;
                 }
             `}</style>
 
@@ -239,7 +189,7 @@ export function Projects() {
                     </h2>
                     <div className="flex items-center gap-3">
                         <span className="mr-1 text-sm tabular-nums text-white/45">
-                            {pad(index + 1)} / {pad(CASES.length)}
+                            {pad(index + 1)} / {pad(cases.length)}
                         </span>
                         <button
                             type="button"
@@ -292,7 +242,7 @@ export function Projects() {
                             transition: "transform .25s ease-out",
                         }}
                     >
-                        {CASES.map((c, i) => (
+                        {cases.map((c, i) => (
                             <Image
                                 key={c.id}
                                 src={c.imageUrl}
@@ -366,7 +316,7 @@ export function Projects() {
                 </p>
 
                 <div role="tablist" className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-                    {CASES.map((c, i) => {
+                    {cases.map((c, i) => {
                         const active = i === index;
                         return (
                             <button
@@ -414,10 +364,9 @@ export function Projects() {
                 </div>
             </div>
 
-            {/* ── МОДАЛЬНЫЙ СТЕНД ── */}
+            {/* ── МОДАЛЬНЫЙ СТЕНД (МОНИТОР + ТЕЛЕФОН НА IFRAME) ── */}
             {modalCase && (
                 <div
-                    ref={modalRef}
                     data-lenis-prevent="true"
                     className="fixed inset-0 z-50 flex items-center justify-center bg-[#070B14]/92 backdrop-blur-2xl animate-in fade-in duration-200"
                 >
@@ -455,10 +404,13 @@ export function Projects() {
                                             </div>
                                         </div>
 
-                                        {/* Свободно скроллируемый контейнер */}
-                                        <div className="flex-1 min-h-0 w-full h-full bg-white flex flex-col overflow-y-auto">
-                                            {renderProjectContent(modalCase.id)}
-                                        </div>
+                                        {/* Изолированный встроенный сайт из архива */}
+                                        <iframe
+                                            src={modalCase.embedUrl || `/embed/${modalCase.id}`}
+                                            title={`${modalCase.name} Desktop`}
+                                            className="w-full flex-1 border-0 bg-white"
+                                            loading="lazy"
+                                        />
                                     </div>
 
                                     <div className="h-6 sm:h-8 flex items-center justify-center">
@@ -490,10 +442,13 @@ export function Projects() {
                                         </div>
                                     </div>
 
-                                    {/* Свободно скроллируемый контейнер */}
-                                    <div className="flex-1 min-h-0 w-full h-full bg-white flex flex-col overflow-y-auto">
-                                        {renderProjectContent(modalCase.id)}
-                                    </div>
+                                    {/* Изолированный встроенный сайт из архива */}
+                                    <iframe
+                                        src={modalCase.embedUrl || `/embed/${modalCase.id}`}
+                                        title={`${modalCase.name} Mobile`}
+                                        className="w-full flex-1 border-0 bg-white"
+                                        loading="lazy"
+                                    />
 
                                     <div className="h-4 bg-white/95 backdrop-blur-xs flex items-center justify-center shrink-0 border-t border-neutral-100">
                                         <span className="w-24 h-1 bg-neutral-400 rounded-full" />

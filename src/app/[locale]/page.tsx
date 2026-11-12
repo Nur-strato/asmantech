@@ -34,8 +34,8 @@ export default function Home() {
                 <ProjectsSection />
             </section>
 
-            {/* 4. WHY US SECTION (Принципы 01—06) */}
-            <section className="w-full">
+            {/* 4. WHY US SECTION — на всю ширину экрана */}
+            <section className="w-full bg-[#06070B] py-20 sm:py-28 px-4 sm:px-8 md:px-12 lg:px-16 overflow-hidden">
                 <WhyUs />
             </section>
 

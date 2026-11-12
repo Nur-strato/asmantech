@@ -7,13 +7,19 @@ const handleI18nRouting = createMiddleware(routing);
 export default function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
-    // 1. Если в URL попал язык перед admin (/en/admin или /kg/admin) -> редиректим на чистый /admin
-    if (pathname.match(/^\/(?:en|kg|ru)\/admin(?:\/.*)?$/)) {
-        return NextResponse.redirect(new URL("/admin", request.url));
+    // 1. Если язык попал перед admin (/ru/admin) или embed (/ru/embed) -> убираем языковой префикс
+    if (pathname.match(/^\/(?:en|kg|ru)\/(admin|embed)(?:\/.*)?$/)) {
+        const cleanPath = pathname.replace(/^\/(?:en|kg|ru)/, "");
+        return NextResponse.redirect(new URL(cleanPath, request.url));
     }
 
-    // 2. Если путь /admin -> сразу отдаем его, не трогая интернационализацию
-    if (pathname === "/admin" || pathname.startsWith("/admin/")) {
+    // 2. Изолированные роуты: admin и embed отдаем напрямую, минуя next-intl
+    if (
+        pathname === "/admin" ||
+        pathname.startsWith("/admin/") ||
+        pathname === "/embed" ||
+        pathname.startsWith("/embed/")
+    ) {
         return NextResponse.next();
     }
 
@@ -22,6 +28,6 @@ export default function middleware(request: NextRequest) {
 }
 
 export const config = {
-    // Пропускаем мимо middleware статику, картинки, API и фавиконки
-    matcher: ["/((?!api|_next|_vercel|images|.*\\..*).*)"],
+    // Пропускаем мимо middleware статику, картинки, API, embed и фавиконки
+    matcher: ["/((?!api|_next|_vercel|images|embed|.*\\..*).*)"],
 };
