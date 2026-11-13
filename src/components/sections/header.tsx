@@ -383,35 +383,38 @@ export function Header() {
         </>
     );
 
-    const renderContactsCta = (mobile = false) => (
-        <Link
-            href="/contacts"
-            onClick={mobile ? closeMobileMenu : undefined}
-            aria-current={isContactsActive ? "page" : undefined}
-            className={`group inline-flex items-center justify-between font-semibold transition-[background-color,color,border-color,box-shadow,transform] duration-200 active:scale-[0.98] motion-reduce:transition-none ${FOCUS_RING} focus-visible:outline-offset-4 ${
-                mobile
-                    ? "h-[66px] w-full gap-6 rounded-[20px] pl-6 pr-2 text-[19px]"
-                    : "h-[46px] gap-3.5 rounded-full pl-5 pr-1 text-[16px]"
-            } ${
-                isContactsActive
-                    ? "border border-neutral-950 bg-neutral-950 text-white shadow-[0_8px_20px_-6px_rgba(15,23,42,0.4)] hover:bg-neutral-900"
-                    : "border border-neutral-300 bg-white text-neutral-950 shadow-[0_2px_10px_-3px_rgba(15,23,42,0.08)] hover:border-neutral-950 hover:shadow-[0_8px_20px_-6px_rgba(15,23,42,0.16)]"
-            }`}
-        >
-            <span className="tracking-tight">{mobile ? t("contactUs") : tNav("contacts")}</span>
-            <span
-                className={`grid place-items-center transition-[transform,background-color,color] duration-300 group-hover:rotate-45 motion-reduce:transition-none ${
-                    mobile ? "size-[50px] rounded-2xl" : "size-[38px] rounded-full"
+    const renderContactsCta = (mobile = false) => {
+        const isDark = mobile || isContactsActive;
+        return (
+            <Link
+                href="/contacts"
+                onClick={mobile ? closeMobileMenu : undefined}
+                aria-current={isContactsActive ? "page" : undefined}
+                className={`group inline-flex items-center justify-between font-semibold transition-[background-color,color,border-color,box-shadow,transform] duration-200 active:scale-[0.98] motion-reduce:transition-none ${FOCUS_RING} focus-visible:outline-offset-4 ${
+                    mobile
+                        ? "h-[66px] w-full gap-6 rounded-[20px] pl-6 pr-2 text-[19px]"
+                        : "h-[46px] gap-3.5 rounded-full pl-5 pr-1 text-[16px]"
                 } ${
-                    isContactsActive
-                        ? "bg-[#1E40AF] text-white group-hover:bg-[#2563EB]"
-                        : "bg-neutral-950 text-white group-hover:bg-[#1E40AF]"
+                    isDark
+                        ? "border border-neutral-950 bg-neutral-950 text-white shadow-[0_8px_20px_-6px_rgba(15,23,42,0.4)] hover:bg-neutral-900"
+                        : "border border-neutral-300 bg-white text-neutral-950 shadow-[0_2px_10px_-3px_rgba(15,23,42,0.08)] hover:border-neutral-950 hover:shadow-[0_8px_20px_-6px_rgba(15,23,42,0.16)]"
                 }`}
             >
-                <ArrowUpRight size={mobile ? 21 : 17} strokeWidth={2.2} aria-hidden="true" />
-            </span>
-        </Link>
-    );
+                <span className="tracking-tight">{mobile ? t("contactUs") : tNav("contacts")}</span>
+                <span
+                    className={`grid place-items-center transition-[transform,background-color,color] duration-300 group-hover:rotate-45 motion-reduce:transition-none ${
+                        mobile ? "size-[50px] rounded-2xl" : "size-[38px] rounded-full"
+                    } ${
+                        isDark
+                            ? "bg-[#1E40AF] text-white group-hover:bg-[#2563EB]"
+                            : "bg-neutral-950 text-white group-hover:bg-[#1E40AF]"
+                    }`}
+                >
+                    <ArrowUpRight size={mobile ? 21 : 17} strokeWidth={2.2} aria-hidden="true" />
+                </span>
+            </Link>
+        );
+    };
 
     // --------------------------------------------------
     // RENDER
