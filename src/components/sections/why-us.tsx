@@ -12,22 +12,17 @@ import {
     Code2,
     Zap,
     Scale,
-    Send,
     ShieldAlert,
     Cpu,
 } from "lucide-react";
 
-const WA_LINK =
-    "https://wa.me/996500000000?text=" +
-    encodeURIComponent("Здравствуйте! Хочу запросить образец договора Asman Tech с условиями гарантии.");
-
 type Tone = "blue" | "indigo" | "emerald" | "amber" | "purple";
-const TONES: Record<Tone, { text: string; chip: string; glow: string }> = {
-    blue: { text: "text-blue-400", chip: "bg-blue-500/15 ring-blue-400/30", glow: "rgba(59,130,246,0.18)" },
-    indigo: { text: "text-indigo-400", chip: "bg-indigo-500/15 ring-indigo-400/30", glow: "rgba(99,102,241,0.18)" },
-    emerald: { text: "text-emerald-400", chip: "bg-emerald-500/15 ring-emerald-400/30", glow: "rgba(16,185,129,0.16)" },
-    amber: { text: "text-amber-400", chip: "bg-amber-500/15 ring-amber-400/30", glow: "rgba(245,158,11,0.16)" },
-    purple: { text: "text-purple-400", chip: "bg-purple-500/15 ring-purple-400/30", glow: "rgba(168,85,247,0.16)" },
+const TONES: Record<Tone, { text: string; chip: string; glow: string; line: string }> = {
+    blue: { text: "text-blue-400", chip: "bg-blue-500/15 ring-blue-400/30", glow: "rgba(59,130,246,0.18)", line: "from-transparent via-blue-400/80 to-transparent" },
+    indigo: { text: "text-indigo-400", chip: "bg-indigo-500/15 ring-indigo-400/30", glow: "rgba(99,102,241,0.18)", line: "from-transparent via-indigo-400/80 to-transparent" },
+    emerald: { text: "text-emerald-400", chip: "bg-emerald-500/15 ring-emerald-400/30", glow: "rgba(16,185,129,0.16)", line: "from-transparent via-emerald-400/80 to-transparent" },
+    amber: { text: "text-amber-400", chip: "bg-amber-500/15 ring-amber-400/30", glow: "rgba(245,158,11,0.16)", line: "from-transparent via-amber-400/80 to-transparent" },
+    purple: { text: "text-purple-400", chip: "bg-purple-500/15 ring-purple-400/30", glow: "rgba(168,85,247,0.16)", line: "from-transparent via-purple-400/80 to-transparent" },
 };
 
 const STACK_GROUPS = [
@@ -94,17 +89,20 @@ function Card({ children }: { children: React.ReactNode }) {
 function Modal({
                    onClose,
                    titleId,
-                   glow,
+                   tone,
+                   footer,
                    children,
                }: {
     onClose: () => void;
     titleId: string;
-    glow: string;
+    tone: Tone;
+    footer?: React.ReactNode;
     children: React.ReactNode;
 }) {
     const ref = useRef<HTMLDivElement>(null);
     const closeRef = useRef(onClose);
     closeRef.current = onClose;
+    const t = TONES[tone];
 
     useEffect(() => {
         const prevFocus = document.activeElement as HTMLElement | null;
@@ -142,30 +140,42 @@ function Modal({
             onMouseDown={(e) => {
                 if (e.target === e.currentTarget) onClose();
             }}
-            className="wu-fade fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md sm:p-6"
+            className="wu-fade fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-3 backdrop-blur-md sm:p-6"
         >
             <div
                 ref={ref}
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby={titleId}
-                className="wu-modal relative w-full max-w-2xl rounded-[28px] bg-gradient-to-b from-white/[0.25] to-white/[0.05] p-px shadow-[0_40px_120px_-20px_rgba(0,0,0,0.9)]"
+                className="wu-modal relative flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-[32px] border border-white/[0.12] bg-[#0B0F17] text-white shadow-[0_60px_160px_-30px_rgba(0,0,0,0.95)]"
             >
+                {/* Акцентная линия сверху и мягкое свечение в цвет модалки */}
+                <div aria-hidden="true" className={`pointer-events-none absolute inset-x-0 top-0 z-10 h-px bg-gradient-to-r ${t.line}`} />
+                <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0"
+                    style={{ backgroundImage: `radial-gradient(900px circle at 0% 0%, ${t.glow}, transparent 60%)` }}
+                />
+
                 <button
                     type="button"
                     data-autofocus
                     onClick={onClose}
                     aria-label="Закрыть"
-                    className="absolute right-4 top-4 z-10 grid size-9 cursor-pointer place-items-center rounded-xl bg-white/10 text-neutral-300 transition-colors hover:bg-white/20 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-400"
+                    className="absolute right-4 top-4 z-20 grid size-11 cursor-pointer place-items-center rounded-2xl border border-white/10 bg-white/[0.06] text-neutral-300 transition-colors hover:bg-white/15 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-400 sm:right-6 sm:top-6"
                 >
-                    <X size={17} />
+                    <X size={20} />
                 </button>
-                <div
-                    className="max-h-[calc(90vh-2px)] overflow-y-auto rounded-[27px] bg-[#0B1019] p-6 text-white sm:p-8"
-                    style={{ backgroundImage: `radial-gradient(520px circle at 0% 0%, ${glow}, transparent 70%)` }}
-                >
+
+                <div className="relative min-h-0 flex-1 overflow-y-auto px-5 pb-8 pt-8 sm:px-12 sm:pb-12 sm:pt-12">
                     {children}
                 </div>
+
+                {footer && (
+                    <div className="relative flex shrink-0 items-center justify-end border-t border-white/10 bg-[#0B0F17] px-5 py-5 sm:px-12 sm:py-6">
+                        {footer}
+                    </div>
+                )}
             </div>
         </div>
     );
@@ -174,17 +184,38 @@ function Modal({
 function ModalHead({ icon: Icon, tone, id, title, sub }: { icon: React.ElementType; tone: Tone; id: string; title: string; sub: string }) {
     const t = TONES[tone];
     return (
-        <div className="mb-7 flex items-center gap-4 pr-10">
-            <div className={`grid size-12 shrink-0 place-items-center rounded-2xl ring-1 ${t.chip} ${t.text}`}>
-                <Icon size={22} />
+        <div className="mb-8 flex flex-col gap-5 pr-14 sm:mb-12 sm:flex-row sm:items-center sm:gap-7">
+            <div className={`grid size-16 shrink-0 place-items-center rounded-[20px] ring-1 sm:size-20 sm:rounded-[24px] ${t.chip} ${t.text}`}>
+                <Icon size={30} strokeWidth={1.6} />
             </div>
             <div>
-                <h3 id={id} className="text-xl font-semibold tracking-tight sm:text-2xl">{title}</h3>
-                <p className="mt-0.5 font-mono text-xs text-neutral-400">{sub}</p>
+                <h3 id={id} className="font-serif text-4xl font-normal italic leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-6xl">
+                    {title}
+                </h3>
+                <p className="mt-3 text-base leading-relaxed text-neutral-400 sm:text-lg">{sub}</p>
             </div>
         </div>
     );
 }
+
+/* ───────── Строка внутри единого блока: слева заголовок, справа описание ───────── */
+function Row({ icon: Icon, tone, title, children }: { icon: React.ElementType; tone: Tone; title: string; children: React.ReactNode }) {
+    const t = TONES[tone];
+    return (
+        <div className="grid gap-4 px-5 py-7 sm:px-10 sm:py-9 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-12">
+            <div className="flex items-start gap-4">
+                <div className={`grid size-11 shrink-0 place-items-center rounded-xl ring-1 ${t.chip} ${t.text}`}>
+                    <Icon size={20} aria-hidden="true" />
+                </div>
+                <h4 className="pt-1.5 text-xl font-semibold leading-snug tracking-tight text-white sm:text-2xl sm:pt-1">{title}</h4>
+            </div>
+            <div className="md:pt-2">{children}</div>
+        </div>
+    );
+}
+
+const CLOSE_BTN =
+    "cursor-pointer rounded-2xl bg-white px-8 py-3.5 text-[15px] font-semibold text-[#0B0F17] transition-colors hover:bg-neutral-200 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300";
 
 export function WhyUs() {
     const [stackOpen, setStackOpen] = useState(false);
@@ -200,10 +231,10 @@ export function WhyUs() {
                     background-image:linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px);background-size:24px 24px}
                 @keyframes wu-ping{0%{transform:scale(.6);opacity:.7}100%{transform:scale(2.6);opacity:0}}
                 @keyframes wu-fade{from{opacity:0}to{opacity:1}}
-                @keyframes wu-pop{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}
+                @keyframes wu-pop{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
                 .wu-ping{animation:wu-ping 2.6s cubic-bezier(.2,.6,.3,1) infinite}
-                .wu-fade{animation:wu-fade .18s ease-out}
-                .wu-modal{animation:wu-pop .26s cubic-bezier(.2,.8,.2,1)}
+                .wu-fade{animation:wu-fade .2s ease-out}
+                .wu-modal{animation:wu-pop .32s cubic-bezier(.2,.8,.2,1)}
                 @media (prefers-reduced-motion:reduce){.wu-layer{transition:none}.wu-ping,.wu-fade,.wu-modal{animation:none}}
             `}</style>
 
@@ -219,19 +250,10 @@ export function WhyUs() {
 
             <div className="relative w-full space-y-10 sm:space-y-14">
                 {/* ── Хедер ── */}
-                <div className="flex w-full flex-col justify-between gap-6 border-b border-white/[0.08] pb-8 md:flex-row md:items-end">
-                    <div className="max-w-3xl space-y-3">
-                        <span className="inline-flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-[0.25em] text-blue-500">
-                            <span className="h-px w-6 bg-blue-500/70" />
-                            Core Principles
-                        </span>
-                        <h2 className="bg-gradient-to-b from-white via-white to-white/55 bg-clip-text font-serif text-4xl font-normal italic leading-[1.05] tracking-tight text-transparent sm:text-6xl lg:text-7xl">
-                            Why Asman Tech
-                        </h2>
-                    </div>
-                    <p className="max-w-md text-left font-mono text-xs font-semibold uppercase leading-relaxed tracking-wider text-neutral-400 sm:text-sm md:text-right">
-                        Прямая инженерная ответственность, передовой стек 2026 и абсолютная юридическая гарантия
-                    </p>
+                <div className="w-full border-b border-white/[0.08] pb-8">
+                    <h2 className="bg-gradient-to-b from-white via-white to-white/55 bg-clip-text font-serif text-4xl font-normal italic leading-[1.05] tracking-tight text-transparent sm:text-6xl lg:text-7xl">
+                        Why Asman Tech
+                    </h2>
                 </div>
 
                 {/* ── Сетка из 3 карточек ── */}
@@ -256,16 +278,6 @@ export function WhyUs() {
                                 <span className="absolute -inset-4 rounded-full bg-red-500/40 blur-xl" />
                                 <span className="relative block size-2 rounded-full bg-white shadow-[0_0_18px_#fff]" />
                             </div>
-
-                            <div className="absolute left-6 top-6 z-10 flex items-center gap-2 rounded-full border border-white/10 bg-black/30 py-1.5 pl-3 pr-3.5 backdrop-blur-md">
-                                <span className="relative flex size-2">
-                                    <span className="wu-ping absolute inset-0 rounded-full bg-emerald-400/70" />
-                                    <span className="relative size-2 rounded-full bg-emerald-400" />
-                                </span>
-                                <span className="font-mono text-[11px] font-semibold uppercase tracking-widest text-neutral-200">
-                                    Direct Line
-                                </span>
-                            </div>
                         </div>
 
                         <div className="relative z-10 flex flex-1 flex-col justify-end space-y-4 p-7 pt-0 sm:p-9 sm:pt-0">
@@ -281,13 +293,6 @@ export function WhyUs() {
                     {/* Карточка 2: Технологии 2026 */}
                     <Card>
                         <div className="relative z-10 flex flex-1 flex-col justify-between p-7 sm:p-9">
-                            <div className="flex items-center justify-between">
-                                <span className="font-mono text-sm font-bold text-blue-500">02</span>
-                                <span className="rounded-full border border-blue-400/20 bg-blue-500/10 px-3 py-1 font-mono text-[11px] text-blue-400">
-                                    Engineering 2026
-                                </span>
-                            </div>
-
                             {/* Разнесённый 3D-стек: при наведении слои расходятся */}
                             <div className="relative my-auto flex h-64 flex-col items-center justify-center" aria-hidden="true">
                                 <div className="absolute bottom-10 h-10 w-44 rounded-full bg-blue-600/25 blur-2xl" />
@@ -307,31 +312,21 @@ export function WhyUs() {
                                         />
                                     </div>
                                 </div>
-                                <div className="absolute bottom-0 flex gap-4 font-mono text-[11px] text-neutral-400">
-                                    <span className="flex items-center gap-1.5"><i className="size-2 rounded-sm bg-blue-500" />Интерфейс</span>
-                                    <span className="flex items-center gap-1.5"><i className="size-2 rounded-sm bg-indigo-400/70" />API</span>
-                                    <span className="flex items-center gap-1.5"><i className="size-2 rounded-sm bg-neutral-500" />Данные</span>
-                                </div>
                             </div>
 
-                            <div className="space-y-5 pt-4">
-                                <div className="space-y-2">
-                                    <h3 className="text-2xl font-semibold leading-tight tracking-tight text-white sm:text-3xl">
-                                        Самые прорывные технологии 2026 года
-                                    </h3>
-                                    <p className="text-xs leading-relaxed text-neutral-400 sm:text-sm">
-                                        Next.js 15 App Router, React 19 Server Components, изолированные песочницы, AI-ассистенты и высокопроизводительный бэкенд на Python FastAPI.
-                                    </p>
-                                </div>
+                            <div className="space-y-6 pt-4">
+                                <h3 className="text-2xl font-semibold leading-tight tracking-tight text-white sm:text-3xl">
+                                    Самые прорывные технологии 2026 года
+                                </h3>
 
                                 <button
                                     type="button"
                                     onClick={() => setStackOpen(true)}
-                                    className="flex w-full cursor-pointer items-center justify-between rounded-2xl border border-white/15 bg-white/10 px-5 py-3 text-xs font-semibold text-white transition-all hover:bg-white/15 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-400"
+                                    className="group/btn inline-flex cursor-pointer items-center gap-3 rounded-2xl border border-blue-400/30 bg-blue-500/15 px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:border-blue-400/60 hover:bg-blue-500/25 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-400 sm:text-[15px]"
                                 >
-                                    <span>Смотреть весь стек</span>
-                                    <span className="grid size-6 place-items-center rounded-full bg-white/20 transition-transform group-hover:rotate-12">
-                                        <ArrowUpRight size={13} />
+                                    <span>Подробнее</span>
+                                    <span className="grid size-7 place-items-center rounded-full bg-blue-500/25 transition-transform group-hover/btn:rotate-12">
+                                        <ArrowUpRight size={15} />
                                     </span>
                                 </button>
                             </div>
@@ -357,120 +352,79 @@ export function WhyUs() {
                         </span>
 
                         <div className="relative z-10 flex flex-1 flex-col justify-between p-7 sm:p-9">
-                            <div className="flex items-center justify-between">
-                                <span className="font-mono text-sm font-bold text-blue-500">03</span>
-                                <span className="rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-1 font-mono text-[11px] text-emerald-400">
-                                    100% Guaranteed
-                                </span>
-                            </div>
-
-                            <div className="my-auto space-y-5 py-6">
-                                <h3 className="text-2xl font-semibold leading-tight tracking-tight text-white sm:text-3xl">
-                                    Гарантия качества либо 100% возврат
-                                </h3>
-                                <ul className="space-y-3 text-xs text-neutral-300 sm:text-sm">
-                                    {[
-                                        "Никаких предоплат до NDA и твёрдой сметы",
-                                        "Опоздали хотя бы на 3 дня — платите на 10–20% меньше",
-                                        "Цена в договоре окончательная. Переработки за наш счёт",
-                                    ].map((t) => (
-                                        <li key={t} className="flex items-start gap-2.5">
-                                            <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-emerald-400" aria-hidden="true" />
-                                            <span>{t}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
+                            <h3 className="my-auto py-6 text-2xl font-semibold leading-tight tracking-tight text-white sm:text-3xl">
+                                Гарантия качества либо 100% возврат
+                            </h3>
 
                             <div>
                                 <button
                                     type="button"
                                     onClick={() => setGuaranteeOpen(true)}
-                                    className="inline-flex cursor-pointer items-center gap-3 rounded-full border border-white/20 bg-white/10 py-2.5 pl-5 pr-2.5 text-xs font-semibold text-white shadow-xl backdrop-blur-md transition-all hover:bg-white/20 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-400"
+                                    className="group/btn inline-flex cursor-pointer items-center gap-3 rounded-2xl border border-emerald-400/30 bg-emerald-500/15 px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:border-emerald-400/60 hover:bg-emerald-500/25 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-400 sm:text-[15px]"
                                 >
-                                    <span>Our formula (Условия)</span>
-                                    <span className="grid size-6 place-items-center rounded-full bg-white/20">
-                                        <ArrowUpRight size={12} />
+                                    <span>Подробнее</span>
+                                    <span className="grid size-7 place-items-center rounded-full bg-emerald-500/25 transition-transform group-hover/btn:rotate-12">
+                                        <ArrowUpRight size={15} />
                                     </span>
                                 </button>
                             </div>
                         </div>
                     </Card>
                 </div>
-
-                {/* ── Футер ── */}
-                <div className="flex w-full items-center justify-between border-t border-white/[0.08] pt-6 font-mono text-[11px] text-neutral-500">
-                    <span className="uppercase tracking-widest">Asman Tech Standards</span>
-                    <span className="uppercase tracking-[0.2em] text-neutral-400">2026 // Full legal backing</span>
-                </div>
             </div>
 
             {/* ── Модалка: стек ── */}
             {stackOpen && (
-                <Modal onClose={() => setStackOpen(false)} titleId="wu-stack-title" glow={TONES.blue.glow}>
-                    <ModalHead icon={Cpu} tone="blue" id="wu-stack-title" title="Стек технологий 2026" sub="Архитектура высокой надёжности и масштабируемости" />
-                    <div className="space-y-3.5">
-                        {STACK_GROUPS.map((g) => {
-                            const t = TONES[g.tone];
-                            return (
-                                <div key={g.title} className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
-                                    <div className={`flex items-center gap-2 font-mono text-xs font-semibold ${t.text}`}>
-                                        <g.icon size={14} aria-hidden="true" />
-                                        <span>{g.title}</span>
-                                    </div>
-                                    <p className="mt-2 text-sm leading-relaxed text-neutral-300">{g.text}</p>
-                                    <div className="mt-3 flex flex-wrap gap-1.5">
-                                        {g.tags.map((tag) => (
-                                            <span key={tag} className="rounded-full border border-white/10 bg-white/[0.06] px-2.5 py-1 font-mono text-[11px] text-neutral-200">
-                                                {tag}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                    <div className="mt-7 flex justify-end border-t border-white/10 pt-5">
-                        <button
-                            type="button"
-                            onClick={() => setStackOpen(false)}
-                            className="cursor-pointer rounded-xl bg-blue-600 px-5 py-2.5 font-mono text-xs font-bold uppercase tracking-wider text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
-                        >
+                <Modal
+                    onClose={() => setStackOpen(false)}
+                    titleId="wu-stack-title"
+                    tone="blue"
+                    footer={
+                        <button type="button" onClick={() => setStackOpen(false)} className={CLOSE_BTN}>
                             Закрыть
                         </button>
+                    }
+                >
+                    <ModalHead icon={Cpu} tone="blue" id="wu-stack-title" title="Стек технологий 2026" sub="Архитектура высокой надёжности и масштабируемости" />
+                    <div className="divide-y divide-white/[0.08] overflow-hidden rounded-[24px] border border-white/10 bg-white/[0.03]">
+                        {STACK_GROUPS.map((g) => (
+                            <Row key={g.title} icon={g.icon} tone={g.tone} title={g.title}>
+                                <p className="text-base leading-relaxed text-neutral-300 sm:text-lg">{g.text}</p>
+                                <div className="mt-5 flex flex-wrap gap-2">
+                                    {g.tags.map((tag) => (
+                                        <span
+                                            key={tag}
+                                            className="rounded-full border border-white/[0.12] bg-white/[0.05] px-3.5 py-1.5 text-sm font-medium text-neutral-100"
+                                        >
+                                            {tag}
+                                        </span>
+                                    ))}
+                                </div>
+                            </Row>
+                        ))}
                     </div>
                 </Modal>
             )}
 
             {/* ── Модалка: гарантия ── */}
             {guaranteeOpen && (
-                <Modal onClose={() => setGuaranteeOpen(false)} titleId="wu-guarantee-title" glow={TONES.emerald.glow}>
+                <Modal
+                    onClose={() => setGuaranteeOpen(false)}
+                    titleId="wu-guarantee-title"
+                    tone="emerald"
+                    footer={
+                        <button type="button" onClick={() => setGuaranteeOpen(false)} className={CLOSE_BTN}>
+                            Закрыть
+                        </button>
+                    }
+                >
                     <ModalHead icon={Scale} tone="emerald" id="wu-guarantee-title" title="Гарантийный протокол Asman Tech" sub="100% обязательств, зафиксированных юридически в договоре" />
-                    <div className="grid gap-3 sm:grid-cols-2">
-                        {TERMS.map((term) => {
-                            const t = TONES[term.tone];
-                            return (
-                                <div key={term.title} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-                                    <div className={`mb-3 grid size-8 place-items-center rounded-lg ring-1 ${t.chip} ${t.text}`}>
-                                        <term.icon size={15} aria-hidden="true" />
-                                    </div>
-                                    <h4 className="text-sm font-semibold leading-snug text-white">{term.title}</h4>
-                                    <p className="mt-1.5 text-xs leading-relaxed text-neutral-400">{term.text}</p>
-                                </div>
-                            );
-                        })}
-                    </div>
-                    <div className="mt-6 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-5 sm:flex-row">
-                        <span className="font-mono text-xs text-neutral-400">Типовой договор с фиксацией SLA и штрафов</span>
-                        <a
-                            href={WA_LINK}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 py-2.5 font-mono text-xs font-bold uppercase tracking-wider text-neutral-950 shadow-lg transition-all hover:bg-emerald-400 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 sm:w-auto"
-                        >
-                            <Send size={13} aria-hidden="true" />
-                            <span>Запросить образец договора</span>
-                        </a>
+                    <div className="divide-y divide-white/[0.08] overflow-hidden rounded-[24px] border border-white/10 bg-white/[0.03]">
+                        {TERMS.map((term) => (
+                            <Row key={term.title} icon={term.icon} tone={term.tone} title={term.title}>
+                                <p className="text-base leading-relaxed text-neutral-300 sm:text-lg">{term.text}</p>
+                            </Row>
+                        ))}
                     </div>
                 </Modal>
             )}

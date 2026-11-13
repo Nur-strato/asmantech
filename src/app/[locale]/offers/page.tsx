@@ -1,294 +1,654 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import Image from "next/image";
+import React, { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Link } from "@/i18n/navigation";
-import { ArrowLeft, ArrowUpRight, X } from "lucide-react";
+import { ArrowDown, ArrowUpRight, Check, ShieldCheck, X } from "lucide-react";
 import { useTr } from "@/i18n/tr";
 
-const SOLUTIONS_OFFERS = [
+type Tr = (text: string) => string;
+
+/* Конец акции Rebranding Offer: 31 декабря 2026, 23:59 по местному времени посетителя */
+const DEADLINE = new Date(2026, 11, 31, 23, 59, 59);
+
+/* ───────── Купоны: по одному на каждый тип скидки ───────── */
+const TABS = [
     {
-        num: "01",
-        title: "Website Development",
-        discount: "−40%",
-        desc: "Сайты для бизнеса под ключ, корпоративные порталы и платформы.",
+        id: "rebranding",
+        sub: "До 31 декабря 2026 года",
+        name: "Rebranding Offer",
+        figure: "50%",
+        unit: "OFF",
+        stub: "Для новых заказов",
     },
     {
-        num: "02",
-        title: "Mobile Apps",
-        discount: "−30%",
-        desc: "Нативные и кроссплатформенные приложения для iOS и Android.",
+        id: "returning",
+        sub: "На все услуги",
+        name: "Returning Client",
+        figure: "25%",
+        unit: "OFF",
+        stub: "Для постоянных клиентов",
     },
     {
-        num: "03",
-        title: "Security & Quality Audit",
-        discount: "−30%",
-        desc: "Комплексный аудит безопасности, стресс-тесты и поиск уязвимостей.",
+        id: "programs",
+        sub: "Startup, Social Impact, Public Sector",
+        name: "Специальные программы",
+        figure: "3",
+        unit: "программы",
+        stub: "Условия под ваш проект",
+    },
+] as const;
+type TabId = (typeof TABS)[number]["id"];
+
+/* ───────── 1. Rebranding Offer ───────── */
+type Service = { num: string; name: string; discount: string };
+
+const REBRANDING_GROUPS: { id: string; title: string; services: Service[] }[] = [
+    {
+        id: "dev",
+        title: "Разработка",
+        services: [
+            { num: "01", name: "Разработка сайтов", discount: "−50%" },
+            { num: "02", name: "Мобильные приложения", discount: "−50%" },
+            { num: "03", name: "3D-дизайн", discount: "−50%" },
+            { num: "04", name: "AI-чатботы", discount: "−50%" },
+            { num: "05", name: "Аудит безопасности и качества", discount: "−50%" },
+            { num: "06", name: "SEO-оптимизация", discount: "−50%" },
+        ],
     },
     {
-        num: "04",
-        title: "SEO Optimization",
-        discount: "−30%",
-        desc: "Техническая и поисковая оптимизация для вывода в топ Google и Yandex.",
+        id: "infra",
+        title: "Инфраструктурные услуги",
+        services: [
+            { num: "01", name: "Хостинг и сервер", discount: "−50%" },
+            { num: "02", name: "Админ-панель", discount: "−50%" },
+        ],
     },
 ];
 
-const INFRASTRUCTURE_OFFERS = [
+/* ───────── 2. Returning Client: путь к скидке и условия ───────── */
+const RETURNING_STEPS = [
+    { title: "Завершаем проект", text: "Вы получаете готовый результат по ТЗ." },
+    { title: "Подписываем акт приёмки", text: "С этого момента вы — наш постоянный клиент." },
+    { title: "Следующий заказ — 25% OFF", text: "Скидка применяется к любой услуге и фиксируется в договоре." },
+];
+
+const RETURNING_NOTES = [
+    { title: "На все услуги", text: "Разработка и инфраструктура." },
+    { title: "Без ограничения по сроку", text: "Скидка не сгорает между проектами." },
+    { title: "Не суммируется с Rebranding Offer", text: "Применяется бо́льшая скидка." },
+];
+
+/* ───────── 3. Специальные программы ───────── */
+type Program = {
+    id: string;
+    name: string;
+    desc: string;
+    terms: string;
+    numeric: boolean;
+    items: string[];
+    conditions?: string[];
+};
+
+const SPECIAL_PROGRAMS: Program[] = [
     {
-        num: "01",
-        title: "Hosting & Server",
-        discount: "−50%",
-        desc: "Отказоустойчивые серверы, включенный SSL и бесплатный перенос сайта.",
+        id: "startup",
+        name: "Startup Program",
+        desc: "Поддержка перспективных стартапов",
+        terms: "Flexible Collaboration",
+        numeric: false,
+        items: [
+            "Специальные цены на разработку.",
+            "Гибкие условия оплаты.",
+            "Бартер и взаимовыгодное партнёрство.",
+            "Разработка MVP.",
+        ],
     },
     {
-        num: "02",
-        title: "Admin Panel",
-        discount: "−20%",
-        desc: "Панель управления для обновления контента без привлечения разработчиков.",
+        id: "social",
+        name: "Social Impact Program",
+        desc: "Поддержка проектов с общественной пользой",
+        terms: "Up to 70% OFF",
+        numeric: true,
+        items: [
+            "Благотворительные инициативы.",
+            "Образовательные проекты.",
+            "Экологические инициативы.",
+            "Социальные и инклюзивные проекты.",
+        ],
+        conditions: [
+            "Скидка от 15% до 70%.",
+            "Индивидуальная оценка проекта.",
+            "Учитывается общественная польза и масштаб инициативы.",
+        ],
+    },
+    {
+        id: "public",
+        name: "Public Sector Program",
+        desc: "Цифровизация государственного сектора",
+        terms: "Individual Pricing",
+        numeric: false,
+        items: [
+            "Разработка веб-платформ.",
+            "Создание цифровых сервисов.",
+            "Автоматизация процессов.",
+            "Индивидуальная техническая разработка.",
+        ],
+        conditions: [
+            "Индивидуальный расчёт стоимости.",
+            "Оценка технического задания.",
+            "Коммерческое предложение под проект.",
+        ],
     },
 ];
+
+const STEPS = [
+    { num: "01", title: "Оставьте заявку", text: "Расскажите о задаче и укажите, какая скидка вам подходит." },
+    { num: "02", title: "Получите смету и договор", text: "Скидка записывается в договор вместе с итоговой ценой." },
+    { num: "03", title: "Стартуйте, когда удобно", text: "Цена по Rebranding Offer сохранится, даже если работа начнётся в новом году." },
+];
+
+/* Дней до конца акции. Считается только на клиенте, чтобы не было рассинхрона гидрации */
+function useDaysLeft() {
+    const [days, setDays] = useState<number | null>(null);
+    useEffect(() => {
+        const calc = () => setDays(Math.max(0, Math.ceil((DEADLINE.getTime() - Date.now()) / 86_400_000)));
+        calc();
+        const id = window.setInterval(calc, 60_000);
+        return () => window.clearInterval(id);
+    }, []);
+    return days;
+}
+
+function daysWord(n: number) {
+    const mod10 = n % 10;
+    const mod100 = n % 100;
+    if (mod10 === 1 && mod100 !== 11) return "день";
+    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return "дня";
+    return "дней";
+}
+
+function PanelHead({ title, desc, tr, aside }: { title: string; desc: string; tr: Tr; aside?: React.ReactNode }) {
+    return (
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-16">
+            <div>
+                <h2 className="text-4xl font-extrabold leading-[1] tracking-[-0.035em] text-neutral-950 sm:text-6xl">{tr(title)}</h2>
+                <p className="mt-4 max-w-[48ch] text-lg leading-relaxed text-neutral-600 sm:text-xl">{tr(desc)}</p>
+            </div>
+            {aside}
+        </div>
+    );
+}
+
+/* ───────── Раздел 1: Rebranding Offer ───────── */
+function RebrandingPanel({ tr }: { tr: Tr }) {
+    const days = useDaysLeft();
+    const ended = days === 0;
+
+    return (
+        <>
+            <PanelHead
+                title="Rebranding Offer"
+                desc="Лимитированная скидка в честь ребрендинга Asman Tech."
+                tr={tr}
+                aside={
+                    <div aria-live="polite" className="w-full rounded-[24px] border-2 border-neutral-950 p-6 sm:w-72">
+                        {ended ? (
+                            <p className="text-xl font-extrabold tracking-tight text-neutral-950">{tr("Акция завершена")}</p>
+                        ) : (
+                            <p className="flex items-baseline gap-3 text-neutral-950">
+                                <span
+                                    className={`font-serif text-6xl font-bold leading-none tabular-nums transition-opacity ${
+                                        days === null ? "opacity-0" : "opacity-100"
+                                    }`}
+                                >
+                                    {days ?? 0}
+                                </span>
+                                <span className="text-base font-semibold leading-tight">
+                                    {tr(daysWord(days ?? 0))}
+                                    <br />
+                                    {tr("до конца акции")}
+                                </span>
+                            </p>
+                        )}
+                        <p className="mt-4 border-t border-neutral-200 pt-3 text-sm text-neutral-500">
+                            {tr("Последний день — 31 декабря 2026, 23:59")}
+                        </p>
+                    </div>
+                }
+            />
+
+            <div className="mt-14 grid gap-12 sm:mt-20 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
+                {REBRANDING_GROUPS.map((group) => (
+                    <div key={group.id}>
+                        <h3 className="border-b-2 border-neutral-950 pb-4 text-lg font-bold text-neutral-950">{tr(group.title)}</h3>
+                        <ul className="divide-y divide-neutral-200">
+                            {group.services.map((s) => (
+                                <li key={s.name} className="flex items-center gap-4 py-5">
+                                    <span className="w-7 shrink-0 font-mono text-xs text-neutral-400">{s.num}</span>
+                                    <span className="min-w-0 flex-1 text-lg font-semibold leading-snug text-neutral-950 sm:text-xl">
+                                        {tr(s.name)}
+                                    </span>
+                                    <span className="font-serif text-2xl font-bold text-[#058447] tabular-nums sm:text-3xl">
+                                        {tr(s.discount)}
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                ))}
+            </div>
+        </>
+    );
+}
+
+/* ───────── Раздел 2: Returning Client ───────── */
+function ReturningPanel({ tr }: { tr: Tr }) {
+    return (
+        <>
+            <PanelHead
+                title="Returning Client"
+                desc="Специальная скидка для существующих клиентов на следующий проект."
+                tr={tr}
+            />
+
+            {/* Путь к скидке: три шага с соединительной линией */}
+            <ol className="mt-14 grid gap-10 sm:mt-20 md:grid-cols-3 md:gap-0">
+                {RETURNING_STEPS.map((step, i) => {
+                    const last = i === RETURNING_STEPS.length - 1;
+                    return (
+                        <li key={step.title} className="relative pl-16 md:pl-0 md:pr-10 md:pt-16">
+                            {!last && (
+                                <span
+                                    aria-hidden="true"
+                                    className="absolute left-5 top-12 h-[calc(100%-1rem)] w-0.5 bg-neutral-200 md:left-12 md:right-0 md:top-5 md:h-0.5 md:w-auto"
+                                />
+                            )}
+                            <span
+                                className={`absolute left-0 top-0 grid size-10 place-items-center rounded-full border-2 text-sm font-bold ${
+                                    last ? "border-[#058447] bg-[#058447] text-white" : "border-neutral-950 bg-white text-neutral-950"
+                                }`}
+                            >
+                                {last ? <Check size={18} aria-hidden="true" /> : i + 1}
+                            </span>
+                            <h3 className={`text-xl font-bold tracking-tight sm:text-2xl ${last ? "text-[#058447]" : "text-neutral-950"}`}>
+                                {tr(step.title)}
+                            </h3>
+                            <p className="mt-2 max-w-[30ch] text-base leading-relaxed text-neutral-600">{tr(step.text)}</p>
+                        </li>
+                    );
+                })}
+            </ol>
+
+            <div className="mt-14 grid gap-px overflow-hidden rounded-[24px] border border-neutral-200 bg-neutral-200 sm:mt-16 md:grid-cols-3">
+                {RETURNING_NOTES.map((n) => (
+                    <div key={n.title} className="bg-white p-6 sm:p-7">
+                        <p className="text-lg font-bold leading-snug text-neutral-950">{tr(n.title)}</p>
+                        <p className="mt-1 text-base text-neutral-500">{tr(n.text)}</p>
+                    </div>
+                ))}
+            </div>
+        </>
+    );
+}
+
+/* ───────── Окно с подробностями программы ───────── */
+function ProgramModal({ program, onClose, tr }: { program: Program; onClose: () => void; tr: Tr }) {
+    const ref = useRef<HTMLDivElement>(null);
+    const closeRef = useRef(onClose);
+    closeRef.current = onClose;
+    const titleId = `program-${program.id}-title`;
+
+    useEffect(() => {
+        const prevFocus = document.activeElement as HTMLElement | null;
+        const prevOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        const root = ref.current;
+        root?.querySelector<HTMLElement>("[data-autofocus]")?.focus();
+
+        const onKey = (e: KeyboardEvent) => {
+            if (e.key === "Escape") return closeRef.current();
+            if (e.key !== "Tab" || !root) return;
+            const f = root.querySelectorAll<HTMLElement>("a[href],button:not([disabled])");
+            if (!f.length) return;
+            const first = f[0];
+            const last = f[f.length - 1];
+            if (e.shiftKey && document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
+            }
+        };
+        window.addEventListener("keydown", onKey);
+        return () => {
+            document.body.style.overflow = prevOverflow;
+            window.removeEventListener("keydown", onKey);
+            prevFocus?.focus();
+        };
+    }, []);
+
+    return createPortal(
+        <div
+            data-lenis-prevent="true"
+            onMouseDown={(e) => {
+                if (e.target === e.currentTarget) onClose();
+            }}
+            className="of-fade fixed inset-0 z-50 flex items-end justify-center bg-neutral-950/60 backdrop-blur-sm sm:items-center sm:p-6"
+        >
+            <div
+                ref={ref}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby={titleId}
+                className="of-pop relative flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-t-[32px] bg-white text-neutral-950 shadow-[0_40px_120px_-20px_rgba(0,0,0,0.45)] sm:rounded-[36px]"
+            >
+                <button
+                    type="button"
+                    data-autofocus
+                    onClick={onClose}
+                    aria-label={tr("Закрыть")}
+                    className="absolute right-4 top-4 z-10 grid size-11 cursor-pointer place-items-center rounded-full bg-neutral-100 text-neutral-600 transition-colors hover:bg-neutral-200 hover:text-neutral-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#058447] sm:right-6 sm:top-6"
+                >
+                    <X size={20} />
+                </button>
+
+                <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 pb-8 pt-8 sm:px-12 sm:pb-12 sm:pt-12">
+                    {/* Шапка: программа и условия */}
+                    <div className="pr-12">
+                        <h2 id={titleId} className="text-3xl font-extrabold leading-[1.02] tracking-[-0.03em] sm:text-5xl">
+                            {tr(program.name)}
+                        </h2>
+                        <p className="mt-3 text-lg text-neutral-600 sm:text-xl">{tr(program.desc)}</p>
+                    </div>
+                    <p
+                        className={`mt-8 border-b-2 border-neutral-950 pb-6 font-serif text-4xl font-bold leading-none tracking-tight sm:text-5xl ${
+                            program.numeric ? "text-[#058447]" : "text-neutral-950"
+                        }`}
+                    >
+                        {tr(program.terms)}
+                    </p>
+
+                    {/* Что входит */}
+                    <ul className="divide-y divide-neutral-200">
+                        {program.items.map((item) => (
+                            <li key={item} className="flex items-center gap-4 py-5">
+                                <span className="grid size-8 shrink-0 place-items-center rounded-full bg-[#E7F8EE] text-[#058447]">
+                                    <Check size={16} aria-hidden="true" />
+                                </span>
+                                <span className="text-lg font-semibold leading-snug sm:text-xl">{tr(item)}</span>
+                            </li>
+                        ))}
+                    </ul>
+
+                    {/* Условия */}
+                    {program.conditions && (
+                        <div className="mt-6 rounded-[24px] bg-neutral-950 p-7 text-white sm:p-8">
+                            <h3 className="text-sm font-semibold text-neutral-400">{tr("Условия")}</h3>
+                            <ul className="mt-4 space-y-3">
+                                {program.conditions.map((c) => (
+                                    <li key={c} className="flex gap-3 text-base font-semibold leading-snug sm:text-lg">
+                                        <span aria-hidden="true" className="mt-[0.6em] size-1.5 shrink-0 rounded-full bg-[#4ADE80]" />
+                                        <span>{tr(c)}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                </div>
+
+                <div className="flex shrink-0 justify-end border-t border-neutral-200 px-6 py-5 sm:px-12">
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="w-full cursor-pointer rounded-2xl bg-neutral-950 px-8 py-3.5 text-base font-semibold text-white transition-colors hover:bg-neutral-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#058447] sm:w-auto"
+                    >
+                        {tr("Закрыть")}
+                    </button>
+                </div>
+            </div>
+        </div>,
+        document.body,
+    );
+}
+
+/* ───────── Раздел 3: Специальные программы ───────── */
+function ProgramsPanel({ tr }: { tr: Tr }) {
+    const [openId, setOpenId] = useState<string | null>(null);
+    const open = SPECIAL_PROGRAMS.find((p) => p.id === openId) ?? null;
+
+    return (
+        <>
+            <h2 className="text-4xl font-extrabold leading-[1] tracking-[-0.035em] text-neutral-950 sm:text-6xl">
+                {tr("Специальные программы")}
+            </h2>
+
+            <div className="mt-12 overflow-x-auto sm:mt-16">
+                <table className="w-full min-w-[560px] text-left">
+                    <thead>
+                    <tr className="border-b-2 border-neutral-950 text-sm text-neutral-500">
+                        <th scope="col" className="pb-4 font-semibold">{tr("Программа")}</th>
+                        <th scope="col" className="pb-4 pr-16 text-right font-semibold">{tr("Условия")}</th>
+                    </tr>
+                    </thead>
+                    <tbody className="divide-y divide-neutral-200">
+                    {SPECIAL_PROGRAMS.map((p) => (
+                        <tr key={p.id}>
+                            <th scope="row" className="py-8 pr-6 align-middle font-normal sm:py-10">
+                                <span className="block text-xl font-bold tracking-tight text-neutral-950 sm:text-3xl">{tr(p.name)}</span>
+                                <span className="mt-1.5 block text-base text-neutral-500 sm:text-lg">{tr(p.desc)}</span>
+                            </th>
+                            <td className="py-8 align-middle sm:py-10">
+                                <div className="flex items-center justify-end gap-4 sm:gap-5">
+                                        <span
+                                            className={`whitespace-nowrap text-right font-serif text-2xl font-bold tracking-tight sm:text-4xl ${
+                                                p.numeric ? "text-[#058447]" : "text-neutral-950"
+                                            }`}
+                                        >
+                                            {tr(p.terms)}
+                                        </span>
+                                    <button
+                                        type="button"
+                                        onClick={() => setOpenId(p.id)}
+                                        aria-haspopup="dialog"
+                                        aria-label={`${tr("Подробнее")}: ${tr(p.name)}`}
+                                        className="grid size-11 shrink-0 cursor-pointer place-items-center rounded-full border-2 border-neutral-950 text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#058447]"
+                                    >
+                                        <ArrowUpRight size={18} aria-hidden="true" />
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+            </div>
+
+            {open && <ProgramModal program={open} onClose={() => setOpenId(null)} tr={tr} />}
+        </>
+    );
+}
 
 export default function OffersPage() {
     const tr = useTr();
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [active, setActive] = useState<TabId>("rebranding");
+    const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
+    /* Открываем раздел из ссылки: /offers#returning */
     useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === "Escape") setIsModalOpen(false);
-        };
+        const fromHash = window.location.hash.slice(1);
+        if (TABS.some((t) => t.id === fromHash)) setActive(fromHash as TabId);
+    }, []);
 
-        if (isModalOpen) {
-            document.body.style.overflow = "hidden";
-            window.addEventListener("keydown", handleKeyDown);
-        } else {
-            document.body.style.overflow = "unset";
+    const select = (id: TabId, focus = false) => {
+        setActive(id);
+        window.history.replaceState(null, "", `#${id}`);
+        if (focus) {
+            const el = tabRefs.current[id];
+            el?.focus();
+            el?.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "smooth" });
         }
+    };
 
-        return () => {
-            document.body.style.overflow = "unset";
-            window.removeEventListener("keydown", handleKeyDown);
-        };
-    }, [isModalOpen]);
+    /* Стрелки переключают купоны, как в стандартных вкладках */
+    const onKeyDown = (e: React.KeyboardEvent) => {
+        const i = TABS.findIndex((t) => t.id === active);
+        if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+            e.preventDefault();
+            select(TABS[(i + 1) % TABS.length].id, true);
+        } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+            e.preventDefault();
+            select(TABS[(i - 1 + TABS.length) % TABS.length].id, true);
+        }
+    };
 
     return (
-        <main className="w-full min-h-screen bg-[#FCFCFD] text-neutral-950 pt-24 sm:pt-36 pb-24 sm:pb-36 selection:bg-neutral-900 selection:text-white overflow-x-clip">
-            <div className="w-[92vw] sm:w-[88vw] max-w-[1240px] mx-auto space-y-12 sm:space-y-24">
+        <main className="mx-auto max-w-[1280px] px-5 pb-28 pt-28 sm:px-10 sm:pt-32">
+            <style>{`
+                /* Купон: вырезы-полукруги по бокам на линии отрыва */
+                .of-coupon{
+                    --cut: calc(100% - 76px);
+                    -webkit-mask:
+                        radial-gradient(circle at 0 var(--cut), #0000 13px, #000 13.5px),
+                        radial-gradient(circle at 100% var(--cut), #0000 13px, #000 13.5px);
+                    -webkit-mask-composite: source-in;
+                    mask:
+                        radial-gradient(circle at 0 var(--cut), #0000 13px, #000 13.5px),
+                        radial-gradient(circle at 100% var(--cut), #0000 13px, #000 13.5px);
+                    mask-composite: intersect;
+                }
+                @keyframes of-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+                .of-in{animation:of-in .5s cubic-bezier(.2,.8,.2,1)}
+                @keyframes of-fade{from{opacity:0}to{opacity:1}}
+                @keyframes of-pop{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+                .of-fade{animation:of-fade .2s ease-out}
+                .of-pop{animation:of-pop .32s cubic-bezier(.2,.8,.2,1)}
+                @media (prefers-reduced-motion:reduce){.of-in,.of-fade,.of-pop{animation:none}}
+            `}</style>
 
-                {/* Назад */}
-                <div>
-                    <Link
-                        href="/"
-                        className="inline-flex items-center gap-2 text-neutral-400 hover:text-neutral-950 font-mono text-xs uppercase tracking-[0.2em] transition-colors group py-1"
-                    >
-                        <ArrowLeft
-                            size={15}
-                            className="transition-transform group-hover:-translate-x-1.5"
-                        />
-                        <span>{tr("На главную")}</span>
-                    </Link>
-                </div>
+            {/* ── HERO ── */}
+            <h1 className="mt-10 text-[clamp(2.75rem,7.4vw,6.5rem)] font-extrabold leading-[0.95] tracking-[-0.045em] text-neutral-950 sm:mt-14">
+                {tr("Спецпредложения.")}
+            </h1>
 
-                {/* Главный заголовок */}
-                <div className="space-y-4 sm:space-y-6 max-w-4xl">
-                    <span className="font-mono text-[11px] sm:text-xs uppercase tracking-[0.22em] sm:tracking-[0.25em] text-neutral-400 font-medium block">
-                        {tr("Special Events // 2026")}
-                    </span>
-
-                    <h1 className="font-sans font-black text-[34px] xs:text-[44px] sm:text-8xl lg:text-[100px] tracking-[-0.04em] sm:tracking-[-0.045em] leading-[1.02] sm:leading-[0.93] text-neutral-950 break-words">
-                        {tr("Спецпредложения.")}
-                    </h1>
-
-                    <p className="font-sans text-neutral-500 text-lg sm:text-2xl lg:text-3xl font-light tracking-tight leading-snug">
-                        {tr("Актуальные скидки и спецусловия на разработку и инфраструктуру.")}
-                    </p>
-                </div>
-
-                {/* ЕДИНСТВЕННАЯ КАРТОЧКА ОБЪЯВЛЕНИЯ С КАРТИНКОЙ */}
-                <div className="rounded-[28px] xs:rounded-[36px] sm:rounded-[44px] bg-white border border-neutral-200/90 p-4 xs:p-6 sm:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.03)] space-y-6 sm:space-y-8">
-
-                    {/* Контейнер картинки */}
-                    <div className="relative w-full h-[360px] xs:h-[400px] sm:h-[460px] lg:h-[520px] rounded-[22px] xs:rounded-[28px] sm:rounded-[36px] overflow-hidden bg-neutral-950">
-                        <Image
-                            src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1964&auto=format&fit=crop"
-                            alt={tr("Rebranding Sale")}
-                            fill
-                            priority
-                            className="object-cover opacity-90 transition-transform duration-700 hover:scale-105"
-                        />
-
-                        {/* Защитный градиентный слой для читаемости текста на мобильных экранах */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/20 pointer-events-none" />
-
-                        {/* Плашка поверх картинки слева сверху */}
-                        <div className="absolute top-4 left-4 xs:top-6 xs:left-6 sm:top-8 sm:left-8 right-4 xs:right-auto">
-                            <div className="inline-flex items-center justify-center px-3.5 xs:px-4 sm:px-5 py-2 rounded-full bg-white/95 backdrop-blur-md border border-white/40 text-[#058447] font-sans text-[11px] xs:text-xs sm:text-sm font-black tracking-tight shadow-md max-w-full text-center leading-tight">
-                                <span>{tr("Акции до 31 Декабря в честь ребрендинга")}</span>
-                            </div>
-                        </div>
-
-                        {/* Крупная надпись поверх картинки слева снизу */}
-                        <div className="absolute bottom-4 left-4 right-4 xs:bottom-6 xs:left-6 sm:bottom-8 sm:left-8 max-w-lg space-y-1.5 sm:space-y-2 text-white">
-                            <div className="font-sans font-black text-xl xs:text-2xl sm:text-4xl tracking-tight leading-tight drop-shadow-md">
-                                {tr("Скидки до −50% на все услуги")}
-                            </div>
-                            <p className="font-sans text-[11px] xs:text-xs sm:text-sm text-neutral-200 drop-shadow-sm font-medium leading-relaxed">
-                                {tr("Фиксируем ставку в договоре при бронировании проекта до конца декабря.")}
-                            </p>
-                        </div>
-                    </div>
-
-                    {/* Нижняя строка: слева статус, справа кнопка "Подробнее" */}
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 pt-1 sm:pt-2">
-                        <div className="font-mono text-[11px] sm:text-xs text-neutral-400 uppercase tracking-wider">
-                            {tr("Период действия: до 31.12.2026, 23:59")}
-                        </div>
-
-                        {/* Кнопка: на смартфонах на всю ширину для легкого тапа пальцем, на десктопе авто-ширина */}
+            {/* ── КУПОНЫ: выбор типа скидки ── */}
+            <div
+                role="tablist"
+                aria-label={tr("Виды скидок")}
+                onKeyDown={onKeyDown}
+                className="-mx-5 mt-12 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] sm:mt-16 md:mx-0 md:grid md:grid-cols-3 md:gap-4 md:overflow-visible md:px-0 md:pb-0 [&::-webkit-scrollbar]:hidden"
+            >
+                {TABS.map((t) => {
+                    const on = t.id === active;
+                    return (
                         <button
+                            key={t.id}
+                            ref={(el) => {
+                                tabRefs.current[t.id] = el;
+                            }}
                             type="button"
-                            onClick={() => setIsModalOpen(true)}
-                            className="inline-flex items-center justify-center gap-2.5 sm:gap-3 w-full sm:w-auto px-7 sm:px-8 py-4 sm:py-4.5 rounded-xl sm:rounded-2xl bg-neutral-950 hover:bg-neutral-800 text-white font-mono text-xs uppercase tracking-wider font-bold transition-all active:scale-95 shadow-md cursor-pointer [touch-action:manipulation]"
+                            role="tab"
+                            id={`tab-${t.id}`}
+                            aria-selected={on}
+                            aria-controls={`panel-${t.id}`}
+                            tabIndex={on ? 0 : -1}
+                            onClick={() => select(t.id)}
+                            className={`group w-[82%] shrink-0 cursor-pointer snap-start rounded-[28px] text-left transition-transform duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#058447] sm:w-[60%] md:w-auto ${
+                                on ? "md:-translate-y-2" : "hover:-translate-y-1"
+                            }`}
                         >
-                            <span>{tr("Подробнее")}</span>
-                            <ArrowUpRight size={16} />
+                            <div
+                                className={`of-coupon relative flex min-h-[300px] flex-col rounded-[28px] transition-colors duration-300 sm:min-h-[330px] ${
+                                    on ? "bg-neutral-950 text-white" : "bg-neutral-100 text-neutral-950 group-hover:bg-neutral-200/80"
+                                }`}
+                            >
+                                {/* Основная часть купона */}
+                                <div className="flex flex-1 flex-col p-7">
+                                    <span className={`text-sm font-medium ${on ? "text-neutral-400" : "text-neutral-500"}`}>{tr(t.sub)}</span>
+                                    <span className="mt-1.5 text-2xl font-bold leading-tight tracking-tight">{tr(t.name)}</span>
+                                    <span className={`mt-auto flex items-baseline gap-2 pt-8 ${on ? "text-[#4ADE80]" : "text-[#058447]"}`}>
+                                        <span className="font-serif text-7xl font-bold leading-[0.85] tracking-tight tabular-nums sm:text-8xl">
+                                            {t.figure}
+                                        </span>
+                                        <span className="text-xl font-extrabold tracking-tight">{tr(t.unit)}</span>
+                                    </span>
+                                </div>
+
+                                {/* Линия отрыва */}
+                                <span
+                                    aria-hidden="true"
+                                    className={`absolute inset-x-6 bottom-[76px] border-t-2 border-dashed ${on ? "border-white/20" : "border-neutral-300"}`}
+                                />
+
+                                {/* Корешок */}
+                                <div className="flex h-[76px] shrink-0 items-center justify-between px-7">
+                                    <span className={`text-sm font-semibold ${on ? "text-white" : "text-neutral-700"}`}>{tr(t.stub)}</span>
+                                    <span
+                                        className={`grid size-9 place-items-center rounded-full transition-colors ${
+                                            on ? "bg-[#4ADE80] text-neutral-950" : "bg-white text-neutral-500"
+                                        }`}
+                                    >
+                                        <ArrowDown size={16} aria-hidden="true" className={on ? "" : "-rotate-90"} />
+                                    </span>
+                                </div>
+                            </div>
                         </button>
-                    </div>
-
-                </div>
-
+                    );
+                })}
             </div>
 
-            {/* МОДАЛЬНОЕ ОКНО С РАЗДЕЛЕНИЕМ НА SOLUTIONS И INFRASTRUCTURE */}
-            {isModalOpen && (
-                <div
-                    role="dialog"
-                    aria-modal="true"
-                    className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6 bg-neutral-950/75 backdrop-blur-md animate-in fade-in duration-200"
-                    onClick={() => setIsModalOpen(false)}
-                >
-                    <div
-                        className="relative w-full max-w-3xl rounded-t-[32px] sm:rounded-[36px] bg-white border-t sm:border border-neutral-200 p-5 xs:p-7 sm:p-12 shadow-2xl space-y-6 sm:space-y-8 max-h-[92vh] sm:max-h-[90vh] overflow-y-auto overscroll-contain animate-in slide-in-from-bottom-6 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-200"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        {/* Мобильный индикатор свайпа */}
-                        <div className="w-12 h-1 bg-neutral-300 rounded-full mx-auto -mt-1 mb-2 sm:hidden" />
+            {/* ── АКТИВНЫЙ РАЗДЕЛ ── */}
+            <section
+                key={active}
+                role="tabpanel"
+                id={`panel-${active}`}
+                aria-labelledby={`tab-${active}`}
+                tabIndex={0}
+                className="of-in mt-16 border-t-2 border-neutral-950 pt-12 focus-visible:outline-none sm:mt-20 sm:pt-16"
+            >
+                {active === "rebranding" && <RebrandingPanel tr={tr} />}
+                {active === "returning" && <ReturningPanel tr={tr} />}
+                {active === "programs" && <ProgramsPanel tr={tr} />}
+            </section>
 
-                        {/* Кнопка закрытия */}
-                        <button
-                            type="button"
-                            aria-label={tr("Закрыть")}
-                            onClick={() => setIsModalOpen(false)}
-                            className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2.5 rounded-full bg-neutral-100 hover:bg-neutral-200 text-neutral-600 hover:text-neutral-950 active:scale-90 transition-all cursor-pointer [touch-action:manipulation]"
-                        >
-                            <X size={18} />
-                        </button>
-
-                        {/* Шапка модалки */}
-                        <div className="space-y-2.5 sm:space-y-3 pr-8 sm:pr-8">
-                            <div className="inline-flex items-center justify-center px-3.5 sm:px-4 py-1.5 rounded-full bg-[#E7F8EE] border border-[#058447]/20 text-[#058447] font-sans text-[11px] sm:text-xs font-black tracking-tight">
-                                <span>{tr("Акции до 31 Декабря в честь ребрендинга")}</span>
-                            </div>
-                            <h3 className="font-sans font-black text-2xl xs:text-3xl sm:text-4xl text-neutral-950 tracking-tight leading-tight">
-                                {tr("Все действующие скидки")}
-                            </h3>
-                            <p className="font-sans text-neutral-500 text-xs xs:text-sm sm:text-base leading-relaxed">
-                                {tr("Зафиксируйте стоимость сейчас — условия сохраняются даже при старте работ в новом году.")}
-                            </p>
-                        </div>
-
-                        {/* РАЗДЕЛ 1: SOLUTIONS */}
-                        <div className="space-y-3 sm:space-y-4 pt-1 sm:pt-2">
-                            <div className="flex items-center justify-between border-b border-neutral-200 pb-2">
-                                <span className="font-mono text-[11px] sm:text-xs uppercase tracking-widest font-bold text-neutral-950">
-                                    {tr("Solutions")}
-                                </span>
-                                <span className="font-mono text-[11px] sm:text-xs text-neutral-400">
-                                    01 — 04
-                                </span>
-                            </div>
-
-                            <div className="divide-y divide-neutral-100">
-                                {SOLUTIONS_OFFERS.map((item) => (
-                                    <div
-                                        key={item.title}
-                                        className="py-3.5 sm:py-4 flex items-start sm:items-center justify-between gap-3 sm:gap-4 font-sans"
-                                    >
-                                        <div className="space-y-1 min-w-0 pr-1">
-                                            <div className="font-bold text-[15px] sm:text-lg text-neutral-950 flex items-center gap-2">
-                                                <span className="font-mono text-xs text-neutral-400 font-normal shrink-0">
-                                                    {tr(item.num)}
-                                                </span>
-                                                <span className="leading-snug">{tr(item.title)}</span>
-                                            </div>
-                                            <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed pl-5 sm:pl-6">
-                                                {tr(item.desc)}
-                                            </p>
-                                        </div>
-
-                                        <span className="inline-flex items-center justify-center px-2.5 xs:px-3 sm:px-3.5 py-1 rounded-[8px] sm:rounded-[10px] bg-[#E7F8EE] text-[#058447] font-sans text-xs xs:text-sm sm:text-base font-black tracking-tight shrink-0 shadow-2xs">
-                                            {tr(item.discount)}
-                                        </span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* РАЗДЕЛ 2: INFRASTRUCTURE */}
-                        <div className="space-y-3 sm:space-y-4 pt-1 sm:pt-2">
-                            <div className="flex items-center justify-between border-b border-neutral-200 pb-2">
-                                <span className="font-mono text-[11px] sm:text-xs uppercase tracking-widest font-bold text-neutral-950">
-                                    {tr("Infrastructure")}
-                                </span>
-                                <span className="font-mono text-[11px] sm:text-xs text-neutral-400">
-                                    01 — 02
-                                </span>
-                            </div>
-
-                            <div className="divide-y divide-neutral-100">
-                                {INFRASTRUCTURE_OFFERS.map((item) => (
-                                    <div
-                                        key={item.title}
-                                        className="py-3.5 sm:py-4 flex items-start sm:items-center justify-between gap-3 sm:gap-4 font-sans"
-                                    >
-                                        <div className="space-y-1 min-w-0 pr-1">
-                                            <div className="font-bold text-[15px] sm:text-lg text-neutral-950 flex items-center gap-2">
-                                                <span className="font-mono text-xs text-neutral-400 font-normal shrink-0">
-                                                    {tr(item.num)}
-                                                </span>
-                                                <span className="leading-snug">{tr(item.title)}</span>
-                                            </div>
-                                            <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed pl-5 sm:pl-6">
-                                                {tr(item.desc)}
-                                            </p>
-                                        </div>
-
-                                        <span className="inline-flex items-center justify-center px-2.5 xs:px-3 sm:px-3.5 py-1 rounded-[8px] sm:rounded-[10px] bg-[#E7F8EE] text-[#058447] font-sans text-xs xs:text-sm sm:text-base font-black tracking-tight shrink-0 shadow-2xs">
-                                            {tr(item.discount)}
-                                        </span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Подвал модалки */}
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 sm:gap-4 pt-3.5 sm:pt-4 border-t border-neutral-100 pb-2 sm:pb-0">
-                            <span className="font-mono text-[11px] sm:text-xs text-neutral-400">
-                                {tr("Фиксация скидки в договоре")}
-                            </span>
-
-                            <Link
-                                href="/contacts"
-                                onClick={() => setIsModalOpen(false)}
-                                className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-8 py-3.5 sm:py-4 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white font-mono text-xs uppercase tracking-wider font-bold transition-all active:scale-95 shadow-md text-center"
-                            >
-                                <span>{tr("Зафиксировать скидку")}</span>
-                                <ArrowUpRight size={15} />
-                            </Link>
-                        </div>
-
-                    </div>
+            {/* ── ФИНАЛ: как зафиксировать скидку ── */}
+            <section className="mt-24 overflow-hidden rounded-[40px] bg-neutral-950 text-white sm:mt-32">
+                <div className="p-8 sm:p-12 lg:p-16">
+                    <h2 className="text-4xl font-extrabold leading-[1.02] tracking-[-0.035em] sm:text-6xl">
+                        {tr("Как зафиксировать скидку")}
+                    </h2>
+                    <ol className="mt-10 grid gap-8 sm:mt-14 md:grid-cols-3 md:gap-10">
+                        {STEPS.map((step) => (
+                            <li key={step.num} className="border-t border-white/15 pt-6">
+                                <span className="font-mono text-sm font-bold text-emerald-400">{step.num}</span>
+                                <h3 className="mt-4 text-xl font-bold tracking-tight sm:text-2xl">{tr(step.title)}</h3>
+                                <p className="mt-2 text-base leading-relaxed text-neutral-400">{tr(step.text)}</p>
+                            </li>
+                        ))}
+                    </ol>
                 </div>
-            )}
+
+                <div className="relative flex flex-col gap-8 border-t border-white/10 p-8 sm:p-12 lg:flex-row lg:items-center lg:justify-between lg:p-16">
+                    <div
+                        aria-hidden="true"
+                        className="pointer-events-none absolute -bottom-40 -left-24 size-[460px] rounded-full bg-emerald-500/20 blur-[120px]"
+                    />
+                    <div className="relative flex items-center gap-3 text-base font-semibold text-neutral-200">
+                        <ShieldCheck size={20} className="shrink-0 text-emerald-400" aria-hidden="true" />
+                        <span>{tr("Без предоплаты до подписания NDA и сметы.")}</span>
+                    </div>
+                    <Link
+                        href="/contacts"
+                        className="group relative inline-flex w-full shrink-0 items-center justify-between gap-6 rounded-2xl bg-white py-2 pl-7 pr-2 text-base font-semibold text-neutral-950 transition-colors duration-200 hover:bg-[#E7F8EE] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white active:scale-[0.99] sm:w-auto"
+                    >
+                        <span>{tr("Зафиксировать скидку")}</span>
+                        <span className="grid size-12 place-items-center rounded-xl bg-[#058447] text-white transition-transform duration-300 group-hover:rotate-45">
+                            <ArrowUpRight size={20} aria-hidden="true" />
+                        </span>
+                    </Link>
+                </div>
+            </section>
         </main>
     );
 }

@@ -1,14 +1,11 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React from "react";
 import { Link } from "@/i18n/navigation";
-import {
-    ArrowLeft,
-    ArrowRight,
-    ShieldCheck,
-    FileCheck2,
-} from "lucide-react";
+import { ArrowUpRight, ShieldCheck, FileCheck2 } from "lucide-react";
 import { useTr } from "@/i18n/tr";
+
+type Tr = (text: string) => string;
 
 interface GuaranteeRule {
     id: string;
@@ -16,9 +13,12 @@ interface GuaranteeRule {
     metric: string;
     title: string;
     // Функция, а не готовый JSX: тексты внутри переводятся через tr на этапе рендера
-    legalQuote: (tr: (text: string) => string) => React.ReactNode;
+    legalQuote: (tr: Tr) => React.ReactNode;
     clause: string;
 }
+
+/* Ключевые обязательства подчёркнуты акцентной линией */
+const HL = "font-semibold text-neutral-950 underline decoration-[#D84C69] decoration-2 underline-offset-[5px]";
 
 const rules: GuaranteeRule[] = [
     {
@@ -28,7 +28,7 @@ const rules: GuaranteeRule[] = [
         title: "Скидка за срыв срока",
         legalQuote: (tr) => (
             <>
-                {tr("Получили проект на")} <strong className="font-semibold text-neutral-900">{tr("3 дня позже — скидка 10%")}</strong>{tr(". Опоздали еще на 3 —")} <strong className="font-semibold text-neutral-900">{tr("скидка уже 20%")}</strong>{tr(". Просто платите меньше.")}
+                {tr("Получили проект на")} <strong className={HL}>{tr("3 дня позже — скидка 10%")}</strong>{tr(". Опоздали еще на 3 —")} <strong className={HL}>{tr("скидка уже 20%")}</strong>{tr(". Просто платите меньше.")}
             </>
         ),
         clause: "Пункт 6.2 Договора",
@@ -40,7 +40,7 @@ const rules: GuaranteeRule[] = [
         title: "Твердый Fixed Price",
         legalQuote: (tr) => (
             <>
-                {tr("Цена в договоре — окончательная. Если мы ошиблись в оценке или задача оказалась сложнее —")} <strong className="font-semibold text-neutral-900">{tr("все переработки оплачиваем мы")}</strong>{tr(", а не вы.")}
+                {tr("Цена в договоре — окончательная. Если мы ошиблись в оценке или задача оказалась сложнее —")} <strong className={HL}>{tr("все переработки оплачиваем мы")}</strong>{tr(", а не вы.")}
             </>
         ),
         clause: "Пункт 3.4 Договора",
@@ -52,7 +52,7 @@ const rules: GuaranteeRule[] = [
         title: "Гарантия на любой баг",
         legalQuote: (tr) => (
             <>
-                {tr("Безусловная гарантия")} <strong className="font-semibold text-neutral-900">{tr("45 календарных дней")}</strong>{tr(". Любые дефекты или отклонения от ТЗ устраняются вне очереди в приоритетном порядке")} <strong className="font-semibold text-neutral-900">{tr("в день обращения")}</strong>.
+                {tr("Безусловная гарантия")} <strong className={HL}>{tr("45 календарных дней")}</strong>{tr(". Любые дефекты или отклонения от ТЗ устраняются вне очереди в приоритетном порядке")} <strong className={HL}>{tr("в день обращения")}</strong>.
             </>
         ),
         clause: "Пункт 7.1 Договора",
@@ -64,7 +64,7 @@ const rules: GuaranteeRule[] = [
         title: "Полное владение кодом",
         legalQuote: (tr) => (
             <>
-                {tr("После завершения работы передаем вам весь исходный код и все доступы. Проект и все права на него на")} <strong className="font-semibold text-neutral-900">{tr("100% принадлежат вам")}</strong>.
+                {tr("После завершения работы передаем вам весь исходный код и все доступы. Проект и все права на него на")} <strong className={HL}>{tr("100% принадлежат вам")}</strong>.
             </>
         ),
         clause: "Пункт 8.3 Договора",
@@ -73,142 +73,104 @@ const rules: GuaranteeRule[] = [
 
 export default function GuaranteePage() {
     const tr = useTr();
-    const [activeId, setActiveId] = useState<string>("time");
-    const detailRef = useRef<HTMLElement | null>(null);
-
-    const selected = rules.find((r) => r.id === activeId) || rules[0];
-
-    const handleSelect = (id: string) => {
-        setActiveId(id);
-        if (detailRef.current) {
-            const rect = detailRef.current.getBoundingClientRect();
-            const offsetTop = window.scrollY + rect.top;
-            const targetPosition = offsetTop - (window.innerHeight - rect.height) / 2;
-
-            window.scrollTo({
-                top: Math.max(0, targetPosition),
-                behavior: "smooth",
-            });
-        }
-    };
 
     return (
-        <main className="max-w-[1280px] mx-auto px-6 sm:px-10 pt-32 pb-28 space-y-16">
-            {/* 1. УЛЬТРА-КОРОТКИЙ HERO */}
-            <section className="space-y-6">
-                <Link
-                    href="/"
-                    className="inline-flex items-center gap-2 text-xs font-semibold text-neutral-400 hover:text-neutral-900 transition-colors group"
-                >
-                    <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
-                    {tr("На главную")}
-                </Link>
+        <main className="mx-auto max-w-[1280px] px-5 pb-28 pt-28 sm:px-10 sm:pt-32">
+            {/* ── 1. HERO: заголовок и печать ── */}
+            <section>
 
-                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-8 border-b border-neutral-200">
-                    <div className="space-y-3">
-                        <h1 className="text-4xl sm:text-6xl font-extrabold text-neutral-900 tracking-tight leading-[1.05]">
-                            {tr("100% качество.")} <br />
-                            {tr("Или вернём всю сумму.")}
-                        </h1>
-                    </div>
+                <div className="mt-10 grid items-center gap-10 sm:mt-14 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-16">
+                    <h1 className="text-[clamp(2.75rem,7.4vw,6.5rem)] font-extrabold leading-[0.95] tracking-[-0.045em] text-neutral-950">
+                        <span className="block">{tr("100% качество.")}</span>
+                        <span className="block">{tr("Или вернём всю сумму.")}</span>
+                    </h1>
 
-                    <div className="flex items-center gap-3 p-4 rounded-2xl bg-[#FAF6F4] border border-neutral-200 text-xs font-medium text-neutral-700">
-                        <ShieldCheck size={20} className="text-emerald-600 shrink-0" />
-                        <span>{tr("Никаких предоплат до NDA и твердой сметы")}</span>
+                    {/* Печать: обещание до начала работы */}
+                    <div className="relative grid size-48 shrink-0 -rotate-[8deg] place-items-center rounded-full border-[3px] border-emerald-600 text-emerald-700 sm:size-56">
+                        <span aria-hidden="true" className="absolute inset-2 rounded-full border border-dashed border-emerald-600/60" />
+                        <div className="flex flex-col items-center gap-3 px-9 text-center sm:px-10">
+                            <ShieldCheck size={30} strokeWidth={1.8} aria-hidden="true" />
+                            <p className="text-[13px] font-bold leading-snug sm:text-sm">
+                                {tr("Никаких предоплат до NDA и твердой сметы")}
+                            </p>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            {/* 2. ЧЕТЫРЕ ЖЕСТКИХ ПРАВИЛА (СЕТКА) */}
-            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                {rules.map((rule) => {
-                    const isCurrent = activeId === rule.id;
-                    return (
-                        <div
-                            key={rule.id}
-                            onClick={() => handleSelect(rule.id)}
-                            className={`p-7 rounded-[28px] cursor-pointer transition-all duration-200 border flex flex-col justify-between min-h-[210px]  ${
-                                isCurrent
-                                    ? "bg-neutral-900 text-white border-neutral-900 shadow-xl -translate-y-1"
-                                    : "bg-[#FAF6F4] hover:bg-[#F3ECE8] text-neutral-900 border-neutral-200/80"
-                            }`}
-                        >
-                            <div className="flex items-center justify-between">
-                                <span className={`text-[11px] font-mono font-bold ${isCurrent ? "text-neutral-400" : "text-neutral-400"}`}>
-                                    {tr("RULE")} {rule.num}
-                                </span>
-                                {isCurrent && <span className="w-2 h-2 rounded-full bg-[#D84C69]" />}
-                            </div>
+            {/* ── 2. РЕЕСТР: все четыре правила видны сразу ── */}
+            <section className="mt-16 border-t-2 border-neutral-950 sm:mt-24">
+                {rules.map((rule) => (
+                    <article
+                        key={rule.id}
+                        className="grid gap-x-12 gap-y-5 border-b border-neutral-200 py-10 sm:py-14 lg:grid-cols-[88px_minmax(0,5fr)_minmax(0,6fr)] lg:items-start"
+                    >
+                        <div className="flex items-baseline gap-2 lg:flex-col lg:gap-1 lg:pt-3">
+                            <span className="font-mono text-[11px] font-bold text-neutral-400">{tr("RULE")}</span>
+                            <span className="font-mono text-2xl font-bold text-neutral-950">{rule.num}</span>
+                        </div>
 
-                            <div className="space-y-1">
-                                <div className="font-serif text-3xl font-bold tracking-tight">
-                                    {tr(rule.metric)}
-                                </div>
-                                <div className={`text-sm font-bold ${isCurrent ? "text-white" : "text-neutral-900"}`}>
-                                    {tr(rule.title)}
-                                </div>
+                        <div className="font-serif text-[clamp(2.5rem,5.4vw,4.75rem)] font-bold leading-[0.95] tracking-tight text-neutral-950">
+                            {tr(rule.metric)}
+                        </div>
+
+                        <div className="lg:pt-2">
+                            <h2 className="text-xl font-bold tracking-tight text-neutral-950 sm:text-2xl">
+                                {tr(rule.title)}
+                            </h2>
+                            <p className="mt-3 max-w-[56ch] text-base leading-[1.7] text-neutral-600 sm:text-lg">
+                                {rule.legalQuote(tr)}
+                            </p>
+                            <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-[#FAF6F4] px-3.5 py-1.5 text-xs font-semibold text-neutral-600">
+                                <FileCheck2 size={14} aria-hidden="true" />
+                                <span>{tr(rule.clause)}</span>
                             </div>
                         </div>
-                    );
-                })}
+                    </article>
+                ))}
             </section>
 
-            {/* 3. ЮРИДИЧЕСКИЙ БЛОК: СЛОВА ИЗ ДОГОВОРА */}
-            <section
-                ref={detailRef}
-                className="bg-white rounded-[32px] border border-neutral-200 p-8 sm:p-12 shadow-xs"
-            >
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 mb-6 border-b border-neutral-100">
-                    <div className="flex items-center gap-3">
-                        <span className="w-8 h-8 rounded-xl bg-neutral-900 text-white flex items-center justify-center">
-                            <FileCheck2 size={16} />
-                        </span>
-                        <span className="font-serif text-2xl font-bold text-neutral-900">
-                            {tr(selected.title)}
-                        </span>
+            {/* ── 3. ФИНАЛ: цена и CTA в одном тёмном блоке ── */}
+            <section className="mt-20 overflow-hidden rounded-[40px] bg-neutral-950 text-white sm:mt-28">
+                <div className="grid gap-6 border-b border-white/10 p-8 sm:p-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-16 lg:p-16">
+                    <div className="flex items-center gap-2 self-start text-sm font-semibold text-emerald-400">
+                        <ShieldCheck size={17} aria-hidden="true" />
+                        <span>{tr("Гарантия лучших цен")}</span>
                     </div>
-                    <span className="text-xs font-mono font-bold uppercase tracking-wider text-neutral-400">
-                        {tr(selected.clause)}
-                    </span>
+                    <div>
+                        <h2 className="font-serif text-3xl font-bold leading-[1.1] tracking-tight sm:text-4xl">
+                            {tr("Абсолютное качество за минимальные деньги.")}
+                        </h2>
+                        <p className="mt-4 max-w-lg text-base leading-relaxed text-neutral-400">
+                            {tr("Нашли дешевле с тем же стеком и гарантией? Назовите цену — сделаем выгоднее.")}
+                        </p>
+                    </div>
                 </div>
 
-                <div className="text-base sm:text-lg text-neutral-700 leading-relaxed max-w-4xl font-normal">
-                    {selected.legalQuote(tr)}
-                </div>
-            </section>
+                <div className="relative flex flex-col gap-10 p-8 sm:p-12 lg:flex-row lg:items-end lg:justify-between lg:p-16">
+                    <div
+                        aria-hidden="true"
+                        className="pointer-events-none absolute -bottom-40 -left-24 size-[460px] rounded-full bg-[#D84C69]/25 blur-[120px]"
+                    />
+                    <div className="relative max-w-2xl space-y-4">
+                        <h2 className="text-4xl font-extrabold leading-[1.02] tracking-[-0.035em] sm:text-6xl">
+                            {tr("Гарантия качества. Только результат и договор.")}
+                        </h2>
+                        <p className="max-w-lg text-base leading-relaxed text-neutral-400">
+                            {tr("Фиксированная цена, передача 100% прав и жесткие штрафы за срыв сроков с первого дня.")}
+                        </p>
+                    </div>
 
-            {/* 4. PRICE MATCH: ГАРАНТИЯ ЛУЧШИХ ЦЕН */}
-            <section className="bg-[#FAF6F4] rounded-[32px] border border-neutral-200 p-8 sm:p-10 space-y-2">
-                <div className="flex items-center gap-2 text-[11px] font-mono font-bold uppercase tracking-wider text-neutral-400">
-                    <ShieldCheck size={13} className="text-neutral-500" />
-                    <span>{tr("Гарантия лучших цен")}</span>
+                    <Link
+                        href="/contacts"
+                        className="group relative inline-flex w-full shrink-0 items-center justify-between gap-6 rounded-2xl bg-white py-2 pl-7 pr-2 text-base font-semibold text-neutral-950 transition-colors duration-200 hover:bg-[#F3ECE8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white active:scale-[0.99] sm:w-auto"
+                    >
+                        <span>{tr("Начать проект с гарантией")}</span>
+                        <span className="grid size-12 place-items-center rounded-xl bg-[#D84C69] text-white transition-transform duration-300 group-hover:rotate-45">
+                            <ArrowUpRight size={20} aria-hidden="true" />
+                        </span>
+                    </Link>
                 </div>
-                <h2 className="font-serif text-2xl sm:text-3xl font-bold text-neutral-900">
-                    {tr("Абсолютное качество за минимальные деньги.")}
-                </h2>
-                <p className="text-neutral-600 text-sm max-w-2xl leading-relaxed">
-                    {tr("Нашли дешевле с тем же стеком и гарантией? Назовите цену — сделаем выгоднее.")}
-                </p>
-            </section>
-
-            {/* 5. ФИНАЛЬНЫЙ CTA В ОДИН КЛИК */}
-            <section className="bg-neutral-900 text-white rounded-[32px] p-8 sm:p-12 flex flex-col lg:flex-row items-center justify-between gap-6 shadow-xl">
-                <div className="space-y-2 text-center lg:text-left">
-                    <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-                        {tr("Гарантия качества. Только результат и договор.")}
-                    </h2>
-                    <p className="text-neutral-400 text-xs sm:text-sm max-w-2xl leading-relaxed">
-                        {tr("Фиксированная цена, передача 100% прав и жесткие штрафы за срыв сроков с первого дня.")}
-                    </p>
-                </div>
-
-                <Link
-                    href="/contacts"
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-white hover:bg-neutral-100 text-neutral-900 text-xs font-bold uppercase tracking-wider transition-all duration-200 shadow-md active:scale-95 shrink-0"
-                >
-                    <span>{tr("Начать проект с гарантией")}</span>
-                    <ArrowRight size={15} />
-                </Link>
             </section>
         </main>
     );
