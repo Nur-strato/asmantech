@@ -46,9 +46,9 @@ const FOCUSABLE_SELECTOR = [
     "[tabindex]:not([tabindex='-1'])",
 ].join(",");
 
-// Размеры ссылки навигации: общие для ссылки и её белой копии внутри индикатора
+// Размеры ссылки навигации (+5%)
 const LINK_BOX =
-    "inline-flex h-10 items-center gap-2 whitespace-nowrap px-4 text-[15px] font-semibold tracking-tight xl:px-5 xl:text-base";
+    "inline-flex h-[42px] items-center gap-2 whitespace-nowrap px-4 text-[16px] font-semibold tracking-tight xl:px-5 xl:text-[17px]";
 
 // Единый стиль фокуса с клавиатуры
 const FOCUS_RING =
@@ -169,51 +169,65 @@ function useMobileMenuAccessibility(isOpen: boolean, onClose: () => void) {
 
 // --------------------------------------------------
 // SLIDING INDICATOR
-// Капсула едет к ссылке под курсором и возвращается к текущей.
-// Первое появление — без «выезда» из левого края; исчезновение — на месте, без съезжания в ноль.
+// При наведении — чёрная капсула с белым текстом.
+// Выбранная страница — чёрная полоска снизу.
 // --------------------------------------------------
 
-function useSlidingIndicator(highlight: string | null, firstKey: string) {
+function useSlidingIndicator(hoverKey: string | null, activeKey: string | null, firstKey: string) {
     const navRef = useRef<HTMLUListElement>(null);
     const linkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
-    const visibleRef = useRef(false);
+    const hoverVisibleRef = useRef(false);
 
-    // left/width — положение капсулы; origin — где начинается первая ссылка (для белой копии текста)
-    const [pos, setPos] = useState<{ left: number; width: number; origin: number } | null>(null);
-    const [visible, setVisible] = useState(false);
-    const [instant, setInstant] = useState(true);
+    // Положение чёрной капсулы при наведении
+    const [hoverPos, setHoverPos] = useState<{ left: number; width: number; origin: number } | null>(null);
+    const [hoverVisible, setHoverVisible] = useState(false);
+    const [hoverInstant, setHoverInstant] = useState(true);
+
+    // Положение нижней полоски под активной страницей
+    const [activePos, setActivePos] = useState<{ left: number; width: number } | null>(null);
 
     const measure = useCallback(() => {
         const nav = navRef.current;
-        const el = highlight ? linkRefs.current[highlight] : null;
         const first = linkRefs.current[firstKey];
+        if (!nav || !first) return;
 
-        if (!nav || !el || !first || el.offsetWidth === 0) {
-            visibleRef.current = false;
-            setVisible(false);
+        const base = nav.getBoundingClientRect().left;
+        const origin = first.getBoundingClientRect().left - base;
+
+        // 1. Замер для нижней полоски выбранной страницы
+        const activeEl = activeKey ? linkRefs.current[activeKey] : null;
+        if (activeEl && activeEl.offsetWidth > 0) {
+            const r = activeEl.getBoundingClientRect();
+            setActivePos({ left: r.left - base, width: r.width });
+        } else {
+            setActivePos(null);
+        }
+
+        // 2. Замер для чёрной капсулы при наведении
+        const hoverEl = hoverKey ? linkRefs.current[hoverKey] : null;
+        if (!hoverEl || hoverEl.offsetWidth === 0) {
+            hoverVisibleRef.current = false;
+            setHoverVisible(false);
             return;
         }
 
-        // Считаем от самой дорожки: offsetLeft врёт, если у <li> есть позиционирование
-        const base = nav.getBoundingClientRect().left;
-        const r = el.getBoundingClientRect();
+        const r = hoverEl.getBoundingClientRect();
         const next = {
             left: r.left - base,
             width: r.width,
-            origin: first.getBoundingClientRect().left - base,
+            origin,
         };
 
-        if (!visibleRef.current) {
-            // Ставим на место мгновенно, затем включаем плавность
-            visibleRef.current = true;
-            setInstant(true);
-            setPos(next);
-            setVisible(true);
-            requestAnimationFrame(() => requestAnimationFrame(() => setInstant(false)));
+        if (!hoverVisibleRef.current) {
+            hoverVisibleRef.current = true;
+            setHoverInstant(true);
+            setHoverPos(next);
+            setHoverVisible(true);
+            requestAnimationFrame(() => requestAnimationFrame(() => setHoverInstant(false)));
         } else {
-            setPos(next);
+            setHoverPos(next);
         }
-    }, [highlight, firstKey]);
+    }, [hoverKey, activeKey, firstKey]);
 
     useEffect(() => {
         measure();
@@ -224,13 +238,12 @@ function useSlidingIndicator(highlight: string | null, firstKey: string) {
         return () => ro.disconnect();
     }, [measure]);
 
-    // Шрифты догружаются позже первого замера — перемеряем
     useEffect(() => {
         if (typeof document === "undefined" || !document.fonts) return;
         document.fonts.ready.then(measure).catch(() => {});
     }, [measure]);
 
-    return { navRef, linkRefs, pos, visible, instant };
+    return { navRef, linkRefs, hoverPos, hoverVisible, hoverInstant, activePos };
 }
 
 // --------------------------------------------------
@@ -252,7 +265,6 @@ export function Header() {
 
     useBodyScrollLock(mobileOpen);
 
-    // Стабильная функция: иначе эффект доступности перезапускался бы на каждом рендере
     const closeMobileMenu = useCallback(() => setMobileOpen(false), []);
 
     const { areaRef, panelRef, triggerRef } = useMobileMenuAccessibility(mobileOpen, closeMobileMenu);
@@ -278,8 +290,11 @@ export function Header() {
 
     const [hoverKey, setHoverKey] = useState<string | null>(null);
     const activeKey = NAV_LINKS.find((item) => isActive(item.href))?.key ?? null;
-    const highlight = hoverKey ?? activeKey;
-    const { navRef, linkRefs, pos, visible, instant } = useSlidingIndicator(highlight, NAV_LINKS[0].key);
+    const { navRef, linkRefs, hoverPos, hoverVisible, hoverInstant, activePos } = useSlidingIndicator(
+        hoverKey,
+        activeKey,
+        NAV_LINKS[0].key
+    );
 
     // --------------------------------------------------
     // CURTAIN TIMER MANAGEMENT
@@ -348,21 +363,19 @@ export function Header() {
     };
 
     // --------------------------------------------------
-    // PIECES: обычные функции, а не компоненты, чтобы ссылки не пересоздавались и не теряли фокус
+    // PIECES
     // --------------------------------------------------
 
-    // Скидка — зелёная, это единственный зелёный элемент в шапке
     const renderBadge = (value: string, large = false) => (
         <span
             className={`inline-flex items-center rounded-full bg-[#E7F8EE] font-extrabold leading-none tracking-tight text-[#058447] tabular-nums ${
-                large ? "px-2.5 py-1.5 text-sm" : "px-2 py-1 text-xs"
+                large ? "px-2.5 py-1.5 text-[15px]" : "px-2 py-1 text-[13px]"
             }`}
         >
             {value}
         </span>
     );
 
-    // Содержимое ссылки навигации: одно и то же для настоящей ссылки и для белой копии в капсуле
     const renderLinkContent = (item: NavItem) => (
         <>
             <span>{tNav(item.key)}</span>
@@ -375,23 +388,27 @@ export function Header() {
             href="/contacts"
             onClick={mobile ? closeMobileMenu : undefined}
             aria-current={isContactsActive ? "page" : undefined}
-            className={`group inline-flex items-center justify-between font-semibold transition-colors duration-200 active:scale-[0.98] motion-reduce:transition-none ${FOCUS_RING} focus-visible:outline-offset-4 ${
+            className={`group inline-flex items-center justify-between font-semibold transition-[background-color,color,border-color,box-shadow,transform] duration-200 active:scale-[0.98] motion-reduce:transition-none ${FOCUS_RING} focus-visible:outline-offset-4 ${
                 mobile
-                    ? "h-16 w-full gap-6 rounded-[20px] pl-6 pr-2 text-lg"
-                    : "h-11 gap-3 rounded-full pl-5 pr-1 text-[15px]"
+                    ? "h-[66px] w-full gap-6 rounded-[20px] pl-6 pr-2 text-[19px]"
+                    : "h-[46px] gap-3.5 rounded-full pl-5 pr-1 text-[16px]"
             } ${
                 isContactsActive
-                    ? "border-2 border-neutral-950 bg-white text-neutral-950"
-                    : "bg-neutral-950 text-white hover:bg-neutral-800"
+                    ? "border border-neutral-950 bg-neutral-950 text-white shadow-[0_8px_20px_-6px_rgba(15,23,42,0.4)] hover:bg-neutral-900"
+                    : "border border-neutral-300 bg-white text-neutral-950 shadow-[0_2px_10px_-3px_rgba(15,23,42,0.08)] hover:border-neutral-950 hover:shadow-[0_8px_20px_-6px_rgba(15,23,42,0.16)]"
             }`}
         >
-            <span>{mobile ? t("contactUs") : tNav("contacts")}</span>
+            <span className="tracking-tight">{mobile ? t("contactUs") : tNav("contacts")}</span>
             <span
-                className={`grid place-items-center bg-[#1E40AF] text-white transition-[transform,background-color] duration-300 group-hover:rotate-45 group-hover:bg-[#1E3A8A] motion-reduce:transition-none ${
-                    mobile ? "size-12 rounded-2xl" : "size-9 rounded-full"
+                className={`grid place-items-center transition-[transform,background-color,color] duration-300 group-hover:rotate-45 motion-reduce:transition-none ${
+                    mobile ? "size-[50px] rounded-2xl" : "size-[38px] rounded-full"
+                } ${
+                    isContactsActive
+                        ? "bg-[#1E40AF] text-white group-hover:bg-[#2563EB]"
+                        : "bg-neutral-950 text-white group-hover:bg-[#1E40AF]"
                 }`}
             >
-                <ArrowUpRight size={mobile ? 20 : 16} aria-hidden="true" />
+                <ArrowUpRight size={mobile ? 21 : 17} strokeWidth={2.2} aria-hidden="true" />
             </span>
         </Link>
     );
@@ -414,13 +431,13 @@ export function Header() {
             />
 
             <header className="pointer-events-none fixed inset-x-0 top-0 z-50 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-5 sm:pt-[max(1.25rem,env(safe-area-inset-top))]">
-                <div ref={areaRef} className="mx-auto max-w-[1240px]">
-                    {/* ── КАПСУЛА ── */}
+                <div ref={areaRef} className="mx-auto max-w-[1302px]">
+                    {/* ── КАПСУЛА (+5% размер) ── */}
                     <div
                         className={`pointer-events-auto relative mx-auto flex items-center justify-between gap-4 rounded-full border pl-5 pr-1.5 backdrop-blur-xl backdrop-saturate-150 transition-[max-width,height,box-shadow,border-color,background-color] duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none sm:pl-6 lg:pr-2 ${
                             scrolled || mobileOpen
-                                ? "h-14 max-w-[1120px] border-neutral-200 bg-white/90 shadow-[0_1px_0_rgba(255,255,255,0.8)_inset,0_18px_50px_-24px_rgba(15,23,42,0.4)] lg:h-[60px]"
-                                : "h-16 max-w-[1240px] border-neutral-200/70 bg-white/80 shadow-[0_1px_0_rgba(255,255,255,0.8)_inset,0_10px_40px_-28px_rgba(15,23,42,0.3)] lg:h-[68px]"
+                                ? "h-[59px] max-w-[1176px] border-neutral-200 bg-white/90 shadow-[0_1px_0_rgba(255,255,255,0.8)_inset,0_18px_50px_-24px_rgba(15,23,42,0.4)] lg:h-[63px]"
+                                : "h-[67px] max-w-[1302px] border-neutral-200/70 bg-white/80 shadow-[0_1px_0_rgba(255,255,255,0.8)_inset,0_10px_40px_-28px_rgba(15,23,42,0.3)] lg:h-[71px]"
                         }`}
                     >
                         {/* Логотип: при наведении переворачивается в «Главная» */}
@@ -428,53 +445,67 @@ export function Header() {
                             href="/"
                             onClick={handleHomeClick}
                             aria-label={t("homeAria")}
-                            className="group relative flex h-9 w-32 shrink-0 cursor-pointer select-none items-center rounded-sm [perspective:1000px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E40AF] focus-visible:ring-offset-4 sm:w-36"
+                            className="group relative flex h-[38px] w-[134px] shrink-0 cursor-pointer select-none items-center rounded-sm [perspective:1000px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E40AF] focus-visible:ring-offset-4 sm:w-[151px]"
                         >
                             <div className="pointer-events-none absolute inset-0 flex origin-bottom transform-gpu items-center transition-[transform,opacity] duration-600 ease-[cubic-bezier(0.16,1,0.3,1)] [backface-visibility:hidden] group-hover:opacity-0 group-hover:[transform:rotateX(90deg)_translateY(-6px)] motion-reduce:transition-none">
-                                <div className="relative flex h-7 w-28 items-center sm:h-8 sm:w-32">
+                                <div className="relative flex h-[29px] w-[118px] items-center sm:h-[34px] sm:w-[134px]">
                                     <Image
                                         src="/images/logo.png?v=2"
                                         alt=""
                                         fill
                                         priority
-                                        sizes="(max-width: 640px) 130px, 150px"
+                                        sizes="(max-width: 640px) 136px, 158px"
                                         className="origin-left scale-[1.17] object-contain object-left sm:scale-[1.26]"
                                     />
                                 </div>
                             </div>
                             <div className="pointer-events-none absolute inset-0 flex origin-top transform-gpu items-center opacity-0 transition-[transform,opacity] duration-600 ease-[cubic-bezier(0.16,1,0.3,1)] [backface-visibility:hidden] [transform:rotateX(-90deg)_translateY(6px)] group-hover:opacity-100 group-hover:[transform:rotateX(0deg)_translateY(0)] motion-reduce:transition-none">
-                                <span className="text-[22px] font-extrabold tracking-[-0.03em] text-neutral-950 sm:text-[24px]">
+                                <span className="text-[23px] font-extrabold tracking-[-0.03em] text-neutral-950 sm:text-[25px]">
                                     {t("home")}
                                 </span>
                             </div>
                         </Link>
 
-                        {/* Навигация: сегментированный переключатель со скользящей капсулой */}
+                        {/* Навигация: при наведении — полностью чёрная капсула, выбранная страница — чёрная палочка снизу */}
                         <nav aria-label="Main navigation" className="hidden lg:block">
                             <ul
                                 ref={navRef}
                                 onMouseLeave={() => setHoverKey(null)}
                                 className="relative m-0 flex list-none items-center rounded-full bg-neutral-100/90 p-1 ring-1 ring-inset ring-neutral-200/60"
                             >
-                                {/* Капсула-индикатор. Внутри — белая копия подписей, сдвинутая ровно на столько же,
-                                    на сколько сдвинута капсула: белый текст всегда точно под чёрным фоном,
-                                    без момента «белое на сером» или «серое на чёрном» во время движения */}
+                                {/* Нижняя чёрная палочка под выбранной (активной) страницей */}
                                 <li aria-hidden="true" className="contents">
                                     <span
-                                        className={`pointer-events-none absolute bottom-1 top-1 overflow-hidden rounded-full bg-neutral-950 shadow-[0_6px_16px_-8px_rgba(15,23,42,0.6)] ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none ${
-                                            instant ? "transition-opacity duration-200" : "transition-[left,width,opacity] duration-300"
+                                        className="pointer-events-none absolute bottom-1.5 z-[1] transition-[left,width,opacity] duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none"
+                                        style={{
+                                            left: activePos?.left ?? 0,
+                                            width: activePos?.width ?? 0,
+                                            opacity: activePos ? 1 : 0,
+                                        }}
+                                    >
+                                        <span className="mx-auto block h-[2.5px] w-[calc(100%-2rem)] rounded-full bg-neutral-950 xl:w-[calc(100%-2.5rem)]" />
+                                    </span>
+                                </li>
+
+                                {/* Скользящая чёрная капсула при наведении с белой копией текста */}
+                                <li aria-hidden="true" className="contents">
+                                    <span
+                                        className={`pointer-events-none absolute bottom-1 top-1 z-10 overflow-hidden rounded-full bg-neutral-950 shadow-[0_6px_16px_-8px_rgba(15,23,42,0.6)] ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none ${
+                                            hoverInstant
+                                                ? "transition-opacity duration-200"
+                                                : "transition-[left,width,opacity] duration-300"
                                         }`}
                                         style={{
-                                            left: pos?.left ?? 0,
-                                            width: pos?.width ?? 0,
-                                            opacity: visible ? 1 : 0,
+                                            left: hoverPos?.left ?? 0,
+                                            width: hoverPos?.width ?? 0,
+                                            opacity: hoverVisible ? 1 : 0,
                                         }}
                                     >
                                         <span
                                             className={`absolute inset-y-0 left-0 flex ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none ${
-                                                instant ? "" : "transition-transform duration-300"
+                                                hoverInstant ? "" : "transition-transform duration-300"
                                             }`}
-                                            style={{ transform: `translateX(${(pos?.origin ?? 0) - (pos?.left ?? 0)}px)` }}
+                                            style={{ transform: `translateX(${(hoverPos?.origin ?? 0) - (hoverPos?.left ?? 0)}px)` }}
                                         >
                                             {NAV_LINKS.map((item) => (
                                                 <span key={item.key} className={`${LINK_BOX} text-white`}>
@@ -485,30 +516,35 @@ export function Header() {
                                     </span>
                                 </li>
 
-                                {NAV_LINKS.map((item) => (
-                                    <li key={item.key}>
-                                        <Link
-                                            ref={(el) => {
-                                                linkRefs.current[item.key] = el;
-                                            }}
-                                            href={item.href}
-                                            aria-current={activeKey === item.key ? "page" : undefined}
-                                            onMouseEnter={() => setHoverKey(item.key)}
-                                            onFocus={() => setHoverKey(item.key)}
-                                            onBlur={() => setHoverKey(null)}
-                                            className={`${LINK_BOX} rounded-full text-neutral-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E40AF] focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-100`}
-                                        >
-                                            {renderLinkContent(item)}
-                                        </Link>
-                                    </li>
-                                ))}
+                                {NAV_LINKS.map((item) => {
+                                    const isCurrent = activeKey === item.key;
+                                    return (
+                                        <li key={item.key}>
+                                            <Link
+                                                ref={(el) => {
+                                                    linkRefs.current[item.key] = el;
+                                                }}
+                                                href={item.href}
+                                                aria-current={isCurrent ? "page" : undefined}
+                                                onMouseEnter={() => setHoverKey(item.key)}
+                                                onFocus={() => setHoverKey(item.key)}
+                                                onBlur={() => setHoverKey(null)}
+                                                className={`${LINK_BOX} rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E40AF] focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-100 ${
+                                                    isCurrent ? "text-neutral-950" : "text-neutral-600"
+                                                }`}
+                                            >
+                                                {renderLinkContent(item)}
+                                            </Link>
+                                        </li>
+                                    );
+                                })}
                             </ul>
                         </nav>
 
                         {/* Справа */}
                         <div className="flex items-center gap-3">
                             <div className="hidden lg:block">
-                                <LocaleSwitcher />
+                                <LocaleSwitcher className="text-[16px]" />
                             </div>
                             <div className="hidden lg:block">{renderContactsCta()}</div>
 
@@ -520,19 +556,19 @@ export function Header() {
                                 aria-label={mobileOpen ? t("closeMenu") : t("openMenu")}
                                 aria-expanded={mobileOpen}
                                 aria-controls={MOBILE_MENU_ID}
-                                className={`relative grid size-11 cursor-pointer place-items-center rounded-full text-white transition-colors active:scale-95 motion-reduce:transition-none lg:hidden ${FOCUS_RING} ${
+                                className={`relative grid size-[46px] cursor-pointer place-items-center rounded-full text-white transition-colors active:scale-95 motion-reduce:transition-none lg:hidden ${FOCUS_RING} ${
                                     mobileOpen ? "bg-[#1E40AF] hover:bg-[#1E3A8A]" : "bg-neutral-950 hover:bg-neutral-800"
                                 }`}
                             >
                                 <span
                                     aria-hidden="true"
-                                    className={`absolute h-[2px] w-[18px] rounded-full bg-current transition-transform duration-300 motion-reduce:transition-none ${
+                                    className={`absolute h-[2px] w-[19px] rounded-full bg-current transition-transform duration-300 motion-reduce:transition-none ${
                                         mobileOpen ? "rotate-45" : "-translate-y-[4px]"
                                     }`}
                                 />
                                 <span
                                     aria-hidden="true"
-                                    className={`absolute h-[2px] w-[18px] rounded-full bg-current transition-transform duration-300 motion-reduce:transition-none ${
+                                    className={`absolute h-[2px] w-[19px] rounded-full bg-current transition-transform duration-300 motion-reduce:transition-none ${
                                         mobileOpen ? "-rotate-45" : "translate-y-[4px]"
                                     }`}
                                 />
@@ -569,25 +605,30 @@ export function Header() {
                                                 href={item.href}
                                                 onClick={closeMobileMenu}
                                                 aria-current={active ? "page" : undefined}
-                                                className={`group flex h-[68px] items-center justify-between gap-4 rounded-[20px] px-5 transition-colors motion-reduce:transition-none ${FOCUS_RING} ${
-                                                    active
-                                                        ? "bg-neutral-950 text-white"
-                                                        : "bg-neutral-100 text-neutral-950 hover:bg-neutral-200/80"
-                                                }`}
+                                                className={`group relative flex h-[71px] items-center justify-between gap-4 overflow-hidden rounded-[20px] bg-neutral-100 px-5 text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white motion-reduce:transition-none ${FOCUS_RING}`}
                                             >
                                                 <span className="flex min-w-0 items-center gap-3">
-                                                    <span className="truncate text-2xl font-extrabold tracking-[-0.03em]">
+                                                    <span className="truncate text-[25px] font-extrabold tracking-[-0.03em]">
                                                         {tNav(item.key)}
                                                     </span>
                                                     {item.badge && renderBadge(item.badge, true)}
                                                 </span>
                                                 {active ? (
-                                                    <span aria-hidden="true" className="mr-1.5 size-2.5 shrink-0 rounded-full bg-[#60A5FA]" />
+                                                    <>
+                                                        <span
+                                                            aria-hidden="true"
+                                                            className="mr-1.5 size-2.5 shrink-0 rounded-full bg-neutral-950 transition-colors group-hover:bg-white"
+                                                        />
+                                                        <span
+                                                            aria-hidden="true"
+                                                            className="absolute inset-x-5 bottom-0 h-[3px] rounded-full bg-neutral-950 transition-colors group-hover:bg-white"
+                                                        />
+                                                    </>
                                                 ) : (
                                                     <ArrowUpRight
-                                                        size={20}
+                                                        size={21}
                                                         aria-hidden="true"
-                                                        className="shrink-0 text-neutral-400 transition-[transform,color] duration-300 group-hover:rotate-45 group-hover:text-[#1E40AF] motion-reduce:transition-none"
+                                                        className="shrink-0 text-neutral-400 transition-[transform,color] duration-300 group-hover:rotate-45 group-hover:text-white motion-reduce:transition-none"
                                                     />
                                                 )}
                                             </Link>
@@ -598,8 +639,8 @@ export function Header() {
                         </nav>
 
                         <div className="mt-2 flex items-center justify-between gap-4 rounded-[20px] border border-neutral-200 px-5 py-4">
-                            <LocaleSwitcher className="text-[15px]" />
-                            <span className="text-sm text-neutral-500">{t("itSolutions")}</span>
+                            <LocaleSwitcher className="text-[16px]" />
+                            <span className="text-[15px] text-neutral-500">{t("itSolutions")}</span>
                         </div>
 
                         <div className="mt-2">{renderContactsCta(true)}</div>
