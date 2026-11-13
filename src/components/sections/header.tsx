@@ -2,19 +2,16 @@
 
 import Image from "next/image";
 import { usePathname, useRouter, Link } from "@/i18n/navigation";
-import {
-    useState,
-    useEffect,
-    useRef,
-    type MouseEvent,
-} from "react";
+import { useState, useEffect, useRef, useCallback, type MouseEvent } from "react";
 import { useTranslations } from "next-intl";
 import { LocaleSwitcher } from "@/components/locale-switcher";
-import { ArrowUpRight, X } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { Curtain, type CurtainState } from "@/components/ui/curtain";
 
 // --------------------------------------------------
 // CONSTANTS & TYPES
+// Акцент — глубокий синий #1E40AF, при наведении темнее #1E3A8A (на чёрном — светлее, #60A5FA).
+// Скидка остаётся зелёной.
 // --------------------------------------------------
 
 const CURTAIN_TIMINGS = {
@@ -35,7 +32,7 @@ const NAV_LINKS: readonly NavItem[] = [
     { key: "solutions", href: "/solutions" },
     { key: "projects", href: "/projects" },
     { key: "guarantee", href: "/guarantee" },
-    { key: "offers", href: "/offers", badge: "−40%" },
+    { key: "offers", href: "/offers", badge: "−50%" },
 ];
 
 const MOBILE_MENU_ID = "mobile-navigation";
@@ -49,6 +46,14 @@ const FOCUSABLE_SELECTOR = [
     "[tabindex]:not([tabindex='-1'])",
 ].join(",");
 
+// Размеры ссылки навигации: общие для ссылки и её белой копии внутри индикатора
+const LINK_BOX =
+    "inline-flex h-10 items-center gap-2 whitespace-nowrap px-4 text-[15px] font-semibold tracking-tight xl:px-5 xl:text-base";
+
+// Единый стиль фокуса с клавиатуры
+const FOCUS_RING =
+    "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E40AF]";
+
 // --------------------------------------------------
 // SCROLL POSITION
 // --------------------------------------------------
@@ -57,33 +62,24 @@ function useScrollPosition(threshold: number) {
     const [scrolled, setScrolled] = useState(false);
 
     useEffect(() => {
-        let animationFrame: number | null = null;
+        let frame: number | null = null;
 
-        const updateScrollPosition = () => {
+        const update = () => {
             setScrolled(window.scrollY > threshold);
-            animationFrame = null;
+            frame = null;
         };
 
-        updateScrollPosition();
+        update();
 
-        const handleScroll = () => {
-            if (animationFrame !== null) return;
-
-            animationFrame = window.requestAnimationFrame(
-                updateScrollPosition
-            );
+        const onScroll = () => {
+            if (frame !== null) return;
+            frame = window.requestAnimationFrame(update);
         };
 
-        window.addEventListener("scroll", handleScroll, {
-            passive: true,
-        });
-
+        window.addEventListener("scroll", onScroll, { passive: true });
         return () => {
-            window.removeEventListener("scroll", handleScroll);
-
-            if (animationFrame !== null) {
-                window.cancelAnimationFrame(animationFrame);
-            }
+            window.removeEventListener("scroll", onScroll);
+            if (frame !== null) window.cancelAnimationFrame(frame);
         };
     }, [threshold]);
 
@@ -99,23 +95,15 @@ function useBodyScrollLock(isLocked: boolean) {
         if (!isLocked) return;
 
         const body = document.body;
-
         const originalOverflow = body.style.overflow;
         const originalPaddingRight = body.style.paddingRight;
 
-        const scrollbarWidth =
-            window.innerWidth -
-            document.documentElement.clientWidth;
-
-        const currentPaddingRight = Number.parseFloat(
-            window.getComputedStyle(body).paddingRight
-        ) || 0;
+        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+        const currentPaddingRight = Number.parseFloat(window.getComputedStyle(body).paddingRight) || 0;
 
         body.style.overflow = "hidden";
-
         if (scrollbarWidth > 0) {
-            body.style.paddingRight =
-                `${currentPaddingRight + scrollbarWidth}px`;
+            body.style.paddingRight = `${currentPaddingRight + scrollbarWidth}px`;
         }
 
         return () => {
@@ -127,24 +115,23 @@ function useBodyScrollLock(isLocked: boolean) {
 
 // --------------------------------------------------
 // MOBILE MENU ACCESSIBILITY
+// Капсула и панель — одна область: фокус переходит в панель и не уходит за пределы шапки
 // --------------------------------------------------
 
-function useMobileMenuAccessibility(
-    isOpen: boolean,
-    onClose: () => void
-) {
-    const menuRef = useRef<HTMLDivElement>(null);
-    const closeButtonRef = useRef<HTMLButtonElement>(null);
+function useMobileMenuAccessibility(isOpen: boolean, onClose: () => void) {
+    const areaRef = useRef<HTMLDivElement>(null);
+    const panelRef = useRef<HTMLDivElement>(null);
     const triggerRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
         if (!isOpen) return;
 
-        const previouslyFocused = document.activeElement as
-            | HTMLElement
-            | null;
+        const visible = (root: HTMLElement | null) =>
+            Array.from(root?.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR) ?? []).filter(
+                (el) => !el.hasAttribute("disabled") && el.getClientRects().length > 0
+            );
 
-        closeButtonRef.current?.focus();
+        visible(panelRef.current)[0]?.focus();
 
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === "Escape") {
@@ -152,66 +139,98 @@ function useMobileMenuAccessibility(
                 onClose();
                 return;
             }
-
             if (event.key !== "Tab") return;
 
-            const focusableElements = Array.from(
-                menuRef.current?.querySelectorAll<HTMLElement>(
-                    FOCUSABLE_SELECTOR
-                ) ?? []
-            ).filter(
-                (element) =>
-                    !element.hasAttribute("disabled") &&
-                    element.getClientRects().length > 0
-            );
+            const focusable = visible(areaRef.current);
+            if (focusable.length === 0) return;
 
-            if (focusableElements.length === 0) {
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            const active = document.activeElement;
+
+            if (event.shiftKey && (active === first || !areaRef.current?.contains(active))) {
                 event.preventDefault();
-                closeButtonRef.current?.focus();
-                return;
-            }
-
-            const firstElement = focusableElements[0];
-            const lastElement =
-                focusableElements[focusableElements.length - 1];
-
-            const activeElement = document.activeElement;
-
-            if (
-                event.shiftKey &&
-                (activeElement === firstElement ||
-                    !menuRef.current?.contains(activeElement))
-            ) {
+                last.focus();
+            } else if (!event.shiftKey && (active === last || !areaRef.current?.contains(active))) {
                 event.preventDefault();
-                lastElement.focus();
-            } else if (
-                !event.shiftKey &&
-                (activeElement === lastElement ||
-                    !menuRef.current?.contains(activeElement))
-            ) {
-                event.preventDefault();
-                firstElement.focus();
+                first.focus();
             }
         };
 
         document.addEventListener("keydown", handleKeyDown);
-
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
-
-            if (triggerRef.current?.isConnected) {
-                triggerRef.current.focus();
-            } else if (previouslyFocused?.isConnected) {
-                previouslyFocused.focus();
-            }
+            if (triggerRef.current?.isConnected) triggerRef.current.focus();
         };
     }, [isOpen, onClose]);
 
-    return {
-        menuRef,
-        closeButtonRef,
-        triggerRef,
-    };
+    return { areaRef, panelRef, triggerRef };
+}
+
+// --------------------------------------------------
+// SLIDING INDICATOR
+// Капсула едет к ссылке под курсором и возвращается к текущей.
+// Первое появление — без «выезда» из левого края; исчезновение — на месте, без съезжания в ноль.
+// --------------------------------------------------
+
+function useSlidingIndicator(highlight: string | null, firstKey: string) {
+    const navRef = useRef<HTMLUListElement>(null);
+    const linkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
+    const visibleRef = useRef(false);
+
+    // left/width — положение капсулы; origin — где начинается первая ссылка (для белой копии текста)
+    const [pos, setPos] = useState<{ left: number; width: number; origin: number } | null>(null);
+    const [visible, setVisible] = useState(false);
+    const [instant, setInstant] = useState(true);
+
+    const measure = useCallback(() => {
+        const nav = navRef.current;
+        const el = highlight ? linkRefs.current[highlight] : null;
+        const first = linkRefs.current[firstKey];
+
+        if (!nav || !el || !first || el.offsetWidth === 0) {
+            visibleRef.current = false;
+            setVisible(false);
+            return;
+        }
+
+        // Считаем от самой дорожки: offsetLeft врёт, если у <li> есть позиционирование
+        const base = nav.getBoundingClientRect().left;
+        const r = el.getBoundingClientRect();
+        const next = {
+            left: r.left - base,
+            width: r.width,
+            origin: first.getBoundingClientRect().left - base,
+        };
+
+        if (!visibleRef.current) {
+            // Ставим на место мгновенно, затем включаем плавность
+            visibleRef.current = true;
+            setInstant(true);
+            setPos(next);
+            setVisible(true);
+            requestAnimationFrame(() => requestAnimationFrame(() => setInstant(false)));
+        } else {
+            setPos(next);
+        }
+    }, [highlight, firstKey]);
+
+    useEffect(() => {
+        measure();
+        const nav = navRef.current;
+        if (!nav) return;
+        const ro = new ResizeObserver(measure);
+        ro.observe(nav);
+        return () => ro.disconnect();
+    }, [measure]);
+
+    // Шрифты догружаются позже первого замера — перемеряем
+    useEffect(() => {
+        if (typeof document === "undefined" || !document.fonts) return;
+        document.fonts.ready.then(measure).catch(() => {});
+    }, [measure]);
+
+    return { navRef, linkRefs, pos, visible, instant };
 }
 
 // --------------------------------------------------
@@ -226,84 +245,64 @@ export function Header() {
     const router = useRouter();
 
     const [mobileOpen, setMobileOpen] = useState(false);
-    const [curtainState, setCurtainState] =
-        useState<CurtainState>("idle");
-
-    const timeoutsRef = useRef<
-        ReturnType<typeof setTimeout>[]
-    >([]);
+    const [curtainState, setCurtainState] = useState<CurtainState>("idle");
+    const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
     const scrolled = useScrollPosition(SCROLL_THRESHOLD);
 
     useBodyScrollLock(mobileOpen);
 
-    const closeMobileMenu = () => {
-        setMobileOpen(false);
-    };
+    // Стабильная функция: иначе эффект доступности перезапускался бы на каждом рендере
+    const closeMobileMenu = useCallback(() => setMobileOpen(false), []);
 
-    const {
-        menuRef,
-        closeButtonRef,
-        triggerRef,
-    } = useMobileMenuAccessibility(
-        mobileOpen,
-        closeMobileMenu
-    );
+    const { areaRef, panelRef, triggerRef } = useMobileMenuAccessibility(mobileOpen, closeMobileMenu);
 
-    const isContactsActive =
-        pathname === "/contacts" ||
-        pathname.startsWith("/contacts/");
-
-    // --------------------------------------------------
-    // ROUTE CHANGE
-    // --------------------------------------------------
+    const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
+    const isContactsActive = isActive("/contacts");
 
     useEffect(() => {
         setMobileOpen(false);
     }, [pathname]);
+
+    useEffect(() => {
+        if (!mobileOpen) return;
+        const mq = window.matchMedia("(min-width: 1024px)");
+        const onChange = () => mq.matches && setMobileOpen(false);
+        mq.addEventListener("change", onChange);
+        return () => mq.removeEventListener("change", onChange);
+    }, [mobileOpen]);
+
+    // --------------------------------------------------
+    // INDICATOR STATE
+    // --------------------------------------------------
+
+    const [hoverKey, setHoverKey] = useState<string | null>(null);
+    const activeKey = NAV_LINKS.find((item) => isActive(item.href))?.key ?? null;
+    const highlight = hoverKey ?? activeKey;
+    const { navRef, linkRefs, pos, visible, instant } = useSlidingIndicator(highlight, NAV_LINKS[0].key);
 
     // --------------------------------------------------
     // CURTAIN TIMER MANAGEMENT
     // --------------------------------------------------
 
     const clearCurtainTimers = () => {
-        timeoutsRef.current.forEach((timeout) => {
-            clearTimeout(timeout);
-        });
-
+        timeoutsRef.current.forEach((timeout) => clearTimeout(timeout));
         timeoutsRef.current = [];
     };
 
-    useEffect(() => {
-        return () => {
-            clearCurtainTimers();
-        };
-    }, []);
+    useEffect(() => () => clearCurtainTimers(), []);
 
     // --------------------------------------------------
     // HOME NAVIGATION
     // --------------------------------------------------
 
-    const handleHomeClick = (
-        event: MouseEvent<HTMLAnchorElement>
-    ) => {
+    const handleHomeClick = (event: MouseEvent<HTMLAnchorElement>) => {
         const isModifiedClick =
-            event.metaKey ||
-            event.ctrlKey ||
-            event.shiftKey ||
-            event.altKey ||
-            event.button !== 0;
-
+            event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0;
         const target = event.currentTarget.getAttribute("target");
-        const hasDownload =
-            event.currentTarget.hasAttribute("download");
+        const hasDownload = event.currentTarget.hasAttribute("download");
 
-        if (
-            event.defaultPrevented ||
-            isModifiedClick ||
-            (target && target !== "_self") ||
-            hasDownload
-        ) {
+        if (event.defaultPrevented || isModifiedClick || (target && target !== "_self") || hasDownload) {
             return;
         }
 
@@ -315,121 +314,86 @@ export function Header() {
         event.preventDefault();
         closeMobileMenu();
 
-        const prefersReducedMotion =
-            window.matchMedia(
-                "(prefers-reduced-motion: reduce)"
-            ).matches;
+        const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
         if (prefersReducedMotion) {
             if (pathname === "/") {
-                window.scrollTo({
-                    top: 0,
-                    behavior: "auto",
-                });
+                window.scrollTo({ top: 0, behavior: "auto" });
             } else {
                 router.push("/");
             }
-
             return;
         }
 
         clearCurtainTimers();
-
         setCurtainState("enter");
 
         const activeTimer = setTimeout(() => {
             setCurtainState("active");
-
             if (pathname === "/") {
-                window.scrollTo({
-                    top: 0,
-                    behavior: "smooth",
-                });
+                window.scrollTo({ top: 0, behavior: "smooth" });
             } else {
                 router.push("/");
             }
         }, CURTAIN_TIMINGS.ACTIVE);
 
-        const leaveTimer = setTimeout(() => {
-            setCurtainState("leave");
-        }, CURTAIN_TIMINGS.LEAVE);
+        const leaveTimer = setTimeout(() => setCurtainState("leave"), CURTAIN_TIMINGS.LEAVE);
 
         const idleTimer = setTimeout(() => {
             setCurtainState("idle");
             timeoutsRef.current = [];
         }, CURTAIN_TIMINGS.IDLE);
 
-        timeoutsRef.current = [
-            activeTimer,
-            leaveTimer,
-            idleTimer,
-        ];
+        timeoutsRef.current = [activeTimer, leaveTimer, idleTimer];
     };
 
     // --------------------------------------------------
-    // NAVIGATION RENDERING
+    // PIECES: обычные функции, а не компоненты, чтобы ссылки не пересоздавались и не теряли фокус
     // --------------------------------------------------
 
-    const renderNavigationLinks = (mobile = false) => (
-        NAV_LINKS.map((item) => {
-            const isActive =
-                pathname === item.href ||
-                pathname.startsWith(`${item.href}/`);
+    // Скидка — зелёная, это единственный зелёный элемент в шапке
+    const renderBadge = (value: string, large = false) => (
+        <span
+            className={`inline-flex items-center rounded-full bg-[#E7F8EE] font-extrabold leading-none tracking-tight text-[#058447] tabular-nums ${
+                large ? "px-2.5 py-1.5 text-sm" : "px-2 py-1 text-xs"
+            }`}
+        >
+            {value}
+        </span>
+    );
 
-            return (
-                <li key={item.key}>
-                    <Link
-                        href={item.href}
-                        onClick={
-                            mobile
-                                ? closeMobileMenu
-                                : undefined
-                        }
-                        aria-current={
-                            isActive ? "page" : undefined
-                        }
-                        className={
-                            mobile
-                                ? `flex items-center justify-between py-2 text-3xl sm:text-4xl font-serif tracking-tight transition-colors motion-reduce:transition-none ${
-                                    isActive
-                                        ? "text-neutral-950 font-bold"
-                                        : "text-neutral-500 hover:text-neutral-950"
-                                }`
-                                : `relative inline-flex items-center gap-2 py-1 group transition-colors duration-200 motion-reduce:transition-none ${
-                                    isActive
-                                        ? "text-black font-medium"
-                                        : "text-neutral-800 hover:text-black font-normal"
-                                }`
-                        }
-                    >
-                        <span>{tNav(item.key)}</span>
+    // Содержимое ссылки навигации: одно и то же для настоящей ссылки и для белой копии в капсуле
+    const renderLinkContent = (item: NavItem) => (
+        <>
+            <span>{tNav(item.key)}</span>
+            {item.badge && renderBadge(item.badge)}
+        </>
+    );
 
-                        {item.badge && (
-                            <span
-                                className={
-                                    mobile
-                                        ? "inline-flex items-center justify-center px-3 py-1 rounded-[10px] bg-[#E7F8EE] text-[#058447] font-sans text-sm font-black tracking-tight leading-none shadow-2xs"
-                                        : "inline-flex items-center justify-center px-2 py-0.5 rounded-[9px] bg-[#E7F8EE] text-[#058447] font-sans text-[12px] md:text-[13px] font-black tracking-tight leading-none -translate-y-2 select-none shadow-2xs transition-transform duration-200 group-hover:scale-105 motion-reduce:transition-none"
-                                }
-                            >
-                                {item.badge}
-                            </span>
-                        )}
-
-                        {!mobile && (
-                            <span
-                                aria-hidden="true"
-                                className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-[1.5px] bg-neutral-900 transition-all duration-200 ease-out motion-reduce:transition-none ${
-                                    isActive
-                                        ? "w-[40%] group-hover:w-full"
-                                        : "w-0 group-hover:w-full"
-                                }`}
-                            />
-                        )}
-                    </Link>
-                </li>
-            );
-        })
+    const renderContactsCta = (mobile = false) => (
+        <Link
+            href="/contacts"
+            onClick={mobile ? closeMobileMenu : undefined}
+            aria-current={isContactsActive ? "page" : undefined}
+            className={`group inline-flex items-center justify-between font-semibold transition-colors duration-200 active:scale-[0.98] motion-reduce:transition-none ${FOCUS_RING} focus-visible:outline-offset-4 ${
+                mobile
+                    ? "h-16 w-full gap-6 rounded-[20px] pl-6 pr-2 text-lg"
+                    : "h-11 gap-3 rounded-full pl-5 pr-1 text-[15px]"
+            } ${
+                isContactsActive
+                    ? "border-2 border-neutral-950 bg-white text-neutral-950"
+                    : "bg-neutral-950 text-white hover:bg-neutral-800"
+            }`}
+        >
+            <span>{mobile ? t("contactUs") : tNav("contacts")}</span>
+            <span
+                className={`grid place-items-center bg-[#1E40AF] text-white transition-[transform,background-color] duration-300 group-hover:rotate-45 group-hover:bg-[#1E3A8A] motion-reduce:transition-none ${
+                    mobile ? "size-12 rounded-2xl" : "size-9 rounded-full"
+                }`}
+            >
+                <ArrowUpRight size={mobile ? 20 : 16} aria-hidden="true" />
+            </span>
+        </Link>
     );
 
     // --------------------------------------------------
@@ -440,225 +404,205 @@ export function Header() {
         <>
             <Curtain state={curtainState} />
 
-            <header
-                className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 motion-reduce:transition-none ${
-                    scrolled
-                        ? "bg-white/90 backdrop-blur-md border-b border-neutral-100 shadow-[0_4px_30px_rgba(0,0,0,0.02)] pt-2.5 pb-3.5"
-                        : "bg-white/0 pt-3.5 pb-6"
+            {/* Затемнение под мобильной панелью */}
+            <div
+                aria-hidden="true"
+                onClick={closeMobileMenu}
+                className={`fixed inset-0 z-40 bg-neutral-950/30 backdrop-blur-sm transition-opacity duration-300 motion-reduce:transition-none lg:hidden ${
+                    mobileOpen ? "opacity-100" : "pointer-events-none opacity-0"
                 }`}
-            >
-                <div className="max-w-[1412px] mx-auto px-5 md:px-8 flex items-center justify-between w-full -translate-y-1">
+            />
 
-                    {/* LOGO */}
-
-                    <Link
-                        href="/"
-                        onClick={handleHomeClick}
-                        aria-label={t("homeAria")}
-                        className="group relative h-10 w-36 sm:w-40 md:w-44 select-none [perspective:1000px] z-50 flex items-center cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-4 rounded-sm"
+            <header className="pointer-events-none fixed inset-x-0 top-0 z-50 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-5 sm:pt-[max(1.25rem,env(safe-area-inset-top))]">
+                <div ref={areaRef} className="mx-auto max-w-[1240px]">
+                    {/* ── КАПСУЛА ── */}
+                    <div
+                        className={`pointer-events-auto relative mx-auto flex items-center justify-between gap-4 rounded-full border pl-5 pr-1.5 backdrop-blur-xl backdrop-saturate-150 transition-[max-width,height,box-shadow,border-color,background-color] duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none sm:pl-6 lg:pr-2 ${
+                            scrolled || mobileOpen
+                                ? "h-14 max-w-[1120px] border-neutral-200 bg-white/90 shadow-[0_1px_0_rgba(255,255,255,0.8)_inset,0_18px_50px_-24px_rgba(15,23,42,0.4)] lg:h-[60px]"
+                                : "h-16 max-w-[1240px] border-neutral-200/70 bg-white/80 shadow-[0_1px_0_rgba(255,255,255,0.8)_inset,0_10px_40px_-28px_rgba(15,23,42,0.3)] lg:h-[68px]"
+                        }`}
                     >
-                        <div className="absolute inset-0 flex items-center origin-bottom transition-transform duration-600 ease-[cubic-bezier(0.16,1,0.3,1)] transform-gpu will-change-[transform,opacity] [backface-visibility:hidden] pointer-events-none group-hover:opacity-0 group-hover:[transform:rotateX(90deg)_translateY(-6px)] motion-reduce:transition-none">
-                            <div className="relative h-8 sm:h-9 md:h-10 w-32 sm:w-36 md:w-40 flex items-center">
-                                <Image
-                                    src="/images/logo.png?v=2"
-                                    alt=""
-                                    fill
-                                    priority
-                                    sizes="(max-width: 640px) 150px, 170px"
-                                    className="object-contain object-left scale-[1.17] sm:scale-[1.26] origin-left"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="absolute inset-0 flex items-center justify-start origin-top transition-transform duration-600 ease-[cubic-bezier(0.16,1,0.3,1)] transform-gpu will-change-[transform,opacity] [backface-visibility:hidden] pointer-events-none opacity-0 [transform:rotateX(-90deg)_translateY(6px)] group-hover:opacity-100 group-hover:[transform:rotateX(0deg)_translateY(0)] motion-reduce:transition-none">
-                            <span className="font-serif text-[26px] sm:text-[30px] md:text-[33px] font-bold tracking-tight text-neutral-900 relative inline-block">
-                                {t("home")}
-
-                                <span className="absolute left-0 -bottom-1 w-full h-[2.5px] bg-black rounded-full transition-transform duration-500 ease-out scale-x-0 group-hover:scale-x-100 origin-left motion-reduce:transition-none" />
-                            </span>
-                        </div>
-                    </Link>
-
-                    {/* DESKTOP NAVIGATION */}
-
-                    <nav
-                        aria-label="Main navigation"
-                        className="hidden lg:flex items-center"
-                    >
-                        <ul className="flex items-center gap-6 xl:gap-8 text-[19px] xl:text-[21px] font-normal tracking-tight text-neutral-800 m-0 p-0 list-none">
-                            {renderNavigationLinks()}
-
-                            <li className="pl-2 pr-1 xl:pr-2">
-                                <LocaleSwitcher />
-                            </li>
-
-                            <li>
-                                <Link
-                                    href="/contacts"
-                                    aria-current={
-                                        isContactsActive
-                                            ? "page"
-                                            : undefined
-                                    }
-                                    className={`group relative overflow-hidden inline-flex items-center justify-center gap-2.5 border-[1.8px] border-neutral-950 px-8 py-3 rounded-full active:scale-95 transition-all duration-300 shadow-sm motion-reduce:transition-none ${
-                                        isContactsActive
-                                            ? "bg-white text-neutral-950"
-                                            : "bg-neutral-950 text-white"
-                                    }`}
-                                >
-                                    {!isContactsActive && (
-                                        <span
-                                            aria-hidden="true"
-                                            className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-none motion-reduce:transition-none"
-                                        />
-                                    )}
-
-                                    <span
-                                        className={`relative z-10 text-[17px] font-medium tracking-tight leading-none transition-colors duration-300 motion-reduce:transition-none ${
-                                            isContactsActive
-                                                ? "text-neutral-950 font-semibold"
-                                                : "text-white group-hover:text-neutral-950"
-                                        }`}
-                                    >
-                                        {tNav("contacts")}
-                                    </span>
-
-                                    <ArrowUpRight
-                                        size={15}
-                                        aria-hidden="true"
-                                        className={`relative z-10 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none ${
-                                            isContactsActive
-                                                ? "text-neutral-950"
-                                                : "text-neutral-300 group-hover:text-neutral-950"
-                                        }`}
+                        {/* Логотип: при наведении переворачивается в «Главная» */}
+                        <Link
+                            href="/"
+                            onClick={handleHomeClick}
+                            aria-label={t("homeAria")}
+                            className="group relative flex h-9 w-32 shrink-0 cursor-pointer select-none items-center rounded-sm [perspective:1000px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E40AF] focus-visible:ring-offset-4 sm:w-36"
+                        >
+                            <div className="pointer-events-none absolute inset-0 flex origin-bottom transform-gpu items-center transition-[transform,opacity] duration-600 ease-[cubic-bezier(0.16,1,0.3,1)] [backface-visibility:hidden] group-hover:opacity-0 group-hover:[transform:rotateX(90deg)_translateY(-6px)] motion-reduce:transition-none">
+                                <div className="relative flex h-7 w-28 items-center sm:h-8 sm:w-32">
+                                    <Image
+                                        src="/images/logo.png?v=2"
+                                        alt=""
+                                        fill
+                                        priority
+                                        sizes="(max-width: 640px) 130px, 150px"
+                                        className="origin-left scale-[1.17] object-contain object-left sm:scale-[1.26]"
                                     />
-                                </Link>
-                            </li>
-                        </ul>
-                    </nav>
+                                </div>
+                            </div>
+                            <div className="pointer-events-none absolute inset-0 flex origin-top transform-gpu items-center opacity-0 transition-[transform,opacity] duration-600 ease-[cubic-bezier(0.16,1,0.3,1)] [backface-visibility:hidden] [transform:rotateX(-90deg)_translateY(6px)] group-hover:opacity-100 group-hover:[transform:rotateX(0deg)_translateY(0)] motion-reduce:transition-none">
+                                <span className="text-[22px] font-extrabold tracking-[-0.03em] text-neutral-950 sm:text-[24px]">
+                                    {t("home")}
+                                </span>
+                            </div>
+                        </Link>
 
-                    {/* MOBILE MENU TRIGGER */}
-
-                    <button
-                        ref={triggerRef}
-                        type="button"
-                        onClick={() => setMobileOpen(true)}
-                        aria-label={t("openMenu")}
-                        aria-expanded={mobileOpen}
-                        aria-controls={MOBILE_MENU_ID}
-                        className="lg:hidden relative z-40 p-2.5 -mr-1.5 rounded-full text-neutral-950 hover:bg-neutral-100/80 active:scale-90 transition-all motion-reduce:transition-none flex flex-col justify-center items-center w-11 h-11 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2"
-                    >
-                        <span
-                            aria-hidden="true"
-                            className="w-6 h-[2px] bg-neutral-950 rounded-full -translate-y-1"
-                        />
-                        <span
-                            aria-hidden="true"
-                            className="w-6 h-[2px] bg-neutral-950 rounded-full translate-y-1"
-                        />
-                    </button>
-                </div>
-
-                {/* MOBILE MENU */}
-
-                <div
-                    ref={menuRef}
-                    id={MOBILE_MENU_ID}
-                    role="dialog"
-                    aria-modal="true"
-                    aria-label="Mobile navigation"
-                    aria-hidden={!mobileOpen}
-                    inert={!mobileOpen}
-                    className={`lg:hidden fixed inset-0 z-50 bg-[#FAFAFA]/98 backdrop-blur-2xl transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none flex flex-col justify-between px-6 sm:px-10 pt-4 pb-8 h-[100dvh] overflow-y-auto ${
-                        mobileOpen
-                            ? "opacity-100 pointer-events-auto translate-y-0"
-                            : "opacity-0 pointer-events-none -translate-y-3"
-                    }`}
-                >
-                    <div className="space-y-6">
-
-                        {/* MOBILE MENU HEADER */}
-
-                        <div className="flex items-center justify-between pb-4 border-b border-neutral-200/60">
-                            <Link
-                                href="/"
-                                onClick={handleHomeClick}
-                                aria-label={t("homeAria")}
-                                className="relative h-9 w-36 flex items-center cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 rounded-sm"
+                        {/* Навигация: сегментированный переключатель со скользящей капсулой */}
+                        <nav aria-label="Main navigation" className="hidden lg:block">
+                            <ul
+                                ref={navRef}
+                                onMouseLeave={() => setHoverKey(null)}
+                                className="relative m-0 flex list-none items-center rounded-full bg-neutral-100/90 p-1 ring-1 ring-inset ring-neutral-200/60"
                             >
-                                <Image
-                                    src="/images/logo.png?v=2"
-                                    alt=""
-                                    fill
-                                    sizes="150px"
-                                    className="object-contain object-left scale-[1.18] origin-left"
-                                />
-                            </Link>
+                                {/* Капсула-индикатор. Внутри — белая копия подписей, сдвинутая ровно на столько же,
+                                    на сколько сдвинута капсула: белый текст всегда точно под чёрным фоном,
+                                    без момента «белое на сером» или «серое на чёрном» во время движения */}
+                                <li aria-hidden="true" className="contents">
+                                    <span
+                                        className={`pointer-events-none absolute bottom-1 top-1 overflow-hidden rounded-full bg-neutral-950 shadow-[0_6px_16px_-8px_rgba(15,23,42,0.6)] ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none ${
+                                            instant ? "transition-opacity duration-200" : "transition-[left,width,opacity] duration-300"
+                                        }`}
+                                        style={{
+                                            left: pos?.left ?? 0,
+                                            width: pos?.width ?? 0,
+                                            opacity: visible ? 1 : 0,
+                                        }}
+                                    >
+                                        <span
+                                            className={`absolute inset-y-0 left-0 flex ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none ${
+                                                instant ? "" : "transition-transform duration-300"
+                                            }`}
+                                            style={{ transform: `translateX(${(pos?.origin ?? 0) - (pos?.left ?? 0)}px)` }}
+                                        >
+                                            {NAV_LINKS.map((item) => (
+                                                <span key={item.key} className={`${LINK_BOX} text-white`}>
+                                                    {renderLinkContent(item)}
+                                                </span>
+                                            ))}
+                                        </span>
+                                    </span>
+                                </li>
 
+                                {NAV_LINKS.map((item) => (
+                                    <li key={item.key}>
+                                        <Link
+                                            ref={(el) => {
+                                                linkRefs.current[item.key] = el;
+                                            }}
+                                            href={item.href}
+                                            aria-current={activeKey === item.key ? "page" : undefined}
+                                            onMouseEnter={() => setHoverKey(item.key)}
+                                            onFocus={() => setHoverKey(item.key)}
+                                            onBlur={() => setHoverKey(null)}
+                                            className={`${LINK_BOX} rounded-full text-neutral-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E40AF] focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-100`}
+                                        >
+                                            {renderLinkContent(item)}
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </nav>
+
+                        {/* Справа */}
+                        <div className="flex items-center gap-3">
+                            <div className="hidden lg:block">
+                                <LocaleSwitcher />
+                            </div>
+                            <div className="hidden lg:block">{renderContactsCta()}</div>
+
+                            {/* Кнопка меню: две полоски превращаются в крестик */}
                             <button
-                                ref={closeButtonRef}
+                                ref={triggerRef}
                                 type="button"
-                                onClick={closeMobileMenu}
-                                aria-label={t("closeMenu")}
-                                className="w-10 h-10 rounded-full bg-white border border-neutral-200/80 hover:bg-neutral-100 active:scale-90 shadow-2xs flex items-center justify-center text-neutral-900 transition-all motion-reduce:transition-none cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2"
+                                onClick={() => setMobileOpen((v) => !v)}
+                                aria-label={mobileOpen ? t("closeMenu") : t("openMenu")}
+                                aria-expanded={mobileOpen}
+                                aria-controls={MOBILE_MENU_ID}
+                                className={`relative grid size-11 cursor-pointer place-items-center rounded-full text-white transition-colors active:scale-95 motion-reduce:transition-none lg:hidden ${FOCUS_RING} ${
+                                    mobileOpen ? "bg-[#1E40AF] hover:bg-[#1E3A8A]" : "bg-neutral-950 hover:bg-neutral-800"
+                                }`}
                             >
-                                <X
-                                    size={20}
-                                    strokeWidth={2.2}
+                                <span
                                     aria-hidden="true"
+                                    className={`absolute h-[2px] w-[18px] rounded-full bg-current transition-transform duration-300 motion-reduce:transition-none ${
+                                        mobileOpen ? "rotate-45" : "-translate-y-[4px]"
+                                    }`}
+                                />
+                                <span
+                                    aria-hidden="true"
+                                    className={`absolute h-[2px] w-[18px] rounded-full bg-current transition-transform duration-300 motion-reduce:transition-none ${
+                                        mobileOpen ? "-rotate-45" : "translate-y-[4px]"
+                                    }`}
                                 />
                             </button>
                         </div>
-
-                        {/* MOBILE LINKS */}
-
-                        <nav aria-label="Mobile navigation links">
-                            <ul className="flex flex-col space-y-3 pt-2 m-0 p-0 list-none">
-                                {renderNavigationLinks(true)}
-                            </ul>
-                        </nav>
                     </div>
 
-                    {/* MOBILE FOOTER */}
+                    {/* ── МОБИЛЬНАЯ ПАНЕЛЬ: выпадает из капсулы ── */}
+                    <div
+                        ref={panelRef}
+                        id={MOBILE_MENU_ID}
+                        aria-hidden={!mobileOpen}
+                        inert={!mobileOpen}
+                        data-lenis-prevent="true"
+                        className={`mt-3 max-h-[calc(100dvh-100px)] origin-top overflow-y-auto overscroll-contain rounded-[28px] border border-neutral-200 bg-white p-3 shadow-[0_30px_80px_-30px_rgba(15,23,42,0.45)] transition-[transform,opacity] duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none lg:hidden ${
+                            mobileOpen
+                                ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
+                                : "pointer-events-none -translate-y-2 scale-[0.97] opacity-0"
+                        }`}
+                    >
+                        <nav aria-label="Mobile navigation links">
+                            <ul className="m-0 grid list-none gap-2 p-0">
+                                {NAV_LINKS.map((item, i) => {
+                                    const active = isActive(item.href);
+                                    return (
+                                        <li
+                                            key={item.key}
+                                            style={{ transitionDelay: mobileOpen ? `${60 + i * 40}ms` : "0ms" }}
+                                            className={`transition-[transform,opacity] duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none ${
+                                                mobileOpen ? "translate-y-0 opacity-100" : "translate-y-1.5 opacity-0"
+                                            }`}
+                                        >
+                                            <Link
+                                                href={item.href}
+                                                onClick={closeMobileMenu}
+                                                aria-current={active ? "page" : undefined}
+                                                className={`group flex h-[68px] items-center justify-between gap-4 rounded-[20px] px-5 transition-colors motion-reduce:transition-none ${FOCUS_RING} ${
+                                                    active
+                                                        ? "bg-neutral-950 text-white"
+                                                        : "bg-neutral-100 text-neutral-950 hover:bg-neutral-200/80"
+                                                }`}
+                                            >
+                                                <span className="flex min-w-0 items-center gap-3">
+                                                    <span className="truncate text-2xl font-extrabold tracking-[-0.03em]">
+                                                        {tNav(item.key)}
+                                                    </span>
+                                                    {item.badge && renderBadge(item.badge, true)}
+                                                </span>
+                                                {active ? (
+                                                    <span aria-hidden="true" className="mr-1.5 size-2.5 shrink-0 rounded-full bg-[#60A5FA]" />
+                                                ) : (
+                                                    <ArrowUpRight
+                                                        size={20}
+                                                        aria-hidden="true"
+                                                        className="shrink-0 text-neutral-400 transition-[transform,color] duration-300 group-hover:rotate-45 group-hover:text-[#1E40AF] motion-reduce:transition-none"
+                                                    />
+                                                )}
+                                            </Link>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        </nav>
 
-                    <div className="space-y-5 pt-6 border-t border-neutral-200/60">
-                        <LocaleSwitcher className="text-[13px]" />
-
-                        <div className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-neutral-500">
-                            <span className="font-medium text-neutral-600">
-                                {t("itSolutions")}
-                            </span>
-
-                            <span className="font-semibold text-neutral-950">
-                                ASMAN TECH 2026
-                            </span>
+                        <div className="mt-2 flex items-center justify-between gap-4 rounded-[20px] border border-neutral-200 px-5 py-4">
+                            <LocaleSwitcher className="text-[15px]" />
+                            <span className="text-sm text-neutral-500">{t("itSolutions")}</span>
                         </div>
 
-                        <Link
-                            href="/contacts"
-                            onClick={closeMobileMenu}
-                            aria-current={
-                                isContactsActive ? "page" : undefined
-                            }
-                            className={`w-full h-14 rounded-2xl flex items-center justify-between px-6 font-sans text-base font-semibold tracking-tight transition-all motion-reduce:transition-none shadow-md active:scale-[0.98] ${
-                                isContactsActive
-                                    ? "bg-white text-neutral-950 border-2 border-neutral-950"
-                                    : "bg-neutral-950 text-white hover:bg-neutral-900"
-                            }`}
-                        >
-                            <span>{t("contactUs")}</span>
-
-                            <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider">
-                                <span className="opacity-70">
-                                    {tNav("contacts")}
-                                </span>
-
-                                <ArrowUpRight
-                                    size={17}
-                                    aria-hidden="true"
-                                />
-                            </div>
-                        </Link>
+                        <div className="mt-2">{renderContactsCta(true)}</div>
                     </div>
                 </div>
             </header>
