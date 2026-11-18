@@ -17,7 +17,7 @@ export function Curtain({ state }: CurtainProps) {
     return (
         <aside
             aria-hidden="true"
-            className={`fixed inset-0 z-[99999] bg-white text-[#0A1A2F] flex flex-col items-center justify-center p-6 sm:p-10 pointer-events-auto select-none transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] will-change-transform ${
+            className={`fixed inset-0 z-[99999] bg-white text-ink flex flex-col items-center justify-center p-6 sm:p-10 pointer-events-auto select-none transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] will-change-transform ${
                 state === "enter"
                     ? "-translate-y-full"
                     : isActive
@@ -45,7 +45,7 @@ export function Curtain({ state }: CurtainProps) {
                 </div>
 
                 {/* Надпись IT-Solutions for you на всю ширину */}
-                <h2 className="w-full font-serif text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-[#0A1A2F] tracking-[-0.04em] leading-[1.05]">
+                <h2 className="w-full font-serif text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-ink tracking-[-0.04em] leading-[1.05]">
                     IT-Solutions for you
                 </h2>
             </div>

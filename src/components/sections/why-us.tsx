@@ -20,7 +20,7 @@ type Tone = "blue" | "indigo" | "emerald" | "amber" | "purple";
 const TONES: Record<Tone, { text: string; chip: string; glow: string; line: string }> = {
     blue: { text: "text-blue-400", chip: "bg-blue-500/15 ring-blue-400/30", glow: "rgba(59,130,246,0.18)", line: "from-transparent via-blue-400/80 to-transparent" },
     indigo: { text: "text-indigo-400", chip: "bg-indigo-500/15 ring-indigo-400/30", glow: "rgba(99,102,241,0.18)", line: "from-transparent via-indigo-400/80 to-transparent" },
-    emerald: { text: "text-emerald-400", chip: "bg-emerald-500/15 ring-emerald-400/30", glow: "rgba(16,185,129,0.16)", line: "from-transparent via-emerald-400/80 to-transparent" },
+    emerald: { text: "text-accent-bright", chip: "bg-accent/15 ring-accent-bright/30", glow: "rgba(16,185,129,0.16)", line: "from-transparent via-accent-bright/80 to-transparent" },
     amber: { text: "text-amber-400", chip: "bg-amber-500/15 ring-amber-400/30", glow: "rgba(245,158,11,0.16)", line: "from-transparent via-amber-400/80 to-transparent" },
     purple: { text: "text-purple-400", chip: "bg-purple-500/15 ring-purple-400/30", glow: "rgba(168,85,247,0.16)", line: "from-transparent via-purple-400/80 to-transparent" },
 };
@@ -68,9 +68,9 @@ function Card({ children }: { children: React.ReactNode }) {
     return (
         <div
             onMouseMove={onMove}
-            className="group relative rounded-[32px] bg-gradient-to-b from-white/[0.2] via-white/[0.06] to-white/[0.02] p-px shadow-[0_40px_80px_-40px_rgba(0,0,0,0.9)] transition-shadow duration-500 hover:shadow-[0_40px_90px_-35px_rgba(59,130,246,0.4)]"
+            className="group relative rounded-panel bg-gradient-to-b from-white/[0.2] via-white/[0.06] to-white/[0.02] p-px shadow-[0_40px_80px_-40px_rgba(0,0,0,0.9)] transition-shadow duration-500 hover:shadow-[0_40px_90px_-35px_rgba(59,130,246,0.4)]"
         >
-            <div className="relative flex h-full min-h-[560px] flex-col overflow-hidden rounded-[31px] bg-[#0A0C12]">
+            <div className="relative flex h-full min-h-[560px] flex-col overflow-hidden rounded-[31px] bg-ink-strong">
                 <div
                     aria-hidden="true"
                     className="pointer-events-none absolute inset-0 z-20 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
@@ -147,7 +147,7 @@ function Modal({
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby={titleId}
-                className="wu-modal relative flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-[32px] border border-white/[0.12] bg-[#0B0F17] text-white shadow-[0_60px_160px_-30px_rgba(0,0,0,0.95)]"
+                className="wu-modal relative flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-panel border border-white/[0.12] bg-[#0B0F17] text-white shadow-[0_60px_160px_-30px_rgba(0,0,0,0.95)]"
             >
                 {/* Акцентная линия сверху и мягкое свечение в цвет модалки */}
                 <div aria-hidden="true" className={`pointer-events-none absolute inset-x-0 top-0 z-10 h-px bg-gradient-to-r ${t.line}`} />
@@ -185,14 +185,14 @@ function ModalHead({ icon: Icon, tone, id, title, sub }: { icon: React.ElementTy
     const t = TONES[tone];
     return (
         <div className="mb-8 flex flex-col gap-5 pr-14 sm:mb-12 sm:flex-row sm:items-center sm:gap-7">
-            <div className={`grid size-16 shrink-0 place-items-center rounded-[20px] ring-1 sm:size-20 sm:rounded-[24px] ${t.chip} ${t.text}`}>
+            <div className={`grid size-16 shrink-0 place-items-center rounded-[20px] ring-1 sm:size-20 sm:rounded-3xl ${t.chip} ${t.text}`}>
                 <Icon size={30} strokeWidth={1.6} />
             </div>
             <div>
                 <h3 id={id} className="font-serif text-4xl font-normal italic leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-6xl">
                     {title}
                 </h3>
-                <p className="mt-3 text-base leading-relaxed text-neutral-400 sm:text-lg">{sub}</p>
+                <p className="mt-3 text-base leading-relaxed text-content-subtle sm:text-lg">{sub}</p>
             </div>
         </div>
     );
@@ -260,7 +260,7 @@ export function WhyUs() {
                 <div className="grid w-full grid-cols-1 items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {/* Карточка 1: 24/7 Priority Care */}
                     <Card>
-                        <div className="relative h-[320px] w-full shrink-0 overflow-hidden bg-[#0A0C12] [mask-image:linear-gradient(to_bottom,black_60%,transparent)]">
+                        <div className="relative h-[320px] w-full shrink-0 overflow-hidden bg-ink-strong [mask-image:linear-gradient(to_bottom,black_60%,transparent)]">
                             <Image
                                 src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?q=80&w=1200&auto=format&fit=crop"
                                 alt="Две руки тянутся друг к другу: прямая связь с командой"
@@ -269,7 +269,7 @@ export function WhyUs() {
                                 className="scale-105 object-cover object-center opacity-70 mix-blend-screen contrast-125 transition-transform duration-700 group-hover:scale-110"
                                 unoptimized
                             />
-                            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0A0C12] via-transparent to-red-950/25" />
+                            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-strong via-transparent to-red-950/25" />
 
                             {/* Точка контакта с волнами */}
                             <div className="pointer-events-none absolute left-1/2 top-[48%] -translate-x-1/2 -translate-y-1/2">
@@ -284,7 +284,7 @@ export function WhyUs() {
                             <h3 className="text-2xl font-semibold uppercase tracking-[-0.01em] text-white sm:text-3xl">
                                 24/7 Priority Care
                             </h3>
-                            <p className="text-sm font-normal leading-relaxed text-neutral-400 sm:text-base">
+                            <p className="text-sm font-normal leading-relaxed text-content-subtle sm:text-base">
                                 Прямой закрытый чат со старшими инженерами и основателями без посредников, тикетов и очередей. Мгновенное решение критических задач и поддержка вашего бизнеса 24/7.
                             </p>
                         </div>
@@ -343,7 +343,7 @@ export function WhyUs() {
                             className="object-cover object-center opacity-30 mix-blend-luminosity transition-transform duration-700 group-hover:scale-105"
                             unoptimized
                         />
-                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0A0C12] via-[#0A0C12]/80 to-[#0A0C12]/20" />
+                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-strong via-ink-strong/80 to-ink-strong/20" />
                         <span
                             aria-hidden="true"
                             className="pointer-events-none absolute -right-4 top-10 font-serif text-[180px] italic leading-none text-white/[0.04]"
@@ -360,10 +360,10 @@ export function WhyUs() {
                                 <button
                                     type="button"
                                     onClick={() => setGuaranteeOpen(true)}
-                                    className="group/btn inline-flex cursor-pointer items-center gap-3 rounded-2xl border border-emerald-400/30 bg-emerald-500/15 px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:border-emerald-400/60 hover:bg-emerald-500/25 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-400 sm:text-[15px]"
+                                    className="group/btn inline-flex cursor-pointer items-center gap-3 rounded-2xl border border-accent-bright/30 bg-accent/15 px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:border-accent-bright/60 hover:bg-accent/25 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent-bright sm:text-[15px]"
                                 >
                                     <span>Подробнее</span>
-                                    <span className="grid size-7 place-items-center rounded-full bg-emerald-500/25 transition-transform group-hover/btn:rotate-12">
+                                    <span className="grid size-7 place-items-center rounded-full bg-accent/25 transition-transform group-hover/btn:rotate-12">
                                         <ArrowUpRight size={15} />
                                     </span>
                                 </button>
@@ -386,7 +386,7 @@ export function WhyUs() {
                     }
                 >
                     <ModalHead icon={Cpu} tone="blue" id="wu-stack-title" title="Стек технологий 2026" sub="Архитектура высокой надёжности и масштабируемости" />
-                    <div className="divide-y divide-white/[0.08] overflow-hidden rounded-[24px] border border-white/10 bg-white/[0.03]">
+                    <div className="divide-y divide-white/[0.08] overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03]">
                         {STACK_GROUPS.map((g) => (
                             <Row key={g.title} icon={g.icon} tone={g.tone} title={g.title}>
                                 <p className="text-base leading-relaxed text-neutral-300 sm:text-lg">{g.text}</p>
@@ -419,7 +419,7 @@ export function WhyUs() {
                     }
                 >
                     <ModalHead icon={Scale} tone="emerald" id="wu-guarantee-title" title="Гарантийный протокол Asman Tech" sub="100% обязательств, зафиксированных юридически в договоре" />
-                    <div className="divide-y divide-white/[0.08] overflow-hidden rounded-[24px] border border-white/10 bg-white/[0.03]">
+                    <div className="divide-y divide-white/[0.08] overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03]">
                         {TERMS.map((term) => (
                             <Row key={term.title} icon={term.icon} tone={term.tone} title={term.title}>
                                 <p className="text-base leading-relaxed text-neutral-300 sm:text-lg">{term.text}</p>

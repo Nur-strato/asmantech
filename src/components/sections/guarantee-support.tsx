@@ -23,15 +23,15 @@ export function GuaranteeSupport() {
                     <div className="lg:col-span-5 lg:sticky lg:top-28 lg:self-start space-y-6 sm:space-y-8">
                         <div className="space-y-5">
                             {/* Бейдж */}
-                            <div className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-neutral-50/90 border border-neutral-200/90 shadow-2xs">
-                                <ShieldCheck size={18} className="text-emerald-600 shrink-0" strokeWidth={2.2} />
+                            <div className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-neutral-50/90 border border-line/90 shadow-2xs">
+                                <ShieldCheck size={18} className="text-accent shrink-0" strokeWidth={2.2} />
                                 <span className="text-xs sm:text-[13.5px] font-normal text-neutral-800 tracking-tight">
                                     {t("badge")}
                                 </span>
                             </div>
 
                             {/* Заголовок */}
-                            <h2 className="text-3xl xs:text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-neutral-950 leading-[1.02]">
+                            <h2 className="text-3xl xs:text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-content leading-[1.02]">
                                 {t("titleLine1")} <br className="hidden sm:inline" />
                                 {t("titleLine2")}
                             </h2>
@@ -40,7 +40,7 @@ export function GuaranteeSupport() {
                         <div className="pt-2">
                             <Link
                                 href="/contacts"
-                                className="group inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-neutral-950 hover:bg-neutral-800 text-white text-xs uppercase tracking-wider font-semibold transition-all active:scale-95"
+                                className="group inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-ink hover:bg-ink-strong text-white text-xs uppercase tracking-wider font-semibold transition-all active:scale-95"
                             >
                                 <span>{t("requestContract")}</span>
                                 <ArrowUpRight
@@ -52,18 +52,18 @@ export function GuaranteeSupport() {
                     </div>
 
                     {/* ПРАВАЯ КОЛОНКА */}
-                    <div className="lg:col-span-7 divide-y divide-neutral-200/90 border-y border-neutral-200/90">
+                    <div className="lg:col-span-7 divide-y divide-line/90 border-y border-line/90">
                         {CLAUSES.map((item) => (
                             <div
                                 key={item}
                                 className="py-7 sm:py-9 transition-colors duration-200 hover:bg-neutral-50/50 px-2 sm:px-4 -mx-2 sm:-mx-4 rounded-xl"
                             >
                                 <div className="space-y-2.5 sm:space-y-3">
-                                    <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-950 leading-snug">
+                                    <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-content leading-snug">
                                         {t(`clauses.${item}.title`)}
                                     </h3>
 
-                                    <p className="text-neutral-600 text-sm sm:text-base leading-relaxed font-normal">
+                                    <p className="text-content-secondary text-sm sm:text-base leading-relaxed font-normal">
                                         {t(`clauses.${item}.text`)}
                                     </p>
                                 </div>

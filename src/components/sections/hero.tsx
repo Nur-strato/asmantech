@@ -283,7 +283,7 @@ export function Hero() {
     return (
         <section
             aria-label={t("sectionAria")}
-            className="relative w-full bg-white text-neutral-900 pt-28 sm:pt-36 lg:pt-[15vh] pb-6 overflow-x-clip"
+            className="relative w-full bg-white text-content pt-28 sm:pt-36 lg:pt-[15vh] pb-6 overflow-x-clip"
         >
             {/* Глобальный аппаратный оптический курсор-тепловизор */}
             <div
@@ -314,12 +314,12 @@ export function Hero() {
 
                     {/* Заголовок */}
                     <div className="space-y-3 sm:space-y-3.5">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-100 border border-neutral-200/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
-                            <span className="text-[11px] font-mono font-medium uppercase tracking-wider text-neutral-600">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-muted border border-line/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
+                            <span className="text-[11px] font-mono font-medium uppercase tracking-wider text-content-secondary">
                                 Asman Tech
                             </span>
                         </div>
-                        <h1 className="font-serif text-[46px] xs:text-[54px] sm:text-[84px] md:text-[98px] lg:text-[108px] font-normal text-[#0A1A2F] tracking-[-0.04em] leading-[0.96] sm:leading-[0.98]">
+                        <h1 className="font-serif text-[46px] xs:text-[54px] sm:text-[84px] md:text-[98px] lg:text-[108px] font-normal text-ink tracking-[-0.04em] leading-[0.96] sm:leading-[0.98]">
                             {t("titleLine1")} <br />
                             {t("titleLine2")}
                         </h1>
@@ -336,8 +336,8 @@ export function Hero() {
                                 }}
                                 className={`relative px-4 sm:px-6 py-2.5 rounded-t-[18px] text-[12px] sm:text-[13px] font-medium transition-all duration-150 cursor-pointer flex items-center gap-2 ${
                                     mode === "callback"
-                                        ? "bg-[#F3F5FA] text-[#0A1A2F] font-semibold border-t border-x border-[#DFE4F0] z-10 after:absolute after:-bottom-[1px] after:left-0 after:right-0 after:h-[2px] after:bg-[#F3F5FA]"
-                                        : "bg-transparent text-neutral-400 hover:text-neutral-700"
+                                        ? "bg-surface-subtle text-ink font-semibold border-t border-x border-line-cool z-10 after:absolute after:-bottom-[1px] after:left-0 after:right-0 after:h-[2px] after:bg-surface-subtle"
+                                        : "bg-transparent text-content-subtle hover:text-neutral-700"
                                 }`}
                             >
                                 <span>{t("tabCallback")}</span>
@@ -351,21 +351,21 @@ export function Hero() {
                                 }}
                                 className={`relative px-4 sm:px-6 py-2.5 rounded-t-[18px] text-[12px] sm:text-[13px] font-medium transition-all duration-150 cursor-pointer flex items-center gap-2 ${
                                     mode === "direct"
-                                        ? "bg-[#F3F5FA] text-[#0A1A2F] font-semibold border-t border-x border-[#DFE4F0] z-10 after:absolute after:-bottom-[1px] after:left-0 after:right-0 after:h-[2px] after:bg-[#F3F5FA]"
-                                        : "bg-transparent text-neutral-400 hover:text-neutral-700"
+                                        ? "bg-surface-subtle text-ink font-semibold border-t border-x border-line-cool z-10 after:absolute after:-bottom-[1px] after:left-0 after:right-0 after:h-[2px] after:bg-surface-subtle"
+                                        : "bg-transparent text-content-subtle hover:text-neutral-700"
                                 }`}
                             >
                                 <span>{t("tabDirect")}</span>
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
                             </button>
                         </div>
 
                         {/* Карточка формы */}
                         <div
-                            className={`relative bg-[#F3F5FA] p-2 sm:p-2.5 border border-[#DFE4F0] shadow-[0_12px_36px_rgba(10,26,47,0.04)] transition-all ${
+                            className={`relative bg-surface-subtle p-2 sm:p-2.5 border border-line-cool shadow-ds-md transition-all ${
                                 mode === "callback"
                                     ? "rounded-b-[24px] rounded-tr-[24px] rounded-tl-none"
-                                    : "rounded-[24px] rounded-tl-none"
+                                    : "rounded-3xl rounded-tl-none"
                             }`}
                         >
                             {mode === "callback" ? (
@@ -381,15 +381,15 @@ export function Hero() {
                                             <button
                                                 type="button"
                                                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                                                className="flex items-center gap-1 sm:gap-1.5 pr-1.5 sm:pr-2 border-r border-neutral-200 select-none cursor-pointer hover:opacity-80 transition-opacity"
+                                                className="flex items-center gap-1 sm:gap-1.5 pr-1.5 sm:pr-2 border-r border-line select-none cursor-pointer hover:opacity-80 transition-opacity"
                                                 aria-label={t("chooseCountry")}
                                                 aria-expanded={isDropdownOpen}
                                             >
                                                 <span className="text-sm sm:text-base leading-none">{selectedCountry.flag}</span>
-                                                <span className="text-[13px] sm:text-[14px] font-mono font-semibold text-[#0A1A2F]">
+                                                <span className="text-[13px] sm:text-[14px] font-mono font-semibold text-ink">
                                                     {selectedCountry.code}
                                                 </span>
-                                                <ChevronDown className={`text-neutral-400 transition-transform ${isDropdownOpen ? "rotate-180" : ""}`} size={13} />
+                                                <ChevronDown className={`text-content-subtle transition-transform ${isDropdownOpen ? "rotate-180" : ""}`} size={13} />
                                             </button>
 
                                             {isDropdownOpen && (
@@ -401,7 +401,7 @@ export function Hero() {
                                                             onClick={() => handleCountrySelect(c)}
                                                             className={`w-full px-3 py-2 rounded-xl text-left flex items-center justify-between text-xs font-medium transition-colors cursor-pointer ${
                                                                 selectedCountry.id === c.id
-                                                                    ? "bg-[#F3F5FA] text-[#0A1A2F] font-bold"
+                                                                    ? "bg-surface-subtle text-ink font-bold"
                                                                     : "text-neutral-700 hover:bg-neutral-50"
                                                             }`}
                                                         >
@@ -409,7 +409,7 @@ export function Hero() {
                                                                 <span className="text-base leading-none">{c.flag}</span>
                                                                 <span>{t(`countries.${c.id}`)}</span>
                                                             </div>
-                                                            <span className="font-mono text-neutral-400 font-semibold">{c.code}</span>
+                                                            <span className="font-mono text-content-subtle font-semibold">{c.code}</span>
                                                         </button>
                                                     ))}
                                                 </div>
@@ -423,20 +423,20 @@ export function Hero() {
                                             onChange={handlePhoneChange}
                                             placeholder={selectedCountry.mask}
                                             aria-label={t("phoneLabel")}
-                                            className="w-full bg-transparent text-[16px] sm:text-[16px] text-[#0A1A2F] placeholder:text-neutral-300 focus:outline-none font-mono tracking-tight font-medium pl-1 min-w-0"
+                                            className="w-full bg-transparent text-[16px] sm:text-[16px] text-ink placeholder:text-neutral-300 focus:outline-none font-mono tracking-tight font-medium pl-1 min-w-0"
                                         />
                                     </div>
 
                                     <button
                                         type="submit"
-                                        className={`h-11 px-3.5 sm:px-5 rounded-xl bg-[#0A1A2F] hover:bg-black text-white text-[12px] sm:text-[13px] font-semibold flex items-center gap-1.5 sm:gap-2 transition-all shrink-0 cursor-pointer shadow-[0_4px_14px_rgba(10,26,47,0.16)] active:scale-95 group ${
+                                        className={`h-11 px-3.5 sm:px-5 rounded-xl bg-ink hover:bg-black text-white text-[12px] sm:text-[13px] font-semibold flex items-center gap-1.5 sm:gap-2 transition-all shrink-0 cursor-pointer shadow-ds-sm active:scale-95 group ${
                                             isShaking ? "animate-[shake_0.4s_ease-in-out]" : ""
                                         }`}
                                     >
                                         <span className="hidden xs:inline">{isSubmitted ? t("submitted") : t("submit")}</span>
                                         <span className="xs:hidden">{isSubmitted ? t("submittedShort") : t("submitShort")}</span>
                                         {isSubmitted ? (
-                                            <Check className="text-emerald-400" size={15} />
+                                            <Check className="text-accent-bright" size={15} />
                                         ) : (
                                             <ArrowRight className="group-hover:translate-x-0.5 transition-transform text-neutral-300" size={14} />
                                         )}
@@ -445,15 +445,15 @@ export function Hero() {
                             ) : (
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-1.5 sm:p-1 sm:pl-2">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-xl bg-white border border-[#DFE4F0] flex items-center justify-center text-emerald-600 shadow-xs shrink-0">
+                                        <div className="w-10 h-10 rounded-xl bg-white border border-line-cool flex items-center justify-center text-accent shadow-xs shrink-0">
                                             <PhoneCall size={17} />
                                         </div>
                                         <div>
                                             <div className="flex items-center gap-2">
-                                                <span className="text-[15px] sm:text-[16px] font-mono font-bold text-[#0A1A2F] tracking-tight">
+                                                <span className="text-[15px] sm:text-[16px] font-mono font-bold text-ink tracking-tight">
                                                     {directNumberDisplay}
                                                 </span>
-                                                <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title={t("lineFree")} />
+                                                <span className="inline-block w-2 h-2 rounded-full bg-accent animate-pulse" title={t("lineFree")} />
                                             </div>
                                         </div>
                                     </div>
@@ -462,10 +462,10 @@ export function Hero() {
                                         <button
                                             type="button"
                                             onClick={handleCopy}
-                                            className="flex-1 sm:flex-initial h-10 px-3 rounded-xl bg-white hover:bg-neutral-50 border border-[#DFE4F0] text-neutral-700 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs active:scale-95"
+                                            className="flex-1 sm:flex-initial h-10 px-3 rounded-xl bg-white hover:bg-neutral-50 border border-line-cool text-neutral-700 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs active:scale-95"
                                             title={t("copyTitle")}
                                         >
-                                            {copied ? <Check className="text-emerald-500" size={14} /> : <Copy size={14} />}
+                                            {copied ? <Check className="text-accent" size={14} /> : <Copy size={14} />}
                                             <span>{copied ? t("copied") : t("copy")}</span>
                                         </button>
 
@@ -495,7 +495,7 @@ export function Hero() {
 
                         {/* WhatsApp для международных номеров */}
                         {!errorMsg && mode === "callback" && isInternational && !isSubmitted && (
-                            <div className="flex items-center gap-2 pl-2 pt-2.5 text-[11px] sm:text-[12px] text-neutral-500 font-medium">
+                            <div className="flex items-center gap-2 pl-2 pt-2.5 text-[11px] sm:text-[12px] text-content-muted font-medium">
                                 <svg className="w-3.5 h-3.5 fill-[#25D366] shrink-0" viewBox="0 0 24 24">
                                     <path d="M12.031 2C6.51 2 2.016 6.494 2.016 12.015c0 1.954.566 3.778 1.545 5.32L2 22.031l4.838-1.527c1.478.89 3.208 1.405 5.193 1.405 5.521 0 10.015-4.494 10.015-10.015C22.046 6.494 17.552 2 12.031 2zm5.82 14.288c-.244.685-1.42 1.309-1.968 1.393-.523.08-1.206.115-1.957-.127-.482-.155-1.103-.36-1.905-.71-3.37-1.464-5.576-4.9-5.744-5.127-.168-.227-1.371-1.824-1.371-3.48 0-1.656.866-2.47 1.173-2.812.308-.342.671-.428.895-.428.224 0 .448.002.643.012.207.01.482-.078.754.576.28.673.957 2.336 1.042 2.508.084.172.14.373.028.598-.112.224-.168.365-.335.565-.168.2-.352.447-.504.6-.168.168-.343.351-.147.688.196.336.872 1.439 1.872 2.33 1.285 1.144 2.368 1.5 2.704 1.668.336.168.532.14.728-.084.196-.224.84-0.98 1.064-1.316.224-.336.448-.28.756-.168.308.112 1.96.924 2.296 1.092.336.168.56.252.644.392.084.14.084.812-.16 1.497z" />
                                 </svg>
@@ -505,7 +505,7 @@ export function Hero() {
 
                         {/* Уведомление после отправки */}
                         {isSubmitted && mode === "callback" && (
-                            <p className="text-[12px] text-emerald-600 font-medium pl-2 pt-2.5 flex items-center gap-1.5 animate-fadeIn">
+                            <p className="text-[12px] text-accent font-medium pl-2 pt-2.5 flex items-center gap-1.5 animate-fadeIn">
                                 <Check size={14} /> {t("success")}
                             </p>
                         )}
@@ -523,15 +523,15 @@ export function Hero() {
                         }`}
                     >
                         {/* Верхняя строка управления */}
-                        <div className="flex items-center justify-between pb-3.5 mb-2.5 border-b border-neutral-200/80">
-                            <div className="flex items-center gap-1.5 bg-neutral-100 p-1 rounded-xl">
+                        <div className="flex items-center justify-between pb-3.5 mb-2.5 border-b border-line/80">
+                            <div className="flex items-center gap-1.5 bg-surface-muted p-1 rounded-xl">
                                 <button
                                     type="button"
                                     onClick={() => handleTabChange("services")}
                                     className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                                         activeTab === "services"
-                                            ? "bg-white text-[#0A1A2F] shadow-xs font-bold"
-                                            : "bg-transparent text-neutral-500 hover:text-neutral-900"
+                                            ? "bg-white text-ink shadow-xs font-bold"
+                                            : "bg-transparent text-content-muted hover:text-content"
                                     }`}
                                 >
                                     {t("tabServices")}
@@ -542,8 +542,8 @@ export function Hero() {
                                     onClick={() => handleTabChange("promos")}
                                     className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                                         activeTab === "promos"
-                                            ? "bg-white text-[#0A1A2F] shadow-xs font-bold"
-                                            : "bg-transparent text-neutral-500 hover:text-neutral-900"
+                                            ? "bg-white text-ink shadow-xs font-bold"
+                                            : "bg-transparent text-content-muted hover:text-content"
                                     }`}
                                 >
                                     {t("tabPromos")}
@@ -551,8 +551,8 @@ export function Hero() {
                             </div>
 
                             {/* Иконка часов + таймер */}
-                            <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-neutral-500 select-none bg-neutral-50 px-2.5 py-1 rounded-lg border border-neutral-200/70">
-                                <Clock size={13} className="text-neutral-400" />
+                            <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-content-muted select-none bg-neutral-50 px-2.5 py-1 rounded-lg border border-line/70">
+                                <Clock size={13} className="text-content-subtle" />
                                 <span>{timeLeft}s</span>
                             </div>
                         </div>
@@ -567,7 +567,7 @@ export function Hero() {
                         >
                             {/* ОКНО 1: НАШИ УСЛУГИ */}
                             {activeTab === "services" && (
-                                <div key="tab-services" className="w-full h-full flex flex-col justify-center divide-y divide-neutral-200/90 border-y border-neutral-200/90 animate-fadeIn">
+                                <div key="tab-services" className="w-full h-full flex flex-col justify-center divide-y divide-line/90 border-y border-line/90 animate-fadeIn">
                                     {SERVICES.map((service) => (
                                         <Link
                                             key={service.id}
@@ -575,17 +575,17 @@ export function Hero() {
                                             className="group py-4 xs:py-5 sm:py-[22px] px-2 flex items-center justify-between gap-4 transition-colors duration-200 hover:bg-neutral-50/80"
                                         >
                                             <div className="flex items-center gap-4 sm:gap-5 min-w-0">
-                                                <span className="font-mono text-xs sm:text-sm font-bold text-neutral-400 group-hover:text-[#0A1A2F] transition-colors shrink-0">
+                                                <span className="font-mono text-xs sm:text-sm font-bold text-content-subtle group-hover:text-ink transition-colors shrink-0">
                                                     {service.indexStr}
                                                 </span>
-                                                <span className="text-base sm:text-lg font-extrabold text-[#0A1A2F] tracking-tight truncate">
+                                                <span className="text-base sm:text-lg font-extrabold text-ink tracking-tight truncate">
                                                     {tService(service.id)}
                                                 </span>
                                             </div>
 
                                             <ArrowUpRight
                                                 size={18}
-                                                className="text-neutral-300 group-hover:text-[#0A1A2F] transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 shrink-0"
+                                                className="text-neutral-300 group-hover:text-ink transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 shrink-0"
                                             />
                                         </Link>
                                     ))}
@@ -599,7 +599,7 @@ export function Hero() {
                                         href="/contacts"
                                         onMouseEnter={onCardEnter}
                                         onMouseLeave={onCardLeave}
-                                        className="relative h-full aspect-[1/1.4] rounded-2xl overflow-hidden border border-neutral-200/90 shadow-[0_12px_36px_rgba(10,26,47,0.08)] hover:shadow-xl transition-all duration-300 block bg-white md:cursor-none select-none"
+                                        className="relative h-full aspect-[1/1.4] rounded-2xl overflow-hidden border border-line/90 shadow-[0_12px_36px_rgba(10,26,47,0.08)] hover:shadow-xl transition-all duration-300 block bg-white md:cursor-none select-none"
                                     >
                                         <Image
                                             src="/images/sales.png"

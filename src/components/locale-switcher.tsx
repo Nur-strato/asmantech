@@ -45,7 +45,7 @@ export function LocaleSwitcher({ className = "" }: { className?: string }) {
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-neutral-100 hover:bg-neutral-200/80 text-neutral-900 transition-all duration-200 active:scale-95 cursor-pointer"
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-surface-muted hover:bg-neutral-200/80 text-content transition-all duration-200 active:scale-95 cursor-pointer"
             >
                 <span className="font-bold text-[15px] uppercase tracking-wide">
                     {activeLocale.short}
@@ -53,7 +53,7 @@ export function LocaleSwitcher({ className = "" }: { className?: string }) {
                 <ChevronDown
                     size={16}
                     strokeWidth={2.5}
-                    className={`transition-transform duration-300 text-neutral-500 ${
+                    className={`transition-transform duration-300 text-content-muted ${
                         isOpen ? "rotate-180" : ""
                     }`}
                 />
@@ -74,12 +74,12 @@ export function LocaleSwitcher({ className = "" }: { className?: string }) {
                         onClick={() => switchLocale(l.code)}
                         className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-[15px] transition-colors cursor-pointer ${
                             l.code === locale
-                                ? "bg-neutral-100 font-bold text-neutral-950"
-                                : "text-neutral-500 hover:bg-neutral-50 hover:text-neutral-900 font-medium"
+                                ? "bg-surface-muted font-bold text-content"
+                                : "text-content-muted hover:bg-neutral-50 hover:text-content font-medium"
                         }`}
                     >
                         <span>{l.label}</span>
-                        {l.code === locale && <Check size={16} strokeWidth={2.5} className="text-neutral-950" />}
+                        {l.code === locale && <Check size={16} strokeWidth={2.5} className="text-content" />}
                     </button>
                 ))}
             </div>
