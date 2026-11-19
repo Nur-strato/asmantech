@@ -153,7 +153,7 @@ export function Header() {
                         className={`w-6 h-[2px] bg-neutral-950 rounded-full transition-all duration-300 ease-out ${
                             mobileOpen ? "rotate-45 translate-y-[3.5px]" : "-translate-y-1"
                         }`}
-                    />
+      t               />
                     <span
                         className={`w-6 h-[2px] bg-neutral-950 rounded-full transition-all duration-300 ease-out ${
                             mobileOpen ? "-rotate-45 -translate-y-[1.5px]" : "translate-y-1"
