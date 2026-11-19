@@ -10,7 +10,7 @@ import { Curtain, type CurtainState } from "@/components/ui/curtain";
 
 // --------------------------------------------------
 // CONSTANTS & TYPES
-// Акцент — глубокий синий #1E40AF, при наведении темнее #1E3A8A (на чёрном — светлее, #60A5FA).
+// Цвета — токены дизайн-системы (tailwind.config.ts): ink — тёмно-синий бренда, accent — только скидки.
 // Скидка остаётся зелёной.
 // --------------------------------------------------
 
@@ -52,7 +52,7 @@ const LINK_BOX =
 
 // Единый стиль фокуса с клавиатуры
 const FOCUS_RING =
-    "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E40AF]";
+    "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
 
 // --------------------------------------------------
 // SCROLL POSITION
@@ -368,7 +368,7 @@ export function Header() {
 
     const renderBadge = (value: string, large = false) => (
         <span
-            className={`inline-flex items-center rounded-full bg-[#E7F8EE] font-extrabold leading-none tracking-tight text-[#058447] tabular-nums ${
+            className={`inline-flex items-center rounded-full bg-accent-soft font-extrabold leading-none tracking-tight text-accent tabular-nums ${
                 large ? "px-2.5 py-1.5 text-[15px]" : "px-2 py-1 text-[13px]"
             }`}
         >
@@ -396,8 +396,8 @@ export function Header() {
                         : "h-[46px] gap-3.5 rounded-full pl-5 pr-1 text-[16px]"
                 } ${
                     isDark
-                        ? "border border-neutral-950 bg-neutral-950 text-white shadow-[0_8px_20px_-6px_rgba(15,23,42,0.4)] hover:bg-neutral-900"
-                        : "border border-neutral-300 bg-white text-neutral-950 shadow-[0_2px_10px_-3px_rgba(15,23,42,0.08)] hover:border-neutral-950 hover:shadow-[0_8px_20px_-6px_rgba(15,23,42,0.16)]"
+                        ? "border border-ink bg-ink text-white shadow-[0_8px_20px_-6px_rgba(15,23,42,0.4)] hover:bg-ink-strong"
+                        : "border border-line-strong bg-white text-content shadow-[0_2px_10px_-3px_rgba(15,23,42,0.08)] hover:border-ink hover:shadow-[0_8px_20px_-6px_rgba(15,23,42,0.16)]"
                 }`}
             >
                 <span className="tracking-tight">{mobile ? t("contactUs") : tNav("contacts")}</span>
@@ -406,8 +406,8 @@ export function Header() {
                         mobile ? "size-[50px] rounded-2xl" : "size-[38px] rounded-full"
                     } ${
                         isDark
-                            ? "bg-[#1E40AF] text-white group-hover:bg-[#2563EB]"
-                            : "bg-neutral-950 text-white group-hover:bg-[#1E40AF]"
+                            ? "bg-white/15 text-white group-hover:bg-white group-hover:text-ink"
+                            : "bg-ink text-white group-hover:bg-ink-strong"
                     }`}
                 >
                     <ArrowUpRight size={mobile ? 21 : 17} strokeWidth={2.2} aria-hidden="true" />
@@ -428,7 +428,7 @@ export function Header() {
             <div
                 aria-hidden="true"
                 onClick={closeMobileMenu}
-                className={`fixed inset-0 z-40 bg-neutral-950/30 backdrop-blur-sm transition-opacity duration-300 motion-reduce:transition-none lg:hidden ${
+                className={`fixed inset-0 z-40 bg-ink/30 backdrop-blur-sm transition-opacity duration-300 motion-reduce:transition-none lg:hidden ${
                     mobileOpen ? "opacity-100" : "pointer-events-none opacity-0"
                 }`}
             />
@@ -439,8 +439,8 @@ export function Header() {
                     <div
                         className={`pointer-events-auto relative mx-auto flex items-center justify-between gap-4 rounded-full border pl-5 pr-1.5 backdrop-blur-xl backdrop-saturate-150 transition-[max-width,height,box-shadow,border-color,background-color] duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none sm:pl-6 lg:pr-2 ${
                             scrolled || mobileOpen
-                                ? "h-[59px] max-w-[1176px] border-neutral-200 bg-white/90 shadow-[0_1px_0_rgba(255,255,255,0.8)_inset,0_18px_50px_-24px_rgba(15,23,42,0.4)] lg:h-[63px]"
-                                : "h-[67px] max-w-[1302px] border-neutral-200/70 bg-white/80 shadow-[0_1px_0_rgba(255,255,255,0.8)_inset,0_10px_40px_-28px_rgba(15,23,42,0.3)] lg:h-[71px]"
+                                ? "h-[59px] max-w-[1176px] border-line bg-white/90 shadow-[0_1px_0_rgba(255,255,255,0.8)_inset,0_18px_50px_-24px_rgba(15,23,42,0.4)] lg:h-[63px]"
+                                : "h-[67px] max-w-[1302px] border-line/70 bg-white/80 shadow-[0_1px_0_rgba(255,255,255,0.8)_inset,0_10px_40px_-28px_rgba(15,23,42,0.3)] lg:h-[71px]"
                         }`}
                     >
                         {/* Логотип: при наведении переворачивается в «Главная» */}
@@ -448,7 +448,7 @@ export function Header() {
                             href="/"
                             onClick={handleHomeClick}
                             aria-label={t("homeAria")}
-                            className="group relative flex h-[38px] w-[134px] shrink-0 cursor-pointer select-none items-center rounded-sm [perspective:1000px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E40AF] focus-visible:ring-offset-4 sm:w-[151px]"
+                            className="group relative flex h-[38px] w-[134px] shrink-0 cursor-pointer select-none items-center rounded-sm [perspective:1000px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-4 sm:w-[151px]"
                         >
                             <div className="pointer-events-none absolute inset-0 flex origin-bottom transform-gpu items-center transition-[transform,opacity] duration-600 ease-[cubic-bezier(0.16,1,0.3,1)] [backface-visibility:hidden] group-hover:opacity-0 group-hover:[transform:rotateX(90deg)_translateY(-6px)] motion-reduce:transition-none">
                                 <div className="relative flex h-[29px] w-[118px] items-center sm:h-[34px] sm:w-[134px]">
@@ -463,7 +463,7 @@ export function Header() {
                                 </div>
                             </div>
                             <div className="pointer-events-none absolute inset-0 flex origin-top transform-gpu items-center opacity-0 transition-[transform,opacity] duration-600 ease-[cubic-bezier(0.16,1,0.3,1)] [backface-visibility:hidden] [transform:rotateX(-90deg)_translateY(6px)] group-hover:opacity-100 group-hover:[transform:rotateX(0deg)_translateY(0)] motion-reduce:transition-none">
-                                <span className="text-[23px] font-extrabold tracking-[-0.03em] text-neutral-950 sm:text-[25px]">
+                                <span className="text-[23px] font-extrabold tracking-[-0.03em] text-content sm:text-[25px]">
                                     {t("home")}
                                 </span>
                             </div>
@@ -474,7 +474,7 @@ export function Header() {
                             <ul
                                 ref={navRef}
                                 onMouseLeave={() => setHoverKey(null)}
-                                className="relative m-0 flex list-none items-center rounded-full bg-neutral-100/90 p-1 ring-1 ring-inset ring-neutral-200/60"
+                                className="relative m-0 flex list-none items-center rounded-full bg-surface-muted/90 p-1 ring-1 ring-inset ring-neutral-200/60"
                             >
                                 {/* Нижняя чёрная палочка под выбранной (активной) страницей */}
                                 <li aria-hidden="true" className="contents">
@@ -486,14 +486,14 @@ export function Header() {
                                             opacity: activePos ? 1 : 0,
                                         }}
                                     >
-                                        <span className="mx-auto block h-[2.5px] w-[calc(100%-2rem)] rounded-full bg-neutral-950 xl:w-[calc(100%-2.5rem)]" />
+                                        <span className="mx-auto block h-[2.5px] w-[calc(100%-2rem)] rounded-full bg-ink xl:w-[calc(100%-2.5rem)]" />
                                     </span>
                                 </li>
 
                                 {/* Скользящая чёрная капсула при наведении с белой копией текста */}
                                 <li aria-hidden="true" className="contents">
                                     <span
-                                        className={`pointer-events-none absolute bottom-1 top-1 z-10 overflow-hidden rounded-full bg-neutral-950 shadow-[0_6px_16px_-8px_rgba(15,23,42,0.6)] ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none ${
+                                        className={`pointer-events-none absolute bottom-1 top-1 z-10 overflow-hidden rounded-full bg-ink shadow-[0_6px_16px_-8px_rgba(15,23,42,0.6)] ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none ${
                                             hoverInstant
                                                 ? "transition-opacity duration-200"
                                                 : "transition-[left,width,opacity] duration-300"
@@ -532,8 +532,8 @@ export function Header() {
                                                 onMouseEnter={() => setHoverKey(item.key)}
                                                 onFocus={() => setHoverKey(item.key)}
                                                 onBlur={() => setHoverKey(null)}
-                                                className={`${LINK_BOX} rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E40AF] focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-100 ${
-                                                    isCurrent ? "text-neutral-950" : "text-neutral-600"
+                                                className={`${LINK_BOX} rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-100 ${
+                                                    isCurrent ? "text-content" : "text-content-secondary"
                                                 }`}
                                             >
                                                 {renderLinkContent(item)}
@@ -560,7 +560,7 @@ export function Header() {
                                 aria-expanded={mobileOpen}
                                 aria-controls={MOBILE_MENU_ID}
                                 className={`relative grid size-[46px] cursor-pointer place-items-center rounded-full text-white transition-colors active:scale-95 motion-reduce:transition-none lg:hidden ${FOCUS_RING} ${
-                                    mobileOpen ? "bg-[#1E40AF] hover:bg-[#1E3A8A]" : "bg-neutral-950 hover:bg-neutral-800"
+                                    mobileOpen ? "bg-ink-strong ring-2 ring-ink/20" : "bg-ink hover:bg-ink-strong"
                                 }`}
                             >
                                 <span
@@ -586,7 +586,7 @@ export function Header() {
                         aria-hidden={!mobileOpen}
                         inert={!mobileOpen}
                         data-lenis-prevent="true"
-                        className={`mt-3 max-h-[calc(100dvh-100px)] origin-top overflow-y-auto overscroll-contain rounded-[28px] border border-neutral-200 bg-white p-3 shadow-[0_30px_80px_-30px_rgba(15,23,42,0.45)] transition-[transform,opacity] duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none lg:hidden ${
+                        className={`mt-3 max-h-[calc(100dvh-100px)] origin-top overflow-y-auto overscroll-contain rounded-3xl border border-line bg-white p-3 shadow-[0_30px_80px_-30px_rgba(15,23,42,0.45)] transition-[transform,opacity] duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none lg:hidden ${
                             mobileOpen
                                 ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
                                 : "pointer-events-none -translate-y-2 scale-[0.97] opacity-0"
@@ -608,7 +608,7 @@ export function Header() {
                                                 href={item.href}
                                                 onClick={closeMobileMenu}
                                                 aria-current={active ? "page" : undefined}
-                                                className={`group relative flex h-[71px] items-center justify-between gap-4 overflow-hidden rounded-[20px] bg-neutral-100 px-5 text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white motion-reduce:transition-none ${FOCUS_RING}`}
+                                                className={`group relative flex h-[71px] items-center justify-between gap-4 overflow-hidden rounded-[20px] bg-surface-muted px-5 text-content transition-colors hover:bg-ink hover:text-white motion-reduce:transition-none ${FOCUS_RING}`}
                                             >
                                                 <span className="flex min-w-0 items-center gap-3">
                                                     <span className="truncate text-[25px] font-extrabold tracking-[-0.03em]">
@@ -620,18 +620,18 @@ export function Header() {
                                                     <>
                                                         <span
                                                             aria-hidden="true"
-                                                            className="mr-1.5 size-2.5 shrink-0 rounded-full bg-neutral-950 transition-colors group-hover:bg-white"
+                                                            className="mr-1.5 size-2.5 shrink-0 rounded-full bg-ink transition-colors group-hover:bg-white"
                                                         />
                                                         <span
                                                             aria-hidden="true"
-                                                            className="absolute inset-x-5 bottom-0 h-[3px] rounded-full bg-neutral-950 transition-colors group-hover:bg-white"
+                                                            className="absolute inset-x-5 bottom-0 h-[3px] rounded-full bg-ink transition-colors group-hover:bg-white"
                                                         />
                                                     </>
                                                 ) : (
                                                     <ArrowUpRight
                                                         size={21}
                                                         aria-hidden="true"
-                                                        className="shrink-0 text-neutral-400 transition-[transform,color] duration-300 group-hover:rotate-45 group-hover:text-white motion-reduce:transition-none"
+                                                        className="shrink-0 text-content-subtle transition-[transform,color] duration-300 group-hover:rotate-45 group-hover:text-white motion-reduce:transition-none"
                                                     />
                                                 )}
                                             </Link>
@@ -641,9 +641,9 @@ export function Header() {
                             </ul>
                         </nav>
 
-                        <div className="mt-2 flex items-center justify-between gap-4 rounded-[20px] border border-neutral-200 px-5 py-4">
+                        <div className="mt-2 flex items-center justify-between gap-4 rounded-[20px] border border-line px-5 py-4">
                             <LocaleSwitcher className="text-[16px]" />
-                            <span className="text-[15px] text-neutral-500">{t("itSolutions")}</span>
+                            <span className="text-[15px] text-content-muted">{t("itSolutions")}</span>
                         </div>
 
                         <div className="mt-2">{renderContactsCta(true)}</div>

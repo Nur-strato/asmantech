@@ -277,13 +277,13 @@ const SERVICES: ServiceItem[] = [
 ];
 
 const FIELD =
-    "w-full rounded-2xl border-2 border-neutral-200 bg-white px-5 py-4 text-base text-neutral-950 placeholder:text-neutral-400 transition-colors focus:border-neutral-950 focus:outline-hidden sm:text-lg";
+    "w-full rounded-2xl border-2 border-line bg-white px-5 py-4 text-base text-content placeholder:text-content-subtle transition-colors focus:border-ink focus:outline-hidden sm:text-lg";
 
 /* Заголовок шага формы */
 function StepHead({ children, aside }: { children: React.ReactNode; aside?: React.ReactNode }) {
     return (
         <div className="mb-6 flex items-baseline justify-between gap-4">
-            <h2 className="text-xl font-extrabold tracking-tight text-neutral-950 sm:text-2xl">{children}</h2>
+            <h2 className="text-xl font-extrabold tracking-tight text-content sm:text-2xl">{children}</h2>
             {aside}
         </div>
     );
@@ -313,10 +313,10 @@ function Channel({
         >
             <span className={`grid size-12 shrink-0 place-items-center rounded-full ${tint}`}>{icon}</span>
             <span className="min-w-0 flex-1">
-                <span className="block text-lg font-bold tracking-tight text-neutral-950 sm:text-xl">{name}</span>
-                <span className="block truncate text-sm text-neutral-500 sm:text-base">{handle}</span>
+                <span className="block text-lg font-bold tracking-tight text-content sm:text-xl">{name}</span>
+                <span className="block truncate text-sm text-content-muted sm:text-base">{handle}</span>
             </span>
-            <span className="grid size-10 shrink-0 place-items-center rounded-full border border-neutral-200 text-neutral-500 transition-colors group-hover:border-neutral-950 group-hover:bg-neutral-950 group-hover:text-white">
+            <span className="grid size-10 shrink-0 place-items-center rounded-full border border-line text-content-muted transition-colors group-hover:border-ink group-hover:bg-ink group-hover:text-white">
                 <ArrowUpRight size={17} aria-hidden="true" />
             </span>
         </a>
@@ -427,14 +427,14 @@ export default function ContactsPage() {
     };
 
     const methodBtn = (on: boolean) =>
-        `flex h-14 cursor-pointer items-center justify-center gap-2.5 rounded-2xl border-2 px-4 text-[15px] font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#058447] ${
+        `flex h-14 cursor-pointer items-center justify-center gap-2.5 rounded-2xl border-2 px-4 text-[15px] font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
             on
-                ? "border-neutral-950 bg-neutral-950 text-white"
-                : "border-neutral-200 bg-white text-neutral-700 hover:border-neutral-950"
+                ? "border-ink bg-ink text-white"
+                : "border-line bg-white text-neutral-700 hover:border-ink"
         }`;
 
     return (
-        <main className="mx-auto max-w-[1280px] px-5 pb-28 pt-28 font-sans text-neutral-950 sm:px-10 sm:pt-32">
+        <main className="mx-auto max-w-[1280px] px-5 pb-28 pt-28 font-sans text-content sm:px-10 sm:pt-32">
             <style>{`
                 @keyframes ct-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
                 .ct-in{animation:ct-in .5s cubic-bezier(.2,.8,.2,1)}
@@ -444,34 +444,34 @@ export default function ContactsPage() {
             <div className="mt-10 grid gap-x-16 gap-y-12 sm:mt-14 lg:grid-cols-12 lg:grid-rows-[auto_1fr]">
                 {/* ── Заголовок ── */}
                 <header className="lg:col-span-5 lg:row-start-1">
-                    <h1 className="text-[clamp(2.75rem,6.2vw,5.5rem)] font-extrabold leading-[0.95] tracking-[-0.045em] text-neutral-950">
+                    <h1 className="text-[clamp(2.75rem,6.2vw,5.5rem)] font-extrabold leading-[0.95] tracking-[-0.045em] text-content">
                         {t("title")}
                     </h1>
-                    <p className="mt-6 max-w-[40ch] text-lg leading-relaxed text-neutral-600 sm:text-xl">{t("subtitle")}</p>
+                    <p className="mt-6 max-w-[40ch] text-lg leading-relaxed text-content-secondary sm:text-xl">{t("subtitle")}</p>
                 </header>
 
                 {/* ── Форма: один лист, три шага ── */}
                 <div className="lg:col-span-7 lg:col-start-6 lg:row-span-2 lg:row-start-1">
                     {isSubmitted ? (
-                        <div className="ct-in rounded-[36px] bg-neutral-950 p-8 text-white sm:p-12 lg:p-14">
-                            <span className="grid size-16 place-items-center rounded-full bg-[#4ADE80] text-neutral-950">
+                        <div className="ct-in rounded-[36px] bg-ink p-8 text-white sm:p-12 lg:p-14">
+                            <span className="grid size-16 place-items-center rounded-full bg-[#4ADE80] text-content">
                                 <Check size={32} strokeWidth={2.5} aria-hidden="true" />
                             </span>
 
                             <h2 className="mt-8 text-4xl font-extrabold leading-[1.02] tracking-[-0.035em] sm:text-6xl">
                                 {t("successTitle")}
                             </h2>
-                            <p className="mt-4 text-lg leading-relaxed text-neutral-400 sm:text-xl">{t("successTeam")}</p>
+                            <p className="mt-4 text-lg leading-relaxed text-content-subtle sm:text-xl">{t("successTeam")}</p>
 
                             <dl className="mt-10 divide-y divide-white/10 border-y border-white/10">
                                 <div className="flex flex-col gap-1 py-5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
-                                    <dt className="text-base text-neutral-400">{t("successPhone")}</dt>
+                                    <dt className="text-base text-content-subtle">{t("successPhone")}</dt>
                                     <dd className="font-mono text-xl font-bold tabular-nums sm:text-2xl">
                                         {currentCountry.code} {formattedPhoneNumber}
                                     </dd>
                                 </div>
                                 <div className="flex flex-col gap-1 py-5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
-                                    <dt className="text-base text-neutral-400">{t("successMethod")}</dt>
+                                    <dt className="text-base text-content-subtle">{t("successMethod")}</dt>
                                     <dd className="text-xl font-bold sm:text-2xl">
                                         {contactPreference === "message" ? t("methodMessage") : t("methodCall")}
                                     </dd>
@@ -495,13 +495,13 @@ export default function ContactsPage() {
                         <form
                             onSubmit={handleSubmit}
                             noValidate
-                            className="rounded-[36px] border border-neutral-200 bg-white shadow-[0_40px_90px_-50px_rgba(0,0,0,0.35)]"
+                            className="rounded-[36px] border border-line bg-white shadow-[0_40px_90px_-50px_rgba(0,0,0,0.35)]"
                         >
                             {/* Шаг 1: услуга */}
                             <fieldset className="min-w-0 p-6 sm:p-10 lg:p-12">
                                 <StepHead
                                     aside={
-                                        <span className="shrink-0 text-sm font-medium text-neutral-500">
+                                        <span className="shrink-0 text-sm font-medium text-content-muted">
                                             <span className="text-rose-500">*</span> {t("required")}
                                         </span>
                                     }
@@ -519,17 +519,17 @@ export default function ContactsPage() {
                                                 type="button"
                                                 aria-pressed={on}
                                                 onClick={() => setSelectedServiceId(s.id)}
-                                                className={`flex cursor-pointer items-center gap-3.5 rounded-2xl border-2 p-4 text-left transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#058447] ${
+                                                className={`flex cursor-pointer items-center gap-3.5 rounded-2xl border-2 p-4 text-left transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
                                                     s.id === "other" ? "sm:col-span-2" : ""
                                                 } ${
                                                     on
-                                                        ? "border-neutral-950 bg-neutral-950 text-white"
-                                                        : "border-neutral-200 bg-white text-neutral-950 hover:border-neutral-950"
+                                                        ? "border-ink bg-ink text-white"
+                                                        : "border-line bg-white text-content hover:border-ink"
                                                 }`}
                                             >
                                                 <span
                                                     className={`grid size-11 shrink-0 place-items-center rounded-xl ${
-                                                        on ? "bg-white/10 text-white" : "bg-neutral-100 text-neutral-700"
+                                                        on ? "bg-white/10 text-white" : "bg-surface-muted text-neutral-700"
                                                     }`}
                                                 >
                                                     <Icon size={20} />
@@ -540,7 +540,7 @@ export default function ContactsPage() {
                                                 <span
                                                     aria-hidden="true"
                                                     className={`grid size-6 shrink-0 place-items-center rounded-full border-2 transition-colors ${
-                                                        on ? "border-[#4ADE80] bg-[#4ADE80] text-neutral-950" : "border-neutral-300"
+                                                        on ? "border-[#4ADE80] bg-[#4ADE80] text-content" : "border-line-strong"
                                                     }`}
                                                 >
                                                     {on && <Check size={13} strokeWidth={3.5} />}
@@ -552,12 +552,12 @@ export default function ContactsPage() {
                             </fieldset>
 
                             {/* Шаг 2: имя и описание */}
-                            <fieldset className="min-w-0 border-t border-neutral-200 p-6 sm:p-10 lg:p-12">
+                            <fieldset className="min-w-0 border-t border-line p-6 sm:p-10 lg:p-12">
                                 <StepHead>{t("step2")}</StepHead>
 
                                 <div className="space-y-6">
                                     <div>
-                                        <label htmlFor="ct-name" className="mb-2 block text-base font-semibold text-neutral-950">
+                                        <label htmlFor="ct-name" className="mb-2 block text-base font-semibold text-content">
                                             {t("nameLabel")} <span className="text-rose-500">*</span>
                                         </label>
                                         <input
@@ -577,10 +577,10 @@ export default function ContactsPage() {
 
                                     <div>
                                         <div className="mb-2 flex items-baseline justify-between gap-4">
-                                            <label htmlFor="ct-about" className="block text-base font-semibold text-neutral-950">
+                                            <label htmlFor="ct-about" className="block text-base font-semibold text-content">
                                                 {t("aboutLabel")}
                                             </label>
-                                            <span className="shrink-0 text-sm font-medium text-neutral-500">{t("optional")}</span>
+                                            <span className="shrink-0 text-sm font-medium text-content-muted">{t("optional")}</span>
                                         </div>
                                         <textarea
                                             id="ct-about"
@@ -595,32 +595,32 @@ export default function ContactsPage() {
                             </fieldset>
 
                             {/* Шаг 3: телефон и способ связи */}
-                            <fieldset className="min-w-0 border-t border-neutral-200 p-6 sm:p-10 lg:p-12">
+                            <fieldset className="min-w-0 border-t border-line p-6 sm:p-10 lg:p-12">
                                 <StepHead>{t("step3")}</StepHead>
 
                                 {/* Поле телефона со страной */}
-                                <div className="flex h-16 items-center rounded-2xl border-2 border-neutral-200 bg-white pl-2 pr-5 transition-colors focus-within:border-neutral-950">
+                                <div className="flex h-16 items-center rounded-2xl border-2 border-line bg-white pl-2 pr-5 transition-colors focus-within:border-ink">
                                     <div ref={countryRef} className="relative shrink-0">
                                         <button
                                             type="button"
                                             aria-haspopup="listbox"
                                             aria-expanded={isDropdownOpen}
                                             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                                            className="flex h-12 cursor-pointer items-center gap-2 rounded-xl px-3 transition-colors hover:bg-neutral-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#058447]"
+                                            className="flex h-12 cursor-pointer items-center gap-2 rounded-xl px-3 transition-colors hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
                                         >
                                             {currentCountry.flag}
-                                            <span className="font-mono text-base font-bold text-neutral-950 sm:text-lg">{currentCountry.code}</span>
+                                            <span className="font-mono text-base font-bold text-content sm:text-lg">{currentCountry.code}</span>
                                             <ChevronDown
                                                 size={16}
                                                 aria-hidden="true"
-                                                className={`text-neutral-400 transition-transform ${isDropdownOpen ? "rotate-180" : ""}`}
+                                                className={`text-content-subtle transition-transform ${isDropdownOpen ? "rotate-180" : ""}`}
                                             />
                                         </button>
 
                                         {isDropdownOpen && (
                                             <div
                                                 role="listbox"
-                                                className="absolute left-0 top-[calc(100%+12px)] z-50 max-h-80 w-72 space-y-1 overflow-y-auto rounded-2xl border border-neutral-200 bg-white p-2 shadow-[0_30px_70px_-20px_rgba(0,0,0,0.35)]"
+                                                className="absolute left-0 top-[calc(100%+12px)] z-50 max-h-80 w-72 space-y-1 overflow-y-auto rounded-2xl border border-line bg-white p-2 shadow-[0_30px_70px_-20px_rgba(0,0,0,0.35)]"
                                             >
                                                 {COUNTRIES.map((item, idx) => {
                                                     const on = countryIndex === idx;
@@ -636,14 +636,14 @@ export default function ContactsPage() {
                                                                 setIsDropdownOpen(false);
                                                             }}
                                                             className={`flex w-full cursor-pointer items-center justify-between gap-3 rounded-xl px-3.5 py-3 text-left transition-colors ${
-                                                                on ? "bg-neutral-950 text-white" : "text-neutral-800 hover:bg-neutral-100"
+                                                                on ? "bg-ink text-white" : "text-neutral-800 hover:bg-surface-muted"
                                                             }`}
                                                         >
                                                             <span className="flex items-center gap-3">
                                                                 {item.flag}
                                                                 <span className="text-[15px] font-semibold">{tCountry(item.id)}</span>
                                                             </span>
-                                                            <span className={`font-mono text-sm ${on ? "text-neutral-300" : "text-neutral-500"}`}>
+                                                            <span className={`font-mono text-sm ${on ? "text-neutral-300" : "text-content-muted"}`}>
                                                                 {item.code}
                                                             </span>
                                                         </button>
@@ -664,20 +664,20 @@ export default function ContactsPage() {
                                         value={formattedPhoneNumber}
                                         onChange={handlePhoneChange}
                                         placeholder={currentCountry.mask}
-                                        className="w-full min-w-0 bg-transparent font-mono text-base text-neutral-950 placeholder:text-neutral-400 focus:outline-hidden sm:text-lg"
+                                        className="w-full min-w-0 bg-transparent font-mono text-base text-content placeholder:text-content-subtle focus:outline-hidden sm:text-lg"
                                     />
                                 </div>
 
                                 {/* Плашка международного номера */}
                                 {isInternational && (
-                                    <p className="mt-3 flex items-center gap-2 text-sm text-neutral-600 sm:text-base">
+                                    <p className="mt-3 flex items-center gap-2 text-sm text-content-secondary sm:text-base">
                                         <WhatsAppIcon size={18} className="shrink-0 text-[#25D366]" />
                                         <span className="leading-tight">{t("international")}</span>
                                     </p>
                                 )}
 
                                 {/* Предпочитаемый способ связи */}
-                                <p className="mb-3 mt-8 text-base font-semibold text-neutral-950">{t("preferredMethod")}</p>
+                                <p className="mb-3 mt-8 text-base font-semibold text-content">{t("preferredMethod")}</p>
                                 <div className="grid gap-3 sm:grid-cols-2">
                                     <button
                                         type="button"
@@ -701,7 +701,7 @@ export default function ContactsPage() {
                             </fieldset>
 
                             {/* Отправка */}
-                            <div className="rounded-b-[35px] border-t border-neutral-200 bg-neutral-50 p-6 sm:p-10 lg:px-12">
+                            <div className="rounded-b-[35px] border-t border-line bg-neutral-50 p-6 sm:p-10 lg:px-12">
                                 {errorMessage && (
                                     <p role="alert" className="mb-4 rounded-xl bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700 sm:text-base">
                                         {errorMessage}
@@ -711,10 +711,10 @@ export default function ContactsPage() {
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="group flex w-full cursor-pointer items-center justify-between gap-6 rounded-2xl bg-neutral-950 py-2 pl-7 pr-2 text-base font-semibold text-white transition-colors hover:bg-neutral-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#058447] active:scale-[0.99] disabled:cursor-not-allowed disabled:bg-neutral-700 sm:text-lg"
+                                    className="group flex w-full cursor-pointer items-center justify-between gap-6 rounded-2xl bg-ink py-2 pl-7 pr-2 text-base font-semibold text-white transition-colors hover:bg-ink-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent active:scale-[0.99] disabled:cursor-not-allowed disabled:bg-neutral-700 sm:text-lg"
                                 >
                                     <span>{isSubmitting ? t("sending") : t("submit")}</span>
-                                    <span className="grid size-12 place-items-center rounded-xl bg-[#058447] text-white transition-transform duration-300 group-hover:rotate-45 group-disabled:rotate-0">
+                                    <span className="grid size-12 place-items-center rounded-xl bg-accent text-white transition-transform duration-300 group-hover:rotate-45 group-disabled:rotate-0">
                                         {isSubmitting ? (
                                             <Loader2 size={20} className="animate-spin" aria-hidden="true" />
                                         ) : (
@@ -729,8 +729,8 @@ export default function ContactsPage() {
 
                 {/* ── Прямые контакты и конфиденциальность ── */}
                 <aside className="lg:col-span-5 lg:row-start-2">
-                    <h2 className="border-b-2 border-neutral-950 pb-4 text-lg font-bold text-neutral-950">{t("directTitle")}</h2>
-                    <div className="divide-y divide-neutral-200 border-b border-neutral-200">
+                    <h2 className="border-b-2 border-ink pb-4 text-lg font-bold text-content">{t("directTitle")}</h2>
+                    <div className="divide-y divide-line border-b border-line">
                         <Channel
                             href="https://t.me/AsmanTech"
                             external
@@ -749,7 +749,7 @@ export default function ContactsPage() {
                         />
                         <Channel
                             href="mailto:Asmantech.kg@gmail.com"
-                            tint="bg-neutral-100"
+                            tint="bg-surface-muted"
                             icon={<GmailOfficialIcon size={22} />}
                             name={t("email")}
                             handle="Asmantech.kg@gmail.com"
@@ -757,12 +757,12 @@ export default function ContactsPage() {
                     </div>
 
                     <div className="mt-8 flex gap-4">
-                        <span className="grid size-11 shrink-0 place-items-center rounded-full bg-[#E7F8EE] text-[#058447]">
+                        <span className="grid size-11 shrink-0 place-items-center rounded-full bg-accent-soft text-accent">
                             <ShieldCheck size={20} aria-hidden="true" />
                         </span>
                         <div>
-                            <p className="text-base font-bold text-neutral-950">{t("privacyTitle")}</p>
-                            <p className="mt-1 max-w-[44ch] text-sm leading-relaxed text-neutral-500 sm:text-base">{t("privacyText")}</p>
+                            <p className="text-base font-bold text-content">{t("privacyTitle")}</p>
+                            <p className="mt-1 max-w-[44ch] text-sm leading-relaxed text-content-muted sm:text-base">{t("privacyText")}</p>
                         </div>
                     </div>
                 </aside>

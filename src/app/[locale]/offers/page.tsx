@@ -172,8 +172,8 @@ function PanelHead({ title, desc, tr, aside }: { title: string; desc: string; tr
     return (
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-16">
             <div>
-                <h2 className="text-4xl font-extrabold leading-[1] tracking-[-0.035em] text-neutral-950 sm:text-6xl">{tr(title)}</h2>
-                <p className="mt-4 max-w-[48ch] text-lg leading-relaxed text-neutral-600 sm:text-xl">{tr(desc)}</p>
+                <h2 className="text-4xl font-extrabold leading-[1] tracking-[-0.035em] text-content sm:text-6xl">{tr(title)}</h2>
+                <p className="mt-4 max-w-[48ch] text-lg leading-relaxed text-content-secondary sm:text-xl">{tr(desc)}</p>
             </div>
             {aside}
         </div>
@@ -192,11 +192,11 @@ function RebrandingPanel({ tr }: { tr: Tr }) {
                 desc="Лимитированная скидка в честь ребрендинга Asman Tech."
                 tr={tr}
                 aside={
-                    <div aria-live="polite" className="w-full rounded-[24px] border-2 border-neutral-950 p-6 sm:w-72">
+                    <div aria-live="polite" className="w-full rounded-3xl border-2 border-ink p-6 sm:w-72">
                         {ended ? (
-                            <p className="text-xl font-extrabold tracking-tight text-neutral-950">{tr("Акция завершена")}</p>
+                            <p className="text-xl font-extrabold tracking-tight text-content">{tr("Акция завершена")}</p>
                         ) : (
-                            <p className="flex items-baseline gap-3 text-neutral-950">
+                            <p className="flex items-baseline gap-3 text-content">
                                 <span
                                     className={`font-serif text-6xl font-bold leading-none tabular-nums transition-opacity ${
                                         days === null ? "opacity-0" : "opacity-100"
@@ -211,7 +211,7 @@ function RebrandingPanel({ tr }: { tr: Tr }) {
                                 </span>
                             </p>
                         )}
-                        <p className="mt-4 border-t border-neutral-200 pt-3 text-sm text-neutral-500">
+                        <p className="mt-4 border-t border-line pt-3 text-sm text-content-muted">
                             {tr("Последний день — 31 декабря 2026, 23:59")}
                         </p>
                     </div>
@@ -221,15 +221,15 @@ function RebrandingPanel({ tr }: { tr: Tr }) {
             <div className="mt-14 grid gap-12 sm:mt-20 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
                 {REBRANDING_GROUPS.map((group) => (
                     <div key={group.id}>
-                        <h3 className="border-b-2 border-neutral-950 pb-4 text-lg font-bold text-neutral-950">{tr(group.title)}</h3>
-                        <ul className="divide-y divide-neutral-200">
+                        <h3 className="border-b-2 border-ink pb-4 text-lg font-bold text-content">{tr(group.title)}</h3>
+                        <ul className="divide-y divide-line">
                             {group.services.map((s) => (
                                 <li key={s.name} className="flex items-center gap-4 py-5">
-                                    <span className="w-7 shrink-0 font-mono text-xs text-neutral-400">{s.num}</span>
-                                    <span className="min-w-0 flex-1 text-lg font-semibold leading-snug text-neutral-950 sm:text-xl">
+                                    <span className="w-7 shrink-0 font-mono text-xs text-content-subtle">{s.num}</span>
+                                    <span className="min-w-0 flex-1 text-lg font-semibold leading-snug text-content sm:text-xl">
                                         {tr(s.name)}
                                     </span>
-                                    <span className="font-serif text-2xl font-bold text-[#058447] tabular-nums sm:text-3xl">
+                                    <span className="font-serif text-2xl font-bold text-accent tabular-nums sm:text-3xl">
                                         {tr(s.discount)}
                                     </span>
                                 </li>
@@ -266,25 +266,25 @@ function ReturningPanel({ tr }: { tr: Tr }) {
                             )}
                             <span
                                 className={`absolute left-0 top-0 grid size-10 place-items-center rounded-full border-2 text-sm font-bold ${
-                                    last ? "border-[#058447] bg-[#058447] text-white" : "border-neutral-950 bg-white text-neutral-950"
+                                    last ? "border-accent bg-accent text-white" : "border-ink bg-white text-content"
                                 }`}
                             >
                                 {last ? <Check size={18} aria-hidden="true" /> : i + 1}
                             </span>
-                            <h3 className={`text-xl font-bold tracking-tight sm:text-2xl ${last ? "text-[#058447]" : "text-neutral-950"}`}>
+                            <h3 className={`text-xl font-bold tracking-tight sm:text-2xl ${last ? "text-accent" : "text-content"}`}>
                                 {tr(step.title)}
                             </h3>
-                            <p className="mt-2 max-w-[30ch] text-base leading-relaxed text-neutral-600">{tr(step.text)}</p>
+                            <p className="mt-2 max-w-[30ch] text-base leading-relaxed text-content-secondary">{tr(step.text)}</p>
                         </li>
                     );
                 })}
             </ol>
 
-            <div className="mt-14 grid gap-px overflow-hidden rounded-[24px] border border-neutral-200 bg-neutral-200 sm:mt-16 md:grid-cols-3">
+            <div className="mt-14 grid gap-px overflow-hidden rounded-3xl border border-line bg-neutral-200 sm:mt-16 md:grid-cols-3">
                 {RETURNING_NOTES.map((n) => (
                     <div key={n.title} className="bg-white p-6 sm:p-7">
-                        <p className="text-lg font-bold leading-snug text-neutral-950">{tr(n.title)}</p>
-                        <p className="mt-1 text-base text-neutral-500">{tr(n.text)}</p>
+                        <p className="text-lg font-bold leading-snug text-content">{tr(n.title)}</p>
+                        <p className="mt-1 text-base text-content-muted">{tr(n.text)}</p>
                     </div>
                 ))}
             </div>
@@ -335,21 +335,21 @@ function ProgramModal({ program, onClose, tr }: { program: Program; onClose: () 
             onMouseDown={(e) => {
                 if (e.target === e.currentTarget) onClose();
             }}
-            className="of-fade fixed inset-0 z-50 flex items-end justify-center bg-neutral-950/60 backdrop-blur-sm sm:items-center sm:p-6"
+            className="of-fade fixed inset-0 z-50 flex items-end justify-center bg-ink/60 backdrop-blur-sm sm:items-center sm:p-6"
         >
             <div
                 ref={ref}
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby={titleId}
-                className="of-pop relative flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-t-[32px] bg-white text-neutral-950 shadow-[0_40px_120px_-20px_rgba(0,0,0,0.45)] sm:rounded-[36px]"
+                className="of-pop relative flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-t-[32px] bg-white text-content shadow-[0_40px_120px_-20px_rgba(0,0,0,0.45)] sm:rounded-[36px]"
             >
                 <button
                     type="button"
                     data-autofocus
                     onClick={onClose}
                     aria-label={tr("Закрыть")}
-                    className="absolute right-4 top-4 z-10 grid size-11 cursor-pointer place-items-center rounded-full bg-neutral-100 text-neutral-600 transition-colors hover:bg-neutral-200 hover:text-neutral-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#058447] sm:right-6 sm:top-6"
+                    className="absolute right-4 top-4 z-10 grid size-11 cursor-pointer place-items-center rounded-full bg-surface-muted text-content-secondary transition-colors hover:bg-neutral-200 hover:text-content focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent sm:right-6 sm:top-6"
                 >
                     <X size={20} />
                 </button>
@@ -360,21 +360,21 @@ function ProgramModal({ program, onClose, tr }: { program: Program; onClose: () 
                         <h2 id={titleId} className="text-3xl font-extrabold leading-[1.02] tracking-[-0.03em] sm:text-5xl">
                             {tr(program.name)}
                         </h2>
-                        <p className="mt-3 text-lg text-neutral-600 sm:text-xl">{tr(program.desc)}</p>
+                        <p className="mt-3 text-lg text-content-secondary sm:text-xl">{tr(program.desc)}</p>
                     </div>
                     <p
-                        className={`mt-8 border-b-2 border-neutral-950 pb-6 font-serif text-4xl font-bold leading-none tracking-tight sm:text-5xl ${
-                            program.numeric ? "text-[#058447]" : "text-neutral-950"
+                        className={`mt-8 border-b-2 border-ink pb-6 font-serif text-4xl font-bold leading-none tracking-tight sm:text-5xl ${
+                            program.numeric ? "text-accent" : "text-content"
                         }`}
                     >
                         {tr(program.terms)}
                     </p>
 
                     {/* Что входит */}
-                    <ul className="divide-y divide-neutral-200">
+                    <ul className="divide-y divide-line">
                         {program.items.map((item) => (
                             <li key={item} className="flex items-center gap-4 py-5">
-                                <span className="grid size-8 shrink-0 place-items-center rounded-full bg-[#E7F8EE] text-[#058447]">
+                                <span className="grid size-8 shrink-0 place-items-center rounded-full bg-accent-soft text-accent">
                                     <Check size={16} aria-hidden="true" />
                                 </span>
                                 <span className="text-lg font-semibold leading-snug sm:text-xl">{tr(item)}</span>
@@ -384,8 +384,8 @@ function ProgramModal({ program, onClose, tr }: { program: Program; onClose: () 
 
                     {/* Условия */}
                     {program.conditions && (
-                        <div className="mt-6 rounded-[24px] bg-neutral-950 p-7 text-white sm:p-8">
-                            <h3 className="text-sm font-semibold text-neutral-400">{tr("Условия")}</h3>
+                        <div className="mt-6 rounded-3xl bg-ink p-7 text-white sm:p-8">
+                            <h3 className="text-sm font-semibold text-content-subtle">{tr("Условия")}</h3>
                             <ul className="mt-4 space-y-3">
                                 {program.conditions.map((c) => (
                                     <li key={c} className="flex gap-3 text-base font-semibold leading-snug sm:text-lg">
@@ -398,11 +398,11 @@ function ProgramModal({ program, onClose, tr }: { program: Program; onClose: () 
                     )}
                 </div>
 
-                <div className="flex shrink-0 justify-end border-t border-neutral-200 px-6 py-5 sm:px-12">
+                <div className="flex shrink-0 justify-end border-t border-line px-6 py-5 sm:px-12">
                     <button
                         type="button"
                         onClick={onClose}
-                        className="w-full cursor-pointer rounded-2xl bg-neutral-950 px-8 py-3.5 text-base font-semibold text-white transition-colors hover:bg-neutral-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#058447] sm:w-auto"
+                        className="w-full cursor-pointer rounded-2xl bg-ink px-8 py-3.5 text-base font-semibold text-white transition-colors hover:bg-ink-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:w-auto"
                     >
                         {tr("Закрыть")}
                     </button>
@@ -420,30 +420,30 @@ function ProgramsPanel({ tr }: { tr: Tr }) {
 
     return (
         <>
-            <h2 className="text-4xl font-extrabold leading-[1] tracking-[-0.035em] text-neutral-950 sm:text-6xl">
+            <h2 className="text-4xl font-extrabold leading-[1] tracking-[-0.035em] text-content sm:text-6xl">
                 {tr("Специальные программы")}
             </h2>
 
             <div className="mt-12 overflow-x-auto sm:mt-16">
                 <table className="w-full min-w-[560px] text-left">
                     <thead>
-                    <tr className="border-b-2 border-neutral-950 text-sm text-neutral-500">
+                    <tr className="border-b-2 border-ink text-sm text-content-muted">
                         <th scope="col" className="pb-4 font-semibold">{tr("Программа")}</th>
                         <th scope="col" className="pb-4 pr-16 text-right font-semibold">{tr("Условия")}</th>
                     </tr>
                     </thead>
-                    <tbody className="divide-y divide-neutral-200">
+                    <tbody className="divide-y divide-line">
                     {SPECIAL_PROGRAMS.map((p) => (
                         <tr key={p.id}>
                             <th scope="row" className="py-8 pr-6 align-middle font-normal sm:py-10">
-                                <span className="block text-xl font-bold tracking-tight text-neutral-950 sm:text-3xl">{tr(p.name)}</span>
-                                <span className="mt-1.5 block text-base text-neutral-500 sm:text-lg">{tr(p.desc)}</span>
+                                <span className="block text-xl font-bold tracking-tight text-content sm:text-3xl">{tr(p.name)}</span>
+                                <span className="mt-1.5 block text-base text-content-muted sm:text-lg">{tr(p.desc)}</span>
                             </th>
                             <td className="py-8 align-middle sm:py-10">
                                 <div className="flex items-center justify-end gap-4 sm:gap-5">
                                         <span
                                             className={`whitespace-nowrap text-right font-serif text-2xl font-bold tracking-tight sm:text-4xl ${
-                                                p.numeric ? "text-[#058447]" : "text-neutral-950"
+                                                p.numeric ? "text-accent" : "text-content"
                                             }`}
                                         >
                                             {tr(p.terms)}
@@ -453,7 +453,7 @@ function ProgramsPanel({ tr }: { tr: Tr }) {
                                         onClick={() => setOpenId(p.id)}
                                         aria-haspopup="dialog"
                                         aria-label={`${tr("Подробнее")}: ${tr(p.name)}`}
-                                        className="grid size-11 shrink-0 cursor-pointer place-items-center rounded-full border-2 border-neutral-950 text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#058447]"
+                                        className="grid size-11 shrink-0 cursor-pointer place-items-center rounded-full border-2 border-ink text-content transition-colors hover:bg-ink hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                                     >
                                         <ArrowUpRight size={18} aria-hidden="true" />
                                     </button>
@@ -528,7 +528,7 @@ export default function OffersPage() {
             `}</style>
 
             {/* ── HERO ── */}
-            <h1 className="mt-10 text-[clamp(2.75rem,7.4vw,6.5rem)] font-extrabold leading-[0.95] tracking-[-0.045em] text-neutral-950 sm:mt-14">
+            <h1 className="mt-10 text-[clamp(2.75rem,7.4vw,6.5rem)] font-extrabold leading-[0.95] tracking-[-0.045em] text-content sm:mt-14">
                 {tr("Спецпредложения.")}
             </h1>
 
@@ -554,20 +554,20 @@ export default function OffersPage() {
                             aria-controls={`panel-${t.id}`}
                             tabIndex={on ? 0 : -1}
                             onClick={() => select(t.id)}
-                            className={`group w-[82%] shrink-0 cursor-pointer snap-start rounded-[28px] text-left transition-transform duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#058447] sm:w-[60%] md:w-auto ${
+                            className={`group w-[82%] shrink-0 cursor-pointer snap-start rounded-3xl text-left transition-transform duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent sm:w-[60%] md:w-auto ${
                                 on ? "md:-translate-y-2" : "hover:-translate-y-1"
                             }`}
                         >
                             <div
-                                className={`of-coupon relative flex min-h-[300px] flex-col rounded-[28px] transition-colors duration-300 sm:min-h-[330px] ${
-                                    on ? "bg-neutral-950 text-white" : "bg-neutral-100 text-neutral-950 group-hover:bg-neutral-200/80"
+                                className={`of-coupon relative flex min-h-[300px] flex-col rounded-3xl transition-colors duration-300 sm:min-h-[330px] ${
+                                    on ? "bg-ink text-white" : "bg-surface-muted text-content group-hover:bg-neutral-200/80"
                                 }`}
                             >
                                 {/* Основная часть купона */}
                                 <div className="flex flex-1 flex-col p-7">
-                                    <span className={`text-sm font-medium ${on ? "text-neutral-400" : "text-neutral-500"}`}>{tr(t.sub)}</span>
+                                    <span className={`text-sm font-medium ${on ? "text-content-subtle" : "text-content-muted"}`}>{tr(t.sub)}</span>
                                     <span className="mt-1.5 text-2xl font-bold leading-tight tracking-tight">{tr(t.name)}</span>
-                                    <span className={`mt-auto flex items-baseline gap-2 pt-8 ${on ? "text-[#4ADE80]" : "text-[#058447]"}`}>
+                                    <span className={`mt-auto flex items-baseline gap-2 pt-8 ${on ? "text-[#4ADE80]" : "text-accent"}`}>
                                         <span className="font-serif text-7xl font-bold leading-[0.85] tracking-tight tabular-nums sm:text-8xl">
                                             {t.figure}
                                         </span>
@@ -578,7 +578,7 @@ export default function OffersPage() {
                                 {/* Линия отрыва */}
                                 <span
                                     aria-hidden="true"
-                                    className={`absolute inset-x-6 bottom-[76px] border-t-2 border-dashed ${on ? "border-white/20" : "border-neutral-300"}`}
+                                    className={`absolute inset-x-6 bottom-[76px] border-t-2 border-dashed ${on ? "border-white/20" : "border-line-strong"}`}
                                 />
 
                                 {/* Корешок */}
@@ -586,7 +586,7 @@ export default function OffersPage() {
                                     <span className={`text-sm font-semibold ${on ? "text-white" : "text-neutral-700"}`}>{tr(t.stub)}</span>
                                     <span
                                         className={`grid size-9 place-items-center rounded-full transition-colors ${
-                                            on ? "bg-[#4ADE80] text-neutral-950" : "bg-white text-neutral-500"
+                                            on ? "bg-[#4ADE80] text-content" : "bg-white text-content-muted"
                                         }`}
                                     >
                                         <ArrowDown size={16} aria-hidden="true" className={on ? "" : "-rotate-90"} />
@@ -605,7 +605,7 @@ export default function OffersPage() {
                 id={`panel-${active}`}
                 aria-labelledby={`tab-${active}`}
                 tabIndex={0}
-                className="of-in mt-16 border-t-2 border-neutral-950 pt-12 focus-visible:outline-none sm:mt-20 sm:pt-16"
+                className="of-in mt-16 border-t-2 border-ink pt-12 focus-visible:outline-none sm:mt-20 sm:pt-16"
             >
                 {active === "rebranding" && <RebrandingPanel tr={tr} />}
                 {active === "returning" && <ReturningPanel tr={tr} />}
@@ -613,7 +613,7 @@ export default function OffersPage() {
             </section>
 
             {/* ── ФИНАЛ: как зафиксировать скидку ── */}
-            <section className="mt-24 overflow-hidden rounded-[40px] bg-neutral-950 text-white sm:mt-32">
+            <section className="mt-24 overflow-hidden rounded-[40px] bg-ink text-white sm:mt-32">
                 <div className="p-8 sm:p-12 lg:p-16">
                     <h2 className="text-4xl font-extrabold leading-[1.02] tracking-[-0.035em] sm:text-6xl">
                         {tr("Как зафиксировать скидку")}
@@ -621,9 +621,9 @@ export default function OffersPage() {
                     <ol className="mt-10 grid gap-8 sm:mt-14 md:grid-cols-3 md:gap-10">
                         {STEPS.map((step) => (
                             <li key={step.num} className="border-t border-white/15 pt-6">
-                                <span className="font-mono text-sm font-bold text-emerald-400">{step.num}</span>
+                                <span className="font-mono text-sm font-bold text-accent-bright">{step.num}</span>
                                 <h3 className="mt-4 text-xl font-bold tracking-tight sm:text-2xl">{tr(step.title)}</h3>
-                                <p className="mt-2 text-base leading-relaxed text-neutral-400">{tr(step.text)}</p>
+                                <p className="mt-2 text-base leading-relaxed text-content-subtle">{tr(step.text)}</p>
                             </li>
                         ))}
                     </ol>
@@ -632,18 +632,18 @@ export default function OffersPage() {
                 <div className="relative flex flex-col gap-8 border-t border-white/10 p-8 sm:p-12 lg:flex-row lg:items-center lg:justify-between lg:p-16">
                     <div
                         aria-hidden="true"
-                        className="pointer-events-none absolute -bottom-40 -left-24 size-[460px] rounded-full bg-emerald-500/20 blur-[120px]"
+                        className="pointer-events-none absolute -bottom-40 -left-24 size-[460px] rounded-full bg-accent/20 blur-[120px]"
                     />
                     <div className="relative flex items-center gap-3 text-base font-semibold text-neutral-200">
-                        <ShieldCheck size={20} className="shrink-0 text-emerald-400" aria-hidden="true" />
+                        <ShieldCheck size={20} className="shrink-0 text-accent-bright" aria-hidden="true" />
                         <span>{tr("Без предоплаты до подписания NDA и сметы.")}</span>
                     </div>
                     <Link
                         href="/contacts"
-                        className="group relative inline-flex w-full shrink-0 items-center justify-between gap-6 rounded-2xl bg-white py-2 pl-7 pr-2 text-base font-semibold text-neutral-950 transition-colors duration-200 hover:bg-[#E7F8EE] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white active:scale-[0.99] sm:w-auto"
+                        className="group relative inline-flex w-full shrink-0 items-center justify-between gap-6 rounded-2xl bg-white py-2 pl-7 pr-2 text-base font-semibold text-content transition-colors duration-200 hover:bg-accent-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white active:scale-[0.99] sm:w-auto"
                     >
                         <span>{tr("Зафиксировать скидку")}</span>
-                        <span className="grid size-12 place-items-center rounded-xl bg-[#058447] text-white transition-transform duration-300 group-hover:rotate-45">
+                        <span className="grid size-12 place-items-center rounded-xl bg-accent text-white transition-transform duration-300 group-hover:rotate-45">
                             <ArrowUpRight size={20} aria-hidden="true" />
                         </span>
                     </Link>

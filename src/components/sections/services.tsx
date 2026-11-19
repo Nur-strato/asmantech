@@ -115,11 +115,11 @@ export function Services() {
             >
                 {type === "bars" && (
                     <div className="w-full h-full flex justify-end">
-                        <div className="w-6 sm:w-12 h-full border-l border-sky-400/20 bg-gradient-to-b from-transparent via-[#0066FF]/20 to-transparent" />
-                        <div className="w-6 sm:w-12 h-full border-l border-sky-400/25 bg-gradient-to-b from-transparent via-[#0066FF]/30 to-transparent" />
-                        <div className="w-8 sm:w-12 h-full border-l border-sky-400/30 bg-gradient-to-b from-transparent via-[#0284C7]/40 to-transparent" />
-                        <div className="w-8 sm:w-12 h-full border-l border-sky-300/40 bg-gradient-to-b from-transparent via-[#38BDF8]/40 to-transparent" />
-                        <div className="w-10 sm:w-16 h-full border-l border-sky-400/50 bg-gradient-to-b from-[#0B2545] via-[#0066FF]/50 to-[#08090D]" />
+                        <div className="w-6 sm:w-12 h-full border-l border-highlight/20 bg-gradient-to-b from-transparent via-[#0066FF]/20 to-transparent" />
+                        <div className="w-6 sm:w-12 h-full border-l border-highlight/25 bg-gradient-to-b from-transparent via-[#0066FF]/30 to-transparent" />
+                        <div className="w-8 sm:w-12 h-full border-l border-highlight/30 bg-gradient-to-b from-transparent via-[#0284C7]/40 to-transparent" />
+                        <div className="w-8 sm:w-12 h-full border-l border-sky-300/40 bg-gradient-to-b from-transparent via-highlight/40 to-transparent" />
+                        <div className="w-10 sm:w-16 h-full border-l border-highlight/50 bg-gradient-to-b from-[#0B2545] via-[#0066FF]/50 to-ink-strong" />
                     </div>
                 )}
 
@@ -224,10 +224,10 @@ export function Services() {
                             }}
                             onClick={() => toggleCard(index)}
                             style={{ transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)" }}
-                            className={`relative rounded-[24px] sm:rounded-[32px] lg:rounded-[40px] transition-all duration-[1000ms] ease-out cursor-pointer overflow-hidden border select-none [touch-action:manipulation] transform-gpu ${
+                            className={`relative rounded-3xl sm:rounded-panel lg:rounded-[40px] transition-all duration-[1000ms] ease-out cursor-pointer overflow-hidden border select-none [touch-action:manipulation] transform-gpu ${
                                 isOpen
-                                    ? "bg-[#08090D] text-white border-neutral-800/90 shadow-[0_30px_70px_rgba(0,102,255,0.08)] scale-[1.002] sm:scale-[1.004]"
-                                    : "bg-[#F8F9FA] hover:bg-[#F1F3F5] text-neutral-900 border-neutral-200/80 scale-100"
+                                    ? "bg-ink-strong text-white border-neutral-800/90 shadow-[0_30px_70px_rgba(0,102,255,0.08)] scale-[1.002] sm:scale-[1.004]"
+                                    : "bg-[#F8F9FA] hover:bg-[#F1F3F5] text-content border-line/80 scale-100"
                             }`}
                         >
                             {renderVisual(service.visualType, isOpen)}
@@ -239,7 +239,7 @@ export function Services() {
                                         className={`font-sans font-bold tracking-[-0.035em] transition-colors duration-700 leading-[1.12] sm:leading-[1.08] pr-2 ${
                                             isOpen
                                                 ? "text-[21px] xs:text-[23px] sm:text-4xl lg:text-[50px] text-white"
-                                                : "text-[18px] xs:text-[20px] sm:text-3xl lg:text-[40px] text-neutral-900"
+                                                : "text-[18px] xs:text-[20px] sm:text-3xl lg:text-[40px] text-content"
                                         }`}
                                     >
                                         {t(`items.${service.num}.title`)}
@@ -247,7 +247,7 @@ export function Services() {
 
                                     <span
                                         className={`font-mono text-sm sm:text-xl font-bold select-none shrink-0 transition-colors duration-700 pt-0.5 sm:pt-0 ${
-                                            isOpen ? "text-sky-400" : "text-neutral-400"
+                                            isOpen ? "text-highlight" : "text-content-subtle"
                                         }`}
                                     >
                                         {service.num}
@@ -282,10 +282,10 @@ export function Services() {
                                                     onClick={(e) => e.stopPropagation()}
                                                     className="inline-flex items-center gap-3 py-1.5 text-sm sm:text-base font-medium text-white hover:text-sky-300 transition-colors group select-none cursor-pointer"
                                                 >
-                                                    <span className="underline underline-offset-4 decoration-neutral-600 group-hover:decoration-sky-400 transition-colors">
+                                                    <span className="underline underline-offset-4 decoration-neutral-600 group-hover:decoration-highlight transition-colors">
                                                         {t("explore")}
                                                     </span>
-                                                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white text-[#08090D] group-hover:bg-sky-400 group-hover:text-black flex items-center justify-center transition-all duration-300 group-hover:translate-x-1 group-hover:-translate-y-1 shrink-0 transform-gpu">
+                                                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white text-ink-strong group-hover:bg-highlight group-hover:text-black flex items-center justify-center transition-all duration-300 group-hover:translate-x-1 group-hover:-translate-y-1 shrink-0 transform-gpu">
                                                         <ArrowUpRight size={16} strokeWidth={2.4} />
                                                     </div>
                                                 </Link>

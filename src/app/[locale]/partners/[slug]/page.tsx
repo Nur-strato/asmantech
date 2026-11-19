@@ -26,7 +26,7 @@ export default async function PartnerDetailPage({ params }: PageProps) {
     }
 
     return (
-        <main className="min-h-screen bg-white text-neutral-900 pt-28 pb-20">
+        <main className="min-h-screen bg-white text-content pt-28 pb-20">
             <div className="max-w-[1412px] mx-auto px-5 md:px-8">
 
                 {/* Главный блок заголовка */}
@@ -36,13 +36,13 @@ export default async function PartnerDetailPage({ params }: PageProps) {
                             {tr(partner.logo)}
                         </div>
                         <div>
-                            <div className="inline-block px-2.5 py-0.5 rounded-md bg-neutral-100 text-neutral-600 font-mono text-xs uppercase tracking-wider mb-2">
+                            <div className="inline-block px-2.5 py-0.5 rounded-md bg-surface-muted text-content-secondary font-mono text-xs uppercase tracking-wider mb-2">
                                 {tr(partner.category)}
                             </div>
-                            <h1 className="font-serif text-[38px] sm:text-[48px] md:text-[54px] font-bold text-[#0A1A2F] leading-none tracking-tight">
+                            <h1 className="font-serif text-[38px] sm:text-[48px] md:text-[54px] font-bold text-ink leading-none tracking-tight">
                                 {tr(partner.name)}{" "}
                                 {partner.subName && (
-                                    <span className="font-sans font-light text-[24px] sm:text-[32px] text-neutral-400 block sm:inline">
+                                    <span className="font-sans font-light text-[24px] sm:text-[32px] text-content-subtle block sm:inline">
                                         {tr(partner.subName)}
                                     </span>
                                 )}
@@ -55,7 +55,7 @@ export default async function PartnerDetailPage({ params }: PageProps) {
                         href={partner.websiteUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-[#0A1A2F] hover:bg-[#B91C1C] text-white font-medium text-[15px] transition-colors shadow-sm"
+                        className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-ink hover:bg-[#B91C1C] text-white font-medium text-[15px] transition-colors shadow-sm"
                     >
                         <span>{tr("Перейти на сайт партнёра")}</span>
                         <ExternalLink size={16} />
@@ -66,10 +66,10 @@ export default async function PartnerDetailPage({ params }: PageProps) {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 py-12 border-b border-neutral-100">
                     {/* Описание */}
                     <div className="lg:col-span-6 space-y-4">
-                        <h2 className="font-serif text-[24px] sm:text-[28px] font-bold text-[#0A1A2F]">
+                        <h2 className="font-serif text-[24px] sm:text-[28px] font-bold text-ink">
                             {tr("О компании и сотрудничестве")}
                         </h2>
-                        <p className="text-neutral-600 font-sans text-[16px] sm:text-[17px] leading-relaxed">
+                        <p className="text-content-secondary font-sans text-[16px] sm:text-[17px] leading-relaxed">
                             {tr(partner.summary)}
                         </p>
                     </div>
@@ -78,7 +78,7 @@ export default async function PartnerDetailPage({ params }: PageProps) {
                     <div className="lg:col-span-6 space-y-4">
                         <div className="flex items-center gap-2">
                             <Calendar size={18} className="text-[#B91C1C]" />
-                            <h2 className="font-serif text-[24px] sm:text-[28px] font-bold text-[#0A1A2F]">
+                            <h2 className="font-serif text-[24px] sm:text-[28px] font-bold text-ink">
                                 {tr("Хронология и этапы работ")}
                             </h2>
                         </div>
@@ -97,14 +97,14 @@ export default async function PartnerDetailPage({ params }: PageProps) {
 
                 {/* Галерея: 3 изображения */}
                 <div className="py-12">
-                    <h2 className="font-serif text-[24px] sm:text-[28px] font-bold text-[#0A1A2F] mb-8">
+                    <h2 className="font-serif text-[24px] sm:text-[28px] font-bold text-ink mb-8">
                         {tr("Фотографии и материалы")}
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {partner.images.map((imgUrl, idx) => (
                             <div
                                 key={idx}
-                                className="group relative h-64 sm:h-72 rounded-2xl overflow-hidden bg-neutral-100 border border-neutral-200"
+                                className="group relative h-64 sm:h-72 rounded-2xl overflow-hidden bg-surface-muted border border-line"
                             >
                                 <img
                                     src={imgUrl}

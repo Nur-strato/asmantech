@@ -113,14 +113,14 @@ function ExhibitionLaptop({
                 }`}
             />
 
-            <div className="absolute inset-0 [backface-visibility:hidden] rounded-[22px] p-2.5 sm:p-3 border shadow-[0_40px_100px_rgba(0,0,0,0.98)] flex flex-col overflow-hidden bg-neutral-950 border-neutral-800">
+            <div className="absolute inset-0 [backface-visibility:hidden] rounded-3xl p-2.5 sm:p-3 border shadow-[0_40px_100px_rgba(0,0,0,0.98)] flex flex-col overflow-hidden bg-ink border-neutral-800">
                 <div className="h-4 sm:h-5 bg-black px-3 flex items-center justify-between border-b border-neutral-900 shrink-0">
                     <div className="flex gap-1.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
                         <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
                         <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
                     </div>
-                    <span className="text-[9px] font-mono text-neutral-500 tracking-[0.2em] uppercase">
+                    <span className="text-[9px] font-mono text-content-muted tracking-[0.2em] uppercase">
                         {project.id}.manifest
                     </span>
                 </div>
@@ -128,11 +128,11 @@ function ExhibitionLaptop({
                 <InteractiveSandbox project={project} isZoomed={isZoomed} />
             </div>
 
-            <div className="absolute inset-0 [transform:rotateY(180deg)] [backface-visibility:hidden] bg-gradient-to-br from-neutral-900 via-neutral-950 to-black rounded-[22px] border border-neutral-700/60 shadow-2xl flex flex-col items-center justify-center">
+            <div className="absolute inset-0 [transform:rotateY(180deg)] [backface-visibility:hidden] bg-gradient-to-br from-neutral-900 via-neutral-950 to-black rounded-3xl border border-neutral-700/60 shadow-2xl flex flex-col items-center justify-center">
                 <div className="w-12 h-12 rounded-full bg-neutral-900 border border-neutral-700/80 flex items-center justify-center shadow-inner">
-                    <span className="font-mono font-black text-xs text-neutral-400 tracking-wider">A³²</span>
+                    <span className="font-mono font-black text-xs text-content-subtle tracking-wider">A³²</span>
                 </div>
-                <div className="text-[9px] font-mono uppercase tracking-[0.3em] text-neutral-500 mt-3 font-medium">
+                <div className="text-[9px] font-mono uppercase tracking-[0.3em] text-content-muted mt-3 font-medium">
                     Atelier Chassis Spec
                 </div>
             </div>
@@ -199,7 +199,7 @@ const conuratModules = [
         goal: "показать не только квартиру, но и среду, в которой будет жить покупатель.",
         preview: (
             <div className="w-full h-full bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-950 flex items-center justify-center p-3 relative overflow-hidden group-hover:scale-105 transition-transform duration-500">
-                <div className="absolute inset-0 bg-radial from-emerald-500/15 via-transparent to-transparent opacity-60" />
+                <div className="absolute inset-0 bg-radial from-accent/15 via-transparent to-transparent opacity-60" />
                 <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]">
                     <polygon points="15,50 50,70 85,50 50,30" fill="#15803d" stroke="#22c55e" strokeWidth="1.5" />
                     <polygon points="35,62 50,70 65,62 50,54" fill="#166534" />
@@ -285,7 +285,7 @@ const aucahackModules = [
         goal: "превратить разрозненные инструменты в персональную систему управления учёбой.",
         preview: (
             <div className="w-full h-full bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-950 flex items-center justify-center p-3 relative overflow-hidden group-hover:scale-105 transition-transform duration-500">
-                <div className="absolute inset-0 bg-radial from-emerald-500/15 via-transparent to-transparent opacity-60" />
+                <div className="absolute inset-0 bg-radial from-accent/15 via-transparent to-transparent opacity-60" />
                 <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]">
                     <circle cx="50" cy="50" r="28" fill="none" stroke="#262626" strokeWidth="6" />
                     <circle cx="50" cy="50" r="28" fill="none" stroke="#10b981" strokeWidth="6" strokeDasharray="175" strokeDashoffset="45" strokeLinecap="round" transform="rotate(-90 50 50)" />
@@ -461,7 +461,7 @@ const proquizModules = [
         goal: "обеспечить честность, контроль и прозрачность турнирных процедур.",
         preview: (
             <div className="w-full h-full bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-950 flex items-center justify-center p-3 relative overflow-hidden group-hover:scale-105 transition-transform duration-500">
-                <div className="absolute inset-0 bg-radial from-emerald-500/15 via-transparent to-transparent opacity-60" />
+                <div className="absolute inset-0 bg-radial from-accent/15 via-transparent to-transparent opacity-60" />
                 <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]">
                     {/* Таймер турнира + панель судейства */}
                     <circle cx="50" cy="50" r="26" fill="#064e3b" stroke="#10b981" strokeWidth="2" />
@@ -678,7 +678,7 @@ export default function SplitCinemaModal({
             <header className="h-16 px-8 sm:px-14 border-b border-white/[0.08] flex items-center justify-between shrink-0 select-none bg-black/90 backdrop-blur-2xl z-50">
                 <div className="flex items-center gap-3">
                     <span className="w-1.5 h-1.5 rounded-full bg-white/70" />
-                    <span className="text-xs sm:text-sm font-mono tracking-[0.35em] text-neutral-400 uppercase font-medium">
+                    <span className="text-xs sm:text-sm font-mono tracking-[0.35em] text-content-subtle uppercase font-medium">
                         PORTFOLIO // {project.index}
                     </span>
                 </div>
@@ -693,7 +693,7 @@ export default function SplitCinemaModal({
                         if (soundEnabled) playLabSound("relay_click");
                         onClose();
                     }}
-                    className="text-xs font-mono tracking-[0.3em] text-neutral-400 hover:text-white transition-all duration-300 cursor-pointer flex items-center gap-2.5 uppercase group"
+                    className="text-xs font-mono tracking-[0.3em] text-content-subtle hover:text-white transition-all duration-300 cursor-pointer flex items-center gap-2.5 uppercase group"
                 >
                     <span className="hidden sm:inline">CLOSE</span>
                     <X size={15} className="group-hover:rotate-90 transition-transform duration-300" />
@@ -758,7 +758,7 @@ export default function SplitCinemaModal({
                                     changeLighting("obsidian");
                                 }}
                                 className={`px-3 py-1 rounded-full transition-all cursor-pointer ${
-                                    lightingMode === "obsidian" ? "bg-white text-black font-bold shadow-sm" : "text-neutral-400 hover:text-white"
+                                    lightingMode === "obsidian" ? "bg-white text-black font-bold shadow-sm" : "text-content-subtle hover:text-white"
                                 }`}
                             >
                                 OBSIDIAN
@@ -770,7 +770,7 @@ export default function SplitCinemaModal({
                                     changeLighting("studio");
                                 }}
                                 className={`px-3 py-1 rounded-full transition-all cursor-pointer ${
-                                    lightingMode === "studio" ? "bg-white text-black font-bold shadow-sm" : "text-neutral-400 hover:text-white"
+                                    lightingMode === "studio" ? "bg-white text-black font-bold shadow-sm" : "text-content-subtle hover:text-white"
                                 }`}
                             >
                                 STUDIO
@@ -782,7 +782,7 @@ export default function SplitCinemaModal({
                                     changeLighting("cyber");
                                 }}
                                 className={`px-3 py-1 rounded-full transition-all cursor-pointer ${
-                                    lightingMode === "cyber" ? "bg-cyan-400 text-black font-bold shadow-sm" : "text-neutral-400 hover:text-white"
+                                    lightingMode === "cyber" ? "bg-cyan-400 text-black font-bold shadow-sm" : "text-content-subtle hover:text-white"
                                 }`}
                             >
                                 CYBER
@@ -854,7 +854,7 @@ export default function SplitCinemaModal({
 
                                     {/* Цель */}
                                     <div className="pt-1.5 flex items-start gap-2 text-sm sm:text-base leading-relaxed">
-                                        <span className="text-neutral-400 font-semibold shrink-0">Цель:</span>
+                                        <span className="text-content-subtle font-semibold shrink-0">Цель:</span>
                                         <span className="text-neutral-300 font-normal">
                                             {item.goal}
                                         </span>

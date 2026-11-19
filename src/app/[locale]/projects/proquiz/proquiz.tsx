@@ -146,7 +146,7 @@ export function ProQuizSandbox({ isZoomed }: { isZoomed: boolean }) {
 
     if (!isZoomed) {
         return (
-            <div className="flex-1 bg-[#F8FAFC] p-3 text-neutral-900 flex flex-col justify-between overflow-hidden select-none font-sans">
+            <div className="flex-1 bg-[#F8FAFC] p-3 text-content flex flex-col justify-between overflow-hidden select-none font-sans">
                 <div className="bg-[#050C1F] p-2.5 rounded-xl text-white flex items-center justify-between text-[9px]">
                     <div className="flex items-center gap-2">
                         <span className="text-cyan-400 font-bold font-mono">🌐 {lang} ▾</span>
@@ -161,10 +161,10 @@ export function ProQuizSandbox({ isZoomed }: { isZoomed: boolean }) {
                     <h2 className="text-2xl font-black tracking-widest text-[#050C1F] font-mono">
                         PROQUIZKG
                     </h2>
-                    <p className="text-[10px] text-neutral-500 font-mono">Premier League Platform</p>
+                    <p className="text-[10px] text-content-muted font-mono">Premier League Platform</p>
                 </div>
 
-                <div className="flex justify-between items-center text-[9px] font-mono text-neutral-500 border-t border-neutral-200 pt-1.5">
+                <div className="flex justify-between items-center text-[9px] font-mono text-content-muted border-t border-line pt-1.5">
                     <span>🏆 {t.mainLeague}</span>
                     <span className="text-blue-600 font-bold">● Zoom & Interact</span>
                 </div>
@@ -173,7 +173,7 @@ export function ProQuizSandbox({ isZoomed }: { isZoomed: boolean }) {
     }
 
     return (
-        <div className="flex-1 bg-white text-neutral-900 flex flex-col overflow-hidden select-text font-sans">
+        <div className="flex-1 bg-white text-content flex flex-col overflow-hidden select-text font-sans">
             <header className="h-12 border-b border-white/10 px-4 sm:px-8 flex items-center justify-between shrink-0 bg-[#050C1F] text-white z-30">
                 <div className="flex items-center gap-4 sm:gap-6">
                     <button
@@ -247,7 +247,7 @@ export function ProQuizSandbox({ isZoomed }: { isZoomed: boolean }) {
                                         className={`px-4 py-2 rounded-full text-xs font-bold font-sans transition-all cursor-pointer flex items-center gap-1.5 ${
                                             activeAction === "find"
                                                 ? "bg-blue-600 text-white shadow-md"
-                                                : "text-neutral-400 hover:text-white"
+                                                : "text-content-subtle hover:text-white"
                                         }`}
                                     >
                                         <span>🔍</span>
@@ -260,7 +260,7 @@ export function ProQuizSandbox({ isZoomed }: { isZoomed: boolean }) {
                                         className={`px-4 py-2 rounded-full text-xs font-bold font-sans transition-all cursor-pointer flex items-center gap-1.5 ${
                                             activeAction === "predict"
                                                 ? "bg-blue-600 text-white shadow-md"
-                                                : "text-neutral-400 hover:text-white"
+                                                : "text-content-subtle hover:text-white"
                                         }`}
                                     >
                                         <span>🎯</span>
@@ -273,7 +273,7 @@ export function ProQuizSandbox({ isZoomed }: { isZoomed: boolean }) {
                                         className={`px-4 py-2 rounded-full text-xs font-bold font-sans transition-all cursor-pointer flex items-center gap-1.5 ${
                                             activeAction === "practice"
                                                 ? "bg-purple-600 text-white shadow-md"
-                                                : "text-neutral-400 hover:text-white"
+                                                : "text-content-subtle hover:text-white"
                                         }`}
                                     >
                                         <span>🎓</span>
@@ -282,7 +282,7 @@ export function ProQuizSandbox({ isZoomed }: { isZoomed: boolean }) {
                                 </div>
 
                                 {buzzerPing !== null && (
-                                    <div className="text-xs font-mono text-emerald-400 pt-1 animate-pulse">
+                                    <div className="text-xs font-mono text-accent-bright pt-1 animate-pulse">
                                         ✓ SOCKET LATENCY: {buzzerPing} ms // READY TO BUZZ
                                     </div>
                                 )}
@@ -298,7 +298,7 @@ export function ProQuizSandbox({ isZoomed }: { isZoomed: boolean }) {
                                 className={`py-3 px-2 rounded-xl text-xs font-bold font-mono tracking-wider transition-all cursor-pointer flex items-center justify-center gap-2 border ${
                                     activeTab === "league"
                                         ? "bg-[#101935] text-white border-[#101935] shadow-md"
-                                        : "bg-white text-neutral-700 border-neutral-300 hover:bg-neutral-50"
+                                        : "bg-white text-neutral-700 border-line-strong hover:bg-neutral-50"
                                 }`}
                             >
                                 <span>🏆</span>
@@ -311,7 +311,7 @@ export function ProQuizSandbox({ isZoomed }: { isZoomed: boolean }) {
                                 className={`py-3 px-2 rounded-xl text-xs font-bold font-mono tracking-wider transition-all cursor-pointer flex items-center justify-center gap-2 border ${
                                     activeTab === "bio"
                                         ? "bg-[#101935] text-white border-[#101935] shadow-md"
-                                        : "bg-white text-neutral-700 border-neutral-300 hover:bg-neutral-50"
+                                        : "bg-white text-neutral-700 border-line-strong hover:bg-neutral-50"
                                 }`}
                             >
                                 <span>📖</span>
@@ -324,7 +324,7 @@ export function ProQuizSandbox({ isZoomed }: { isZoomed: boolean }) {
                                 className={`py-3 px-2 rounded-xl text-xs font-bold font-mono tracking-wider transition-all cursor-pointer flex items-center justify-center gap-2 border ${
                                     activeTab === "matrix"
                                         ? "bg-[#101935] text-white border-[#101935] shadow-md"
-                                        : "bg-white text-neutral-700 border-neutral-300 hover:bg-neutral-50"
+                                        : "bg-white text-neutral-700 border-line-strong hover:bg-neutral-50"
                                 }`}
                             >
                                 <span>👥</span>
@@ -332,13 +332,13 @@ export function ProQuizSandbox({ isZoomed }: { isZoomed: boolean }) {
                             </button>
                         </div>
 
-                        <div className="bg-white border border-neutral-200 rounded-2xl p-6 sm:p-8 space-y-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
+                        <div className="bg-white border border-line rounded-2xl p-6 sm:p-8 space-y-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
                             {activeTab === "league" && (
                                 <>
-                                    <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 tracking-tight">
+                                    <h2 className="text-xl sm:text-2xl font-bold text-content tracking-tight">
                                         {t.leagueTitle}
                                     </h2>
-                                    <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">
+                                    <p className="text-xs sm:text-sm text-content-secondary leading-relaxed">
                                         {t.leagueDesc}
                                     </p>
                                     <div className="pt-2">
@@ -354,10 +354,10 @@ export function ProQuizSandbox({ isZoomed }: { isZoomed: boolean }) {
 
                             {activeTab === "bio" && (
                                 <>
-                                    <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 tracking-tight">
+                                    <h2 className="text-xl sm:text-2xl font-bold text-content tracking-tight">
                                         {t.bioTitle}
                                     </h2>
-                                    <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">
+                                    <p className="text-xs sm:text-sm text-content-secondary leading-relaxed">
                                         {t.bioDesc}
                                     </p>
                                     <div className="pt-2">
@@ -373,10 +373,10 @@ export function ProQuizSandbox({ isZoomed }: { isZoomed: boolean }) {
 
                             {activeTab === "matrix" && (
                                 <>
-                                    <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 tracking-tight">
+                                    <h2 className="text-xl sm:text-2xl font-bold text-content tracking-tight">
                                         {t.matrixTitle}
                                     </h2>
-                                    <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">
+                                    <p className="text-xs sm:text-sm text-content-secondary leading-relaxed">
                                         {t.matrixDesc}
                                     </p>
 
@@ -387,7 +387,7 @@ export function ProQuizSandbox({ isZoomed }: { isZoomed: boolean }) {
                                                 className="py-2.5 flex items-center justify-between"
                                             >
                                                 <span className="text-neutral-700 font-semibold">{q.univs}</span>
-                                                <span className="px-2.5 py-1 bg-neutral-100 rounded text-neutral-700 font-bold border border-neutral-200">
+                                                <span className="px-2.5 py-1 bg-surface-muted rounded text-neutral-700 font-bold border border-line">
                                                     {q.count}
                                                 </span>
                                             </div>
@@ -411,20 +411,20 @@ export function ProQuizSandbox({ isZoomed }: { isZoomed: boolean }) {
                 <footer className="border-t-2 border-black pt-6 pb-10 px-6 sm:px-12 bg-white">
                     <div className="max-w-4xl mx-auto flex flex-col space-y-5">
                         <div className="flex items-center justify-between text-xs">
-                            <div className="font-bold tracking-wider font-mono text-neutral-900">
+                            <div className="font-bold tracking-wider font-mono text-content">
                                 DEV TEAM
                             </div>
-                            <div className="text-[11px] text-neutral-400 font-sans">
+                            <div className="text-[11px] text-content-subtle font-sans">
                                 {t.rights}
                             </div>
                         </div>
 
                         <div>
                             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#081329] text-white text-xs font-mono shadow-sm">
-                                <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]" />
+                                <span className="w-2 h-2 rounded-full bg-accent-bright shadow-[0_0_8px_#34d399]" />
                                 <span className="font-bold tracking-wider text-cyan-400">PROFILER:</span>
                                 <span className="text-neutral-300">Agent: <strong className="text-white">Nur</strong></span>
-                                <span className="text-neutral-500">•</span>
+                                <span className="text-content-muted">•</span>
                                 <span className="px-1.5 py-0.2 rounded bg-neutral-800 text-[10px] font-bold text-neutral-300">
                                     USER
                                 </span>
@@ -434,31 +434,31 @@ export function ProQuizSandbox({ isZoomed }: { isZoomed: boolean }) {
                         <div className="flex items-center gap-3 pt-1">
                             <a
                                 href="#"
-                                className="w-8 h-8 rounded-full border border-neutral-300 hover:border-black flex items-center justify-center text-neutral-700 hover:text-black transition-colors"
+                                className="w-8 h-8 rounded-full border border-line-strong hover:border-black flex items-center justify-center text-neutral-700 hover:text-black transition-colors"
                             >
                                 <InstagramIcon size={15} />
                             </a>
                             <a
                                 href="#"
-                                className="w-8 h-8 rounded-full border border-neutral-300 hover:border-black flex items-center justify-center text-neutral-700 hover:text-black transition-colors"
+                                className="w-8 h-8 rounded-full border border-line-strong hover:border-black flex items-center justify-center text-neutral-700 hover:text-black transition-colors"
                             >
                                 <LinkedinIcon size={15} />
                             </a>
                             <a
                                 href="#"
-                                className="w-8 h-8 rounded-full border border-neutral-300 hover:border-black flex items-center justify-center text-neutral-700 hover:text-black transition-colors"
+                                className="w-8 h-8 rounded-full border border-line-strong hover:border-black flex items-center justify-center text-neutral-700 hover:text-black transition-colors"
                             >
                                 <YoutubeIcon size={15} />
                             </a>
                             <a
                                 href="#"
-                                className="w-8 h-8 rounded-full border border-neutral-300 hover:border-black flex items-center justify-center text-neutral-700 hover:text-black transition-colors"
+                                className="w-8 h-8 rounded-full border border-line-strong hover:border-black flex items-center justify-center text-neutral-700 hover:text-black transition-colors"
                             >
                                 <Send size={14} className="-ml-0.5" />
                             </a>
                             <a
                                 href="#"
-                                className="w-8 h-8 rounded-full border border-neutral-300 hover:border-black flex items-center justify-center text-neutral-700 hover:text-black font-serif font-black text-xs transition-colors"
+                                className="w-8 h-8 rounded-full border border-line-strong hover:border-black flex items-center justify-center text-neutral-700 hover:text-black font-serif font-black text-xs transition-colors"
                             >
                                 M
                             </a>

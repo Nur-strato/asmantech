@@ -15,12 +15,12 @@ export function ConuratSandbox({ isZoomed }: { isZoomed: boolean }) {
                     <span className="text-white/70 text-[9px] px-1.5 py-0.5 rounded bg-neutral-900 border border-neutral-800">BIM 4D</span>
                 </div>
                 <div className="p-3 bg-neutral-900/90 rounded-xl border border-neutral-800 text-[10px] space-y-1">
-                    <div className="text-neutral-400 text-[9px] uppercase tracking-wider">Logistics CAD</div>
+                    <div className="text-content-subtle text-[9px] uppercase tracking-wider">Logistics CAD</div>
                     <div className="font-bold text-white text-xs sm:text-sm">B25 Concrete Calculator</div>
                 </div>
-                <div className="text-[9px] text-neutral-500 flex justify-between pt-1 border-t border-neutral-900">
+                <div className="text-[9px] text-content-muted flex justify-between pt-1 border-t border-neutral-900">
                     <span>14 Active Sites</span>
-                    <span className="text-emerald-400">● Live Sync</span>
+                    <span className="text-accent-bright">● Live Sync</span>
                 </div>
             </div>
         );
@@ -28,12 +28,12 @@ export function ConuratSandbox({ isZoomed }: { isZoomed: boolean }) {
 
     return (
         <div className="flex-1 bg-[#0A0A0A] text-white flex flex-col overflow-hidden select-text text-left font-mono">
-            <div className="h-8 bg-neutral-950/90 border-b border-white/10 px-4 flex items-center justify-between text-xs shrink-0">
+            <div className="h-8 bg-ink/90 border-b border-white/10 px-4 flex items-center justify-between text-xs shrink-0">
                 <div className="flex items-center gap-2.5 text-neutral-300">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="w-2 h-2 rounded-full bg-accent-bright animate-pulse" />
                     <span className="font-bold tracking-wider">CONURAT_ERP // SPECIFICATIONS</span>
                 </div>
-                <div className="text-neutral-500 text-[11px]">BIM REALTIME</div>
+                <div className="text-content-muted text-[11px]">BIM REALTIME</div>
             </div>
 
             <div className="flex-1 flex overflow-hidden">
@@ -42,7 +42,7 @@ export function ConuratSandbox({ isZoomed }: { isZoomed: boolean }) {
                         type="button"
                         onClick={() => setSubSection("calc")}
                         className={`w-full text-left p-2 rounded-lg transition-all cursor-pointer flex items-center gap-2 ${
-                            subSection === "calc" ? "bg-white text-black font-bold shadow-md" : "text-neutral-400 hover:text-white"
+                            subSection === "calc" ? "bg-white text-black font-bold shadow-md" : "text-content-subtle hover:text-white"
                         }`}
                     >
                         <Sliders size={14} />
@@ -52,7 +52,7 @@ export function ConuratSandbox({ isZoomed }: { isZoomed: boolean }) {
                         type="button"
                         onClick={() => setSubSection("logistics")}
                         className={`w-full text-left p-2 rounded-lg transition-all cursor-pointer flex items-center gap-2 ${
-                            subSection === "logistics" ? "bg-white text-black font-bold shadow-md" : "text-neutral-400 hover:text-white"
+                            subSection === "logistics" ? "bg-white text-black font-bold shadow-md" : "text-content-subtle hover:text-white"
                         }`}
                     >
                         <Activity size={14} />
@@ -63,9 +63,9 @@ export function ConuratSandbox({ isZoomed }: { isZoomed: boolean }) {
                 <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 text-sm [scrollbar-width:none]">
                     {subSection === "calc" ? (
                         <div className="space-y-4 max-w-xl">
-                            <div className="text-xs text-neutral-400 border-b border-white/10 pb-2 flex justify-between">
+                            <div className="text-xs text-content-subtle border-b border-white/10 pb-2 flex justify-between">
                                 <span className="uppercase tracking-wider">Интерактивный расчет бетона B25</span>
-                                <span className="text-emerald-400 font-bold text-base">${concreteVol * 94}</span>
+                                <span className="text-accent-bright font-bold text-base">${concreteVol * 94}</span>
                             </div>
                             <div className="space-y-2">
                                 <div className="flex justify-between text-xs">
@@ -82,11 +82,11 @@ export function ConuratSandbox({ isZoomed }: { isZoomed: boolean }) {
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-3 pt-2">
-                                <div className="p-3 rounded-xl bg-white/5 text-xs text-neutral-400">
+                                <div className="p-3 rounded-xl bg-white/5 text-xs text-content-subtle">
                                     <div>Масса партии:</div>
                                     <div className="text-white font-bold text-sm mt-0.5">{(concreteVol * 2.4).toFixed(1)} тонн</div>
                                 </div>
-                                <div className="p-3 rounded-xl bg-white/5 text-xs text-neutral-400">
+                                <div className="p-3 rounded-xl bg-white/5 text-xs text-content-subtle">
                                     <div>Логистика (миксеры 8м³):</div>
                                     <div className="text-white font-bold text-sm mt-0.5">{Math.ceil(concreteVol / 8)} рейсов</div>
                                 </div>
@@ -94,12 +94,12 @@ export function ConuratSandbox({ isZoomed }: { isZoomed: boolean }) {
                         </div>
                     ) : (
                         <div className="space-y-3 text-xs">
-                            <div className="text-neutral-400 border-b border-white/10 pb-2 uppercase tracking-wider">
+                            <div className="text-content-subtle border-b border-white/10 pb-2 uppercase tracking-wider">
                                 Мониторинг 14 строительных площадок в реальном времени
                             </div>
                             <div className="p-3 rounded-xl bg-white/5 flex justify-between items-center">
                                 <span>Объект «Север 01» (Монолитные работы)</span>
-                                <span className="text-emerald-400 font-bold">2 миксера в пути (16м³)</span>
+                                <span className="text-accent-bright font-bold">2 миксера в пути (16м³)</span>
                             </div>
                             <div className="p-3 rounded-xl bg-white/5 flex justify-between items-center">
                                 <span>ЖК «Ала-Тоо» (Блок 3)</span>

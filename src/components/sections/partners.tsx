@@ -8,19 +8,19 @@ export function Partners() {
     return (
         <section
             aria-label="Партнёры и клиенты"
-            className="w-full py-12 sm:py-20 border-t border-neutral-200/70 select-none overflow-hidden"
+            className="w-full py-12 sm:py-20 border-t border-line/70 select-none overflow-hidden"
         >
             <div className="max-w-[1412px] mx-auto px-4 xs:px-5 md:px-8">
                 {/* Хедер секции */}
                 <div className="space-y-2.5 sm:space-y-3 mb-8 sm:mb-12">
-                    <div className="inline-flex items-center gap-2 px-2.5 sm:px-3 py-1 rounded-lg bg-neutral-100 border border-neutral-200/90 shadow-2xs">
+                    <div className="inline-flex items-center gap-2 px-2.5 sm:px-3 py-1 rounded-lg bg-surface-muted border border-line/90 shadow-2xs">
                         <Handshake size={13} className="text-neutral-700 sm:w-3.5 sm:h-3.5" />
                         <span className="text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider text-neutral-700">
                             TRUSTED NETWORK
                         </span>
                     </div>
 
-                    <h2 className="font-serif italic text-[34px] xs:text-[42px] sm:text-[56px] md:text-[64px] font-normal text-neutral-950 tracking-[-0.03em] leading-[0.98]">
+                    <h2 className="font-serif italic text-[34px] xs:text-[42px] sm:text-[56px] md:text-[64px] font-normal text-content tracking-[-0.03em] leading-[0.98]">
                         Партнёры и клиенты
                     </h2>
                 </div>
@@ -32,11 +32,11 @@ export function Partners() {
                     {[...PARTNERS_DATA, ...PARTNERS_DATA].map((partner, idx) => (
                         <div
                             key={`${partner.slug}-${idx}`}
-                            className="relative flex flex-col justify-between items-center mx-1.5 xs:mx-2 sm:mx-2.5 p-3.5 xs:p-4 sm:p-5 w-[138px] xs:w-[150px] sm:w-[165px] md:w-[178px] h-[192px] xs:h-[206px] sm:h-[224px] shrink-0 rounded-[18px] sm:rounded-[20px] bg-white border border-neutral-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.02)] cursor-default select-none transition-shadow"
+                            className="relative flex flex-col justify-between items-center mx-1.5 xs:mx-2 sm:mx-2.5 p-3.5 xs:p-4 sm:p-5 w-[138px] xs:w-[150px] sm:w-[165px] md:w-[178px] h-[192px] xs:h-[206px] sm:h-[224px] shrink-0 rounded-[18px] sm:rounded-[20px] bg-white border border-line/80 shadow-[0_2px_8px_rgba(0,0,0,0.02)] cursor-default select-none transition-shadow"
                         >
                             {/* Верхний ряд: категория */}
                             <div className="w-full flex justify-start items-center overflow-hidden">
-                                <span className="text-[9px] xs:text-[10px] font-mono text-neutral-400 font-medium tracking-tight truncate">
+                                <span className="text-[9px] xs:text-[10px] font-mono text-content-subtle font-medium tracking-tight truncate">
                                     {partner.category}
                                 </span>
                             </div>
@@ -48,11 +48,11 @@ export function Partners() {
 
                             {/* Название внизу */}
                             <div className="w-full text-center mt-auto pt-1.5 sm:pt-2 pointer-events-none min-w-0">
-                                <p className="font-sans font-extrabold text-[13.5px] xs:text-[15px] sm:text-[16px] text-neutral-900 tracking-tight leading-none uppercase truncate">
+                                <p className="font-sans font-extrabold text-[13.5px] xs:text-[15px] sm:text-[16px] text-content tracking-tight leading-none uppercase truncate">
                                     {partner.name}
                                 </p>
                                 {partner.subName && (
-                                    <p className="font-sans font-bold text-[9px] xs:text-[10px] sm:text-[11px] text-neutral-500 tracking-widest leading-tight mt-1 uppercase truncate">
+                                    <p className="font-sans font-bold text-[9px] xs:text-[10px] sm:text-[11px] text-content-muted tracking-widest leading-tight mt-1 uppercase truncate">
                                         {partner.subName}
                                     </p>
                                 )}

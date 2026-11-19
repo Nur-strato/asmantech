@@ -158,7 +158,7 @@ export function Projects() {
         <section
             id="projects"
             aria-label="SELECTED WORK"
-            className="relative w-full overflow-hidden bg-[#070B14] py-20 text-white selection:bg-white selection:text-[#070B14] md:py-32"
+            className="relative w-full overflow-hidden bg-ink-strong py-20 text-white selection:bg-white selection:text-ink-strong md:py-32"
         >
             <style>{`
                 .pj-stage { --px: .5; --py: .5; --mx: 0; --my: 0; }
@@ -195,7 +195,7 @@ export function Projects() {
                             type="button"
                             onClick={() => go(index - 1)}
                             aria-label="Previous case"
-                            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 transition-colors hover:bg-white hover:text-[#070B14] cursor-pointer"
+                            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 transition-colors hover:bg-white hover:text-ink-strong cursor-pointer"
                         >
                             <ArrowLeft className="h-4 w-4" />
                         </button>
@@ -203,7 +203,7 @@ export function Projects() {
                             type="button"
                             onClick={() => go(index + 1)}
                             aria-label="Next case"
-                            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 transition-colors hover:bg-white hover:text-[#070B14] cursor-pointer"
+                            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 transition-colors hover:bg-white hover:text-ink-strong cursor-pointer"
                         >
                             <ArrowRight className="h-4 w-4" />
                         </button>
@@ -230,7 +230,7 @@ export function Projects() {
                     }}
                     onMouseEnter={() => setPaused(true)}
                     onMouseLeave={() => setPaused(false)}
-                    className="pj-stage relative aspect-[4/5] min-h-[460px] w-full touch-pan-y overflow-hidden rounded-[28px] border border-white/10 bg-[#0B1120] outline-none sm:aspect-[16/10] md:rounded-[40px] lg:aspect-[21/10]"
+                    className="pj-stage relative aspect-[4/5] min-h-[460px] w-full touch-pan-y overflow-hidden rounded-3xl border border-white/10 bg-[#0B1120] outline-none sm:aspect-[16/10] md:rounded-[40px] lg:aspect-[21/10]"
                     style={{ ["--accent" as string]: current.accent } as React.CSSProperties}
                 >
                     <div
@@ -260,7 +260,7 @@ export function Projects() {
                         ))}
                     </div>
 
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#070B14] via-[#070B14]/35 to-[#070B14]/30" />
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-strong via-ink-strong/35 to-ink-strong/30" />
 
                     <div
                         aria-hidden="true"
@@ -298,7 +298,7 @@ export function Projects() {
                             type="button"
                             onClick={() => setModalCase(current)}
                             aria-label={`Open interactive preview of ${current.name}`}
-                            className="group flex h-20 w-20 shrink-0 flex-col items-center justify-center gap-0.5 rounded-full text-sm font-medium text-[#070B14] transition-transform duration-300 hover:scale-105 active:scale-95 md:h-28 md:w-28 md:text-base cursor-pointer shadow-2xl"
+                            className="group flex h-20 w-20 shrink-0 flex-col items-center justify-center gap-0.5 rounded-full text-sm font-medium text-ink-strong transition-transform duration-300 hover:scale-105 active:scale-95 md:h-28 md:w-28 md:text-base cursor-pointer shadow-2xl"
                             style={{ background: "var(--accent)" }}
                         >
                             Open
@@ -368,13 +368,13 @@ export function Projects() {
             {modalCase && (
                 <div
                     data-lenis-prevent="true"
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-[#070B14]/92 backdrop-blur-2xl animate-in fade-in duration-200"
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-ink-strong/92 backdrop-blur-2xl animate-in fade-in duration-200"
                 >
                     {/* Кнопка закрытия [X] */}
                     <button
                         type="button"
                         onClick={() => setModalCase(null)}
-                        className="fixed top-5 right-5 sm:top-8 sm:right-8 z-50 p-3 rounded-full bg-neutral-900/80 hover:bg-neutral-800 text-white/70 hover:text-white border border-white/20 transition-all shadow-2xl backdrop-blur-md cursor-pointer hover:scale-105 active:scale-95"
+                        className="fixed top-5 right-5 sm:top-8 sm:right-8 z-50 p-3 rounded-full bg-neutral-900/80 hover:bg-ink-strong text-white/70 hover:text-white border border-white/20 transition-all shadow-2xl backdrop-blur-md cursor-pointer hover:scale-105 active:scale-95"
                         title="Закрыть (Esc)"
                         aria-label="Закрыть"
                     >
@@ -397,9 +397,9 @@ export function Projects() {
                                     {/* Экран монитора */}
                                     <div className="device-screen-frame relative w-full h-[400px] sm:h-[500px] md:h-[540px] bg-white rounded-xl overflow-hidden flex flex-col shadow-inner min-h-0">
                                         {/* Адресная строка */}
-                                        <div className="h-8 bg-neutral-100 border-b border-neutral-200 px-3 flex items-center justify-center shrink-0 select-none">
-                                            <div className="flex items-center gap-1.5 px-3 py-0.5 rounded bg-white border border-neutral-200 text-[10px] font-mono text-neutral-500 max-w-xs truncate shadow-2xs">
-                                                <Monitor size={11} className="text-neutral-400" />
+                                        <div className="h-8 bg-surface-muted border-b border-line px-3 flex items-center justify-center shrink-0 select-none">
+                                            <div className="flex items-center gap-1.5 px-3 py-0.5 rounded bg-white border border-line text-[10px] font-mono text-content-muted max-w-xs truncate shadow-2xs">
+                                                <Monitor size={11} className="text-content-subtle" />
                                                 <span>{modalCase.link.replace("https://", "")}</span>
                                             </div>
                                         </div>
@@ -434,7 +434,7 @@ export function Projects() {
 
                                 {/* Экран телефона */}
                                 <div className="device-screen-frame relative flex-1 min-h-0 bg-white rounded-[34px] overflow-hidden flex flex-col shadow-inner">
-                                    <div className="h-6 bg-neutral-100 border-b border-neutral-200 px-4 flex items-center justify-between text-[10px] font-mono text-neutral-500 shrink-0 select-none">
+                                    <div className="h-6 bg-surface-muted border-b border-line px-4 flex items-center justify-between text-[10px] font-mono text-content-muted shrink-0 select-none">
                                         <span className="font-bold text-neutral-700">09:41</span>
                                         <div className="flex items-center gap-1">
                                             <Smartphone size={10} />

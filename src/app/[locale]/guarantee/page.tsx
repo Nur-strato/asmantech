@@ -18,7 +18,7 @@ interface GuaranteeRule {
 }
 
 /* Ключевые обязательства подчёркнуты акцентной линией */
-const HL = "font-semibold text-neutral-950 underline decoration-[#D84C69] decoration-2 underline-offset-[5px]";
+const HL = "font-semibold text-content underline decoration-[#D84C69] decoration-2 underline-offset-[5px]";
 
 const rules: GuaranteeRule[] = [
     {
@@ -80,14 +80,14 @@ export default function GuaranteePage() {
             <section>
 
                 <div className="mt-10 grid items-center gap-10 sm:mt-14 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-16">
-                    <h1 className="text-[clamp(2.75rem,7.4vw,6.5rem)] font-extrabold leading-[0.95] tracking-[-0.045em] text-neutral-950">
+                    <h1 className="text-[clamp(2.75rem,7.4vw,6.5rem)] font-extrabold leading-[0.95] tracking-[-0.045em] text-content">
                         <span className="block">{tr("100% качество.")}</span>
                         <span className="block">{tr("Или вернём всю сумму.")}</span>
                     </h1>
 
                     {/* Печать: обещание до начала работы */}
-                    <div className="relative grid size-48 shrink-0 -rotate-[8deg] place-items-center rounded-full border-[3px] border-emerald-600 text-emerald-700 sm:size-56">
-                        <span aria-hidden="true" className="absolute inset-2 rounded-full border border-dashed border-emerald-600/60" />
+                    <div className="relative grid size-48 shrink-0 -rotate-[8deg] place-items-center rounded-full border-[3px] border-accent text-accent sm:size-56">
+                        <span aria-hidden="true" className="absolute inset-2 rounded-full border border-dashed border-accent/60" />
                         <div className="flex flex-col items-center gap-3 px-9 text-center sm:px-10">
                             <ShieldCheck size={30} strokeWidth={1.8} aria-hidden="true" />
                             <p className="text-[13px] font-bold leading-snug sm:text-sm">
@@ -99,29 +99,29 @@ export default function GuaranteePage() {
             </section>
 
             {/* ── 2. РЕЕСТР: все четыре правила видны сразу ── */}
-            <section className="mt-16 border-t-2 border-neutral-950 sm:mt-24">
+            <section className="mt-16 border-t-2 border-ink sm:mt-24">
                 {rules.map((rule) => (
                     <article
                         key={rule.id}
-                        className="grid gap-x-12 gap-y-5 border-b border-neutral-200 py-10 sm:py-14 lg:grid-cols-[88px_minmax(0,5fr)_minmax(0,6fr)] lg:items-start"
+                        className="grid gap-x-12 gap-y-5 border-b border-line py-10 sm:py-14 lg:grid-cols-[88px_minmax(0,5fr)_minmax(0,6fr)] lg:items-start"
                     >
                         <div className="flex items-baseline gap-2 lg:flex-col lg:gap-1 lg:pt-3">
-                            <span className="font-mono text-[11px] font-bold text-neutral-400">{tr("RULE")}</span>
-                            <span className="font-mono text-2xl font-bold text-neutral-950">{rule.num}</span>
+                            <span className="font-mono text-[11px] font-bold text-content-subtle">{tr("RULE")}</span>
+                            <span className="font-mono text-2xl font-bold text-content">{rule.num}</span>
                         </div>
 
-                        <div className="font-serif text-[clamp(2.5rem,5.4vw,4.75rem)] font-bold leading-[0.95] tracking-tight text-neutral-950">
+                        <div className="font-serif text-[clamp(2.5rem,5.4vw,4.75rem)] font-bold leading-[0.95] tracking-tight text-content">
                             {tr(rule.metric)}
                         </div>
 
                         <div className="lg:pt-2">
-                            <h2 className="text-xl font-bold tracking-tight text-neutral-950 sm:text-2xl">
+                            <h2 className="text-xl font-bold tracking-tight text-content sm:text-2xl">
                                 {tr(rule.title)}
                             </h2>
-                            <p className="mt-3 max-w-[56ch] text-base leading-[1.7] text-neutral-600 sm:text-lg">
+                            <p className="mt-3 max-w-[56ch] text-base leading-[1.7] text-content-secondary sm:text-lg">
                                 {rule.legalQuote(tr)}
                             </p>
-                            <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-[#FAF6F4] px-3.5 py-1.5 text-xs font-semibold text-neutral-600">
+                            <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-line bg-[#FAF6F4] px-3.5 py-1.5 text-xs font-semibold text-content-secondary">
                                 <FileCheck2 size={14} aria-hidden="true" />
                                 <span>{tr(rule.clause)}</span>
                             </div>
@@ -131,9 +131,9 @@ export default function GuaranteePage() {
             </section>
 
             {/* ── 3. ФИНАЛ: цена и CTA в одном тёмном блоке ── */}
-            <section className="mt-20 overflow-hidden rounded-[40px] bg-neutral-950 text-white sm:mt-28">
+            <section className="mt-20 overflow-hidden rounded-[40px] bg-ink text-white sm:mt-28">
                 <div className="grid gap-6 border-b border-white/10 p-8 sm:p-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-16 lg:p-16">
-                    <div className="flex items-center gap-2 self-start text-sm font-semibold text-emerald-400">
+                    <div className="flex items-center gap-2 self-start text-sm font-semibold text-accent-bright">
                         <ShieldCheck size={17} aria-hidden="true" />
                         <span>{tr("Гарантия лучших цен")}</span>
                     </div>
@@ -141,7 +141,7 @@ export default function GuaranteePage() {
                         <h2 className="font-serif text-3xl font-bold leading-[1.1] tracking-tight sm:text-4xl">
                             {tr("Абсолютное качество за минимальные деньги.")}
                         </h2>
-                        <p className="mt-4 max-w-lg text-base leading-relaxed text-neutral-400">
+                        <p className="mt-4 max-w-lg text-base leading-relaxed text-content-subtle">
                             {tr("Нашли дешевле с тем же стеком и гарантией? Назовите цену — сделаем выгоднее.")}
                         </p>
                     </div>
@@ -156,14 +156,14 @@ export default function GuaranteePage() {
                         <h2 className="text-4xl font-extrabold leading-[1.02] tracking-[-0.035em] sm:text-6xl">
                             {tr("Гарантия качества. Только результат и договор.")}
                         </h2>
-                        <p className="max-w-lg text-base leading-relaxed text-neutral-400">
+                        <p className="max-w-lg text-base leading-relaxed text-content-subtle">
                             {tr("Фиксированная цена, передача 100% прав и жесткие штрафы за срыв сроков с первого дня.")}
                         </p>
                     </div>
 
                     <Link
                         href="/contacts"
-                        className="group relative inline-flex w-full shrink-0 items-center justify-between gap-6 rounded-2xl bg-white py-2 pl-7 pr-2 text-base font-semibold text-neutral-950 transition-colors duration-200 hover:bg-[#F3ECE8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white active:scale-[0.99] sm:w-auto"
+                        className="group relative inline-flex w-full shrink-0 items-center justify-between gap-6 rounded-2xl bg-white py-2 pl-7 pr-2 text-base font-semibold text-content transition-colors duration-200 hover:bg-[#F3ECE8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white active:scale-[0.99] sm:w-auto"
                     >
                         <span>{tr("Начать проект с гарантией")}</span>
                         <span className="grid size-12 place-items-center rounded-xl bg-[#D84C69] text-white transition-transform duration-300 group-hover:rotate-45">

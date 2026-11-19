@@ -413,20 +413,20 @@ const THREE_CASES: ThreeCaseItem[] = [
 export default function ThreeDesignPage() {
     const tr = useTr();
     return (
-        <main className="max-w-[1544px] mx-auto px-6 sm:px-10 pt-28 pb-32 space-y-28 bg-white text-neutral-900 font-sans ">
+        <main className="max-w-[1544px] mx-auto px-6 sm:px-10 pt-28 pb-32 space-y-28 bg-white text-content font-sans ">
 
             {/* Навигация */}
-            <div className="flex items-center justify-between border-b border-neutral-200/80 pb-6">
+            <div className="flex items-center justify-between border-b border-line/80 pb-6">
                 <Link
                     href="/#solutions"
-                    className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-neutral-500 hover:text-neutral-950 transition-colors group"
+                    className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-content-muted hover:text-content transition-colors group"
                 >
                     <ArrowLeft size={13} className="group-hover:-translate-x-1 transition-transform" />
                     <span>{tr("Solutions // 03")}</span>
                 </Link>
 
-                <div className="flex items-center gap-2 font-mono text-[11px] text-neutral-500 uppercase tracking-wider">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <div className="flex items-center gap-2 font-mono text-[11px] text-content-muted uppercase tracking-wider">
+                    <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
                     <span>{tr("ARCHVIZ • WEB 3D • PRODUCT VISUALS")}</span>
                 </div>
             </div>
@@ -438,33 +438,33 @@ export default function ThreeDesignPage() {
 
                 {/* Левая колонка */}
                 <div className="lg:col-span-6 space-y-6">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-100 border border-neutral-200 text-neutral-700 font-mono text-[11.5px] uppercase tracking-wider">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-muted border border-line text-neutral-700 font-mono text-[11.5px] uppercase tracking-wider">
                         <span>{tr("3D DIGITAL STUDIO")}</span>
                         <span>•</span>
-                        <span className="font-bold text-neutral-900">BLENDER, THREE.JS & CORONA</span>
+                        <span className="font-bold text-content">BLENDER, THREE.JS & CORONA</span>
                     </div>
 
-                    <h1 className="text-4xl sm:text-6xl font-black uppercase tracking-tight text-neutral-950 leading-[1.02]">
+                    <h1 className="text-4xl sm:text-6xl font-black uppercase tracking-tight text-content leading-[1.02]">
                         {tr("3D визуализация и Web 3D.")}
                     </h1>
 
-                    <p className="text-neutral-600 text-[16.8px] sm:text-[18.9px] leading-relaxed font-normal">
+                    <p className="text-content-secondary text-[16.8px] sm:text-[18.9px] leading-relaxed font-normal">
                         {tr("Создаем убедительный 3D-контент по трем ключевым направлениям: архитектурные рендеры зданий и интерьеров, интерактивные трехмерные модели для браузера и студийную визуализацию предметов без затрат на физическую съемку.")}
                     </p>
 
-                    <div className="flex flex-wrap gap-4 pt-2 font-mono text-[12.6px] text-neutral-600">
-                        <div className="px-3.5 py-1.5 rounded-xl bg-neutral-50 border border-neutral-200">
+                    <div className="flex flex-wrap gap-4 pt-2 font-mono text-[12.6px] text-content-secondary">
+                        <div className="px-3.5 py-1.5 rounded-xl bg-neutral-50 border border-line">
                             {tr("КАЧЕСТВО:")} <span className="font-bold text-sky-600">4K Ultra-HD & 60 FPS</span>
                         </div>
-                        <div className="px-3.5 py-1.5 rounded-xl bg-neutral-50 border border-neutral-200">
-                            {tr("ДОГОВОР:")} <span className="font-bold text-neutral-900">{tr("FIXED PRICE")}</span>
+                        <div className="px-3.5 py-1.5 rounded-xl bg-neutral-50 border border-line">
+                            {tr("ДОГОВОР:")} <span className="font-bold text-content">{tr("FIXED PRICE")}</span>
                         </div>
                     </div>
 
                     <div className="pt-2">
                         <Link
                             href="/contacts"
-                            className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-neutral-950 hover:bg-neutral-800 text-white font-mono text-[12.6px] uppercase tracking-wider font-bold transition-all shadow-md active:scale-95"
+                            className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-ink hover:bg-ink-strong text-white font-mono text-[12.6px] uppercase tracking-wider font-bold transition-all shadow-md active:scale-95"
                         >
                             <span>{tr("Обсудить 3D-проект")}</span>
                             <ArrowUpRight size={15} />
@@ -490,21 +490,21 @@ export default function ThreeDesignPage() {
             {/* СЕКЦИЯ: РЕАЛЬНЫЕ КЕЙСЫ ПО 3 НАПРАВЛЕНИЯМ                  */}
             {/* ========================================================= */}
             <section className="space-y-12 pt-6">
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-neutral-200/80 pb-6">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-line/80 pb-6">
                     <div className="space-y-3 max-w-2xl">
-                        <div className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold">
+                        <div className="font-mono text-xs uppercase tracking-widest text-content-subtle font-semibold">
                             {tr("РЕАЛЬНЫЕ РЕЗУЛЬТАТЫ")}
                         </div>
-                        <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-neutral-950 leading-[1.15]">
+                        <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-content leading-[1.15]">
                             {tr("Кейсы по каждому направлению")}
                         </h2>
-                        <p className="text-neutral-500 text-sm sm:text-base leading-relaxed">
+                        <p className="text-content-muted text-sm sm:text-base leading-relaxed">
                             {tr("Показываем, как архитектурные рендеры, WebGL-конфигураторы и предметная визуализация решают бизнес-задачи наших клиентов.")}
                         </p>
                     </div>
 
-                    <div className="font-mono text-xs text-neutral-500 bg-neutral-50 border border-neutral-200 px-4 py-2 rounded-xl shrink-0">
-                        {tr("STATUS:")} <span className="text-emerald-600 font-bold">{tr("100% PRODUCTION READY")}</span>
+                    <div className="font-mono text-xs text-content-muted bg-neutral-50 border border-line px-4 py-2 rounded-xl shrink-0">
+                        {tr("STATUS:")} <span className="text-accent font-bold">{tr("100% PRODUCTION READY")}</span>
                     </div>
                 </div>
 
@@ -512,10 +512,10 @@ export default function ThreeDesignPage() {
                     {THREE_CASES.map((item) => (
                         <div
                             key={item.id}
-                            className="rounded-[32px] bg-neutral-50/70 border border-neutral-200/90 overflow-hidden flex flex-col justify-between hover:border-neutral-300 transition-all duration-300 shadow-sm group hover:shadow-md"
+                            className="rounded-panel bg-neutral-50/70 border border-line/90 overflow-hidden flex flex-col justify-between hover:border-line-strong transition-all duration-300 shadow-sm group hover:shadow-md"
                         >
                             <div className="space-y-5">
-                                <div className="relative w-full h-56 sm:h-64 overflow-hidden bg-neutral-900 border-b border-neutral-200/80">
+                                <div className="relative w-full h-56 sm:h-64 overflow-hidden bg-neutral-900 border-b border-line/80">
                                     <Image
                                         src={item.imageUrl}
                                         alt={tr(item.caseTitle)}
@@ -525,36 +525,36 @@ export default function ThreeDesignPage() {
                                         sizes="(max-width: 1024px) 100vw, 33vw"
                                     />
                                     <div className="absolute top-4 left-4 flex items-center gap-2">
-                                        <span className="font-mono text-[10.5px] uppercase tracking-wider px-2.5 py-1 rounded-lg bg-neutral-950/80 text-white font-bold backdrop-blur-xs">
+                                        <span className="font-mono text-[10.5px] uppercase tracking-wider px-2.5 py-1 rounded-lg bg-ink/80 text-white font-bold backdrop-blur-xs">
                                             {tr(item.directionTitle)}
                                         </span>
                                     </div>
-                                    <div className="absolute bottom-3 right-4 font-mono text-[10px] text-white/90 bg-neutral-950/70 px-2 py-0.5 rounded backdrop-blur-xs">
+                                    <div className="absolute bottom-3 right-4 font-mono text-[10px] text-white/90 bg-ink/70 px-2 py-0.5 rounded backdrop-blur-xs">
                                         {tr(item.badge)}
                                     </div>
                                 </div>
 
                                 <div className="p-6 sm:p-7 pt-1 space-y-4">
                                     <div>
-                                        <span className="text-xs font-mono text-neutral-400 uppercase tracking-wider font-semibold">
+                                        <span className="text-xs font-mono text-content-subtle uppercase tracking-wider font-semibold">
                                             {tr(item.client)}
                                         </span>
-                                        <h3 className="text-xl font-bold tracking-tight text-neutral-950 mt-1 leading-snug">
+                                        <h3 className="text-xl font-bold tracking-tight text-content mt-1 leading-snug">
                                             {tr(item.caseTitle)}
                                         </h3>
                                     </div>
 
-                                    <p className="text-neutral-600 text-sm leading-relaxed">
+                                    <p className="text-content-secondary text-sm leading-relaxed">
                                         {tr(item.description)}
                                     </p>
 
-                                    <div className="grid grid-cols-3 gap-2 p-3 rounded-2xl bg-white border border-neutral-200/80 text-center font-mono">
+                                    <div className="grid grid-cols-3 gap-2 p-3 rounded-2xl bg-white border border-line/80 text-center font-mono">
                                         {item.metrics.map((m, idx) => (
                                             <div key={idx} className="space-y-0.5">
-                                                <div className="text-[13px] font-bold text-neutral-950">
+                                                <div className="text-[13px] font-bold text-content">
                                                     {tr(m.value)}
                                                 </div>
-                                                <div className="text-[9px] text-neutral-400 uppercase leading-tight">
+                                                <div className="text-[9px] text-content-subtle uppercase leading-tight">
                                                     {tr(m.label)}
                                                 </div>
                                             </div>
@@ -562,15 +562,15 @@ export default function ThreeDesignPage() {
                                     </div>
 
                                     <div className="space-y-2 pt-2">
-                                        <span className="font-mono text-[11px] text-neutral-400 uppercase tracking-wider font-semibold block">
+                                        <span className="font-mono text-[11px] text-content-subtle uppercase tracking-wider font-semibold block">
                                             {tr("Результат:")}
                                         </span>
-                                        <ul className="space-y-1.5 text-xs text-neutral-600">
+                                        <ul className="space-y-1.5 text-xs text-content-secondary">
                                             {item.deliverables.map((del, dIdx) => (
                                                 <li key={dIdx} className="flex items-start gap-2">
                                                     <CheckCircle2
                                                         size={14}
-                                                        className="text-emerald-600 mt-0.5 shrink-0"
+                                                        className="text-accent mt-0.5 shrink-0"
                                                     />
                                                     <span className="leading-tight">{tr(del)}</span>
                                                 </li>
@@ -580,12 +580,12 @@ export default function ThreeDesignPage() {
                                 </div>
                             </div>
 
-                            <div className="p-6 sm:p-7 pt-0 border-t border-neutral-200/60 mt-4 space-y-4">
+                            <div className="p-6 sm:p-7 pt-0 border-t border-line/60 mt-4 space-y-4">
                                 <div className="flex flex-wrap gap-1.5 pt-3">
                                     {item.techStack.map((tech, tIdx) => (
                                         <span
                                             key={tIdx}
-                                            className="font-mono text-[10px] px-2 py-0.5 rounded bg-white border border-neutral-200 text-neutral-600"
+                                            className="font-mono text-[10px] px-2 py-0.5 rounded bg-white border border-line text-content-secondary"
                                         >
                                             {tr(tech)}
                                         </span>
@@ -594,7 +594,7 @@ export default function ThreeDesignPage() {
 
                                 <Link
                                     href="/contacts"
-                                    className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-mono text-xs font-semibold uppercase tracking-wider transition-all active:scale-[0.98]"
+                                    className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-neutral-900 hover:bg-ink-strong text-white font-mono text-xs font-semibold uppercase tracking-wider transition-all active:scale-[0.98]"
                                 >
                                     <span>{tr("Заказать такой же")}</span>
                                     <ArrowUpRight size={14} />
@@ -610,29 +610,29 @@ export default function ThreeDesignPage() {
             {/* ========================================================= */}
             <section className="space-y-10 pt-4">
                 <div className="space-y-3 max-w-3xl">
-                    <div className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold">
+                    <div className="font-mono text-xs uppercase tracking-widest text-content-subtle font-semibold">
                         {tr("03 / ПРЕИМУЩЕСТВА")}
                     </div>
-                    <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-neutral-950 leading-[1.12]">
+                    <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-content leading-[1.12]">
                         {tr("Что вы получаете")}
                     </h2>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-7">
-                    <div className="rounded-[28px] bg-neutral-50/70 border border-neutral-200/80 p-6 sm:p-7 flex flex-col sm:flex-row items-center justify-between gap-6 hover:border-neutral-300 transition-all">
+                    <div className="rounded-3xl bg-neutral-50/70 border border-line/80 p-6 sm:p-7 flex flex-col sm:flex-row items-center justify-between gap-6 hover:border-line-strong transition-all">
                         <div className="space-y-3 flex-1 min-w-[200px]">
                             <div className="w-11 h-11 rounded-2xl bg-sky-50 border border-sky-100/80 flex items-center justify-center text-sky-600">
                                 <Sparkles size={22} strokeWidth={2} />
                             </div>
-                            <h3 className="text-xl font-bold tracking-tight text-neutral-950">
+                            <h3 className="text-xl font-bold tracking-tight text-content">
                                 {tr("Премиальный фотореализм")}
                             </h3>
-                            <p className="text-neutral-500 text-[16.2px] leading-relaxed">
+                            <p className="text-content-muted text-[16.2px] leading-relaxed">
                                 {tr("Любые ракурсы, сложные фактуры и идеальная инсоляция без необходимости реальной фотосъемки.")}
                             </p>
                         </div>
                         <div className="relative w-full sm:w-[300px] h-[152px] flex items-center justify-center gap-3  shrink-0">
-                            <div className="p-3.5 rounded-2xl bg-white border border-neutral-200/90 shadow-sm flex flex-col items-center justify-center text-center space-y-1.5 w-[136px] shrink-0 z-10">
+                            <div className="p-3.5 rounded-2xl bg-white border border-line/90 shadow-sm flex flex-col items-center justify-center text-center space-y-1.5 w-[136px] shrink-0 z-10">
                                 <div className="relative w-[60px] h-[60px] rounded-full border-4 border-sky-500 flex items-center justify-center font-extrabold text-[17px] text-sky-600">
                                     4K
                                 </div>
@@ -640,74 +640,74 @@ export default function ThreeDesignPage() {
                                     {tr("Ultra-HD Stills")}
                                 </span>
                             </div>
-                            <div className="w-[152px] h-[118px] rounded-xl bg-white border border-neutral-200/90 shadow-2xs p-2.5 flex flex-col justify-between -ml-3.5">
+                            <div className="w-[152px] h-[118px] rounded-xl bg-white border border-line/90 shadow-2xs p-2.5 flex flex-col justify-between -ml-3.5">
                                 <div className="flex items-center gap-1 border-b border-neutral-100 pb-1">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
-                                    <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
-                                    <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+                                    <span className="w-1.5 h-1.5 rounded-full bg-highlight" />
+                                    <span className="w-1.5 h-1.5 rounded-full bg-highlight" />
+                                    <span className="w-1.5 h-1.5 rounded-full bg-highlight" />
                                 </div>
                                 <div className="space-y-1.5 my-auto">
                                     <div className="text-[10px] font-mono font-bold text-neutral-800">{tr("Raytraced PBR")}</div>
                                     <div className="h-1.5 w-full bg-sky-100 rounded-full overflow-hidden">
                                         <div className="h-full bg-sky-500 w-full" />
                                     </div>
-                                    <span className="text-[8px] font-mono text-neutral-400 block">{tr("Alpha Transparency")}</span>
+                                    <span className="text-[8px] font-mono text-content-subtle block">{tr("Alpha Transparency")}</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="rounded-[28px] bg-neutral-50/70 border border-neutral-200/80 p-6 sm:p-7 flex flex-col sm:flex-row items-center justify-between gap-6 hover:border-neutral-300 transition-all">
+                    <div className="rounded-3xl bg-neutral-50/70 border border-line/80 p-6 sm:p-7 flex flex-col sm:flex-row items-center justify-between gap-6 hover:border-line-strong transition-all">
                         <div className="space-y-3 flex-1 min-w-[200px]">
                             <div className="w-11 h-11 rounded-2xl bg-purple-50 border border-purple-100/80 flex items-center justify-center text-purple-600">
                                 <Eye size={22} strokeWidth={2} />
                             </div>
-                            <h3 className="text-xl font-bold tracking-tight text-neutral-950">
+                            <h3 className="text-xl font-bold tracking-tight text-content">
                                 {tr("Интерактивный опыт 360°")}
                             </h3>
-                            <p className="text-neutral-500 text-[16.2px] leading-relaxed">
+                            <p className="text-content-muted text-[16.2px] leading-relaxed">
                                 {tr("Возможность покрутить здание или товар прямо в браузере в разы увеличивает глубину просмотра и продажи.")}
                             </p>
                         </div>
                         <div className="relative w-full sm:w-[300px] h-[152px] flex items-center justify-center  shrink-0">
-                            <div className="w-full max-w-[268px] p-3.5 rounded-2xl bg-white border border-neutral-200/90 shadow-sm space-y-2">
+                            <div className="w-full max-w-[268px] p-3.5 rounded-2xl bg-white border border-line/90 shadow-sm space-y-2">
                                 <div className="flex items-center justify-between text-[11px] font-mono">
-                                    <span className="text-neutral-500">{tr("Interaction Rate:")}</span>
-                                    <span className="text-emerald-600 font-bold">{tr("+68% Avg")}</span>
+                                    <span className="text-content-muted">{tr("Interaction Rate:")}</span>
+                                    <span className="text-accent font-bold">{tr("+68% Avg")}</span>
                                 </div>
-                                <div className="p-2 rounded-xl bg-neutral-50 border border-neutral-200 flex items-center justify-between text-[12px] font-bold">
+                                <div className="p-2 rounded-xl bg-neutral-50 border border-line flex items-center justify-between text-[12px] font-bold">
                                     <span>{tr("Глубина взаимодействия")}</span>
-                                    <span className="font-mono text-neutral-900">{tr("3.8x выше")}</span>
+                                    <span className="font-mono text-content">{tr("3.8x выше")}</span>
                                 </div>
-                                <div className="text-[9px] font-mono text-neutral-400 text-center">
+                                <div className="text-[9px] font-mono text-content-subtle text-center">
                                     {tr("Мгновенный отклик на смартфонах и ПК")}
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="rounded-[28px] bg-neutral-50/70 border border-neutral-200/80 p-6 sm:p-7 flex flex-col sm:flex-row items-center justify-between gap-6 hover:border-neutral-300 transition-all">
+                    <div className="rounded-3xl bg-neutral-50/70 border border-line/80 p-6 sm:p-7 flex flex-col sm:flex-row items-center justify-between gap-6 hover:border-line-strong transition-all">
                         <div className="space-y-3 flex-1 min-w-[200px]">
-                            <div className="w-11 h-11 rounded-2xl bg-emerald-50 border border-emerald-100/80 flex items-center justify-center text-emerald-600">
+                            <div className="w-11 h-11 rounded-2xl bg-accent-soft border border-accent-soft/80 flex items-center justify-center text-accent">
                                 <Cpu size={22} strokeWidth={2} />
                             </div>
-                            <h3 className="text-xl font-bold tracking-tight text-neutral-950">
+                            <h3 className="text-xl font-bold tracking-tight text-content">
                                 {tr("Оптимизация под веб")}
                             </h3>
-                            <p className="text-neutral-500 text-[16.2px] leading-relaxed">
+                            <p className="text-content-muted text-[16.2px] leading-relaxed">
                                 {tr("Сжатие Draco и чистая топология позволяют открывать 3D-модели за 1-2 секунды даже на смартфонах.")}
                             </p>
                         </div>
                         <div className="relative w-full sm:w-[300px] h-[152px] flex items-center justify-center  shrink-0">
-                            <div className="w-full max-w-[268px] p-4 rounded-2xl bg-white border border-neutral-200/90 shadow-sm space-y-2.5">
+                            <div className="w-full max-w-[268px] p-4 rounded-2xl bg-white border border-line/90 shadow-sm space-y-2.5">
                                 <div className="flex items-center justify-between font-mono text-xs">
-                                    <span className="text-neutral-500">{tr("WebGL Frame Rate:")}</span>
-                                    <span className="font-bold text-emerald-600">{tr("60 FPS Locked")}</span>
+                                    <span className="text-content-muted">{tr("WebGL Frame Rate:")}</span>
+                                    <span className="font-bold text-accent">{tr("60 FPS Locked")}</span>
                                 </div>
-                                <div className="w-full bg-neutral-100 h-2 rounded-full overflow-hidden">
-                                    <div className="bg-emerald-500 h-full w-[95%]" />
+                                <div className="w-full bg-surface-muted h-2 rounded-full overflow-hidden">
+                                    <div className="bg-accent h-full w-[95%]" />
                                 </div>
-                                <div className="flex justify-between text-[10px] font-mono text-neutral-400">
+                                <div className="flex justify-between text-[10px] font-mono text-content-subtle">
                                     <span>{tr("Draco: 1.5–2.5 MB")}</span>
                                     <span>{tr("Draw Calls: Optimized")}</span>
                                 </div>
@@ -715,15 +715,15 @@ export default function ThreeDesignPage() {
                         </div>
                     </div>
 
-                    <div className="rounded-[28px] bg-neutral-50/70 border border-neutral-200/80 p-6 sm:p-7 flex flex-col sm:flex-row items-center justify-between gap-6 hover:border-neutral-300 transition-all">
+                    <div className="rounded-3xl bg-neutral-50/70 border border-line/80 p-6 sm:p-7 flex flex-col sm:flex-row items-center justify-between gap-6 hover:border-line-strong transition-all">
                         <div className="space-y-3 flex-1 min-w-[200px]">
-                            <div className="w-11 h-11 rounded-2xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800">
+                            <div className="w-11 h-11 rounded-2xl bg-surface-muted border border-line flex items-center justify-center text-neutral-800">
                                 <Shapes size={22} strokeWidth={2} />
                             </div>
-                            <h3 className="text-xl font-bold tracking-tight text-neutral-950">
+                            <h3 className="text-xl font-bold tracking-tight text-content">
                                 {tr("Все исходники ваши")}
                             </h3>
-                            <p className="text-neutral-500 text-[16.2px] leading-relaxed">
+                            <p className="text-content-muted text-[16.2px] leading-relaxed">
                                 {tr("Передаем исходные проекты, настроенные сцены и коммерческие лицензии без скрытых условий.")}
                             </p>
                         </div>
@@ -737,13 +737,13 @@ export default function ThreeDesignPage() {
                                 ].map((item, idx) => (
                                     <div key={idx} className="flex items-center justify-between text-[12.6px]">
                                         <div className="flex items-center gap-2">
-                                            <div className="w-3.5 h-3.5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                                            <div className="w-3.5 h-3.5 rounded-full bg-accent/20 text-accent-bright flex items-center justify-center">
                                                 <Check size={9} strokeWidth={3} />
                                             </div>
                                             <span className="text-neutral-300 font-medium">{tr(item)}</span>
                                         </div>
                                         {idx === 3 && (
-                                            <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold text-[9.5px]">
+                                            <span className="px-2 py-0.5 rounded bg-accent/20 text-accent-bright font-bold text-[9.5px]">
                                                 100%
                                             </span>
                                         )}
@@ -761,75 +761,75 @@ export default function ThreeDesignPage() {
             <section className="space-y-8 pt-4">
                 <div className="space-y-3 max-w-3xl">
                     <div className="flex items-center gap-2.5">
-                        <span className="px-2.5 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-mono text-xs font-semibold">
+                        <span className="px-2.5 py-0.5 rounded-full bg-surface-muted text-content-secondary font-mono text-xs font-semibold">
                             04
                         </span>
-                        <span className="text-base sm:text-lg font-bold text-neutral-900 tracking-tight">
+                        <span className="text-base sm:text-lg font-bold text-content tracking-tight">
                             {tr("Процесс разработки")}
                         </span>
                     </div>
-                    <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-neutral-950 leading-[1.12]">
+                    <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-content leading-[1.12]">
                         {tr("От чертежей до рендера и внедрения.")}
                     </h2>
                 </div>
 
-                <div className="rounded-[32px] bg-white border border-neutral-200/90 shadow-[0_10px_35px_rgba(0,0,0,0.02)] p-8 sm:p-12 divide-y divide-neutral-100">
+                <div className="rounded-panel bg-white border border-line/90 shadow-[0_10px_35px_rgba(0,0,0,0.02)] p-8 sm:p-12 divide-y divide-neutral-100">
                     <div className="pb-8 space-y-1.5">
                         <div className="flex items-center gap-3">
-                            <span className="font-mono text-sm text-neutral-400 font-semibold">01</span>
-                            <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-950">
+                            <span className="font-mono text-sm text-content-subtle font-semibold">01</span>
+                            <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-content">
                                 {tr("Анализ чертежей, планов и референсов")}
                             </h3>
                         </div>
-                        <p className="text-neutral-500 text-[15.4px] sm:text-[16.5px] leading-relaxed pl-7">
+                        <p className="text-content-muted text-[15.4px] sm:text-[16.5px] leading-relaxed pl-7">
                             {tr("Изучаем архитектурные файлы (DWG, BIM), габариты изделий или референсы товаров и фиксируем требования к детализации.")}
                         </p>
                     </div>
 
                     <div className="py-8 space-y-1.5">
                         <div className="flex items-center gap-3">
-                            <span className="font-mono text-sm text-neutral-400 font-semibold">02</span>
-                            <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-950">
+                            <span className="font-mono text-sm text-content-subtle font-semibold">02</span>
+                            <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-content">
                                 {tr("Высокоточное полигональное моделирование")}
                             </h3>
                         </div>
-                        <p className="text-neutral-500 text-[15.4px] sm:text-[16.5px] leading-relaxed pl-7">
+                        <p className="text-content-muted text-[15.4px] sm:text-[16.5px] leading-relaxed pl-7">
                             {tr("Строим точную геометрию зданий или предметов с правильной топологией без артефактов и самопересечений.")}
                         </p>
                     </div>
 
                     <div className="py-8 space-y-1.5">
                         <div className="flex items-center gap-3">
-                            <span className="font-mono text-sm text-neutral-400 font-semibold">03</span>
-                            <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-950">
+                            <span className="font-mono text-sm text-content-subtle font-semibold">03</span>
+                            <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-content">
                                 {tr("PBR-материалы, солнце и студийное освещение")}
                             </h3>
                         </div>
-                        <p className="text-neutral-500 text-[15.4px] sm:text-[16.5px] leading-relaxed pl-7">
+                        <p className="text-content-muted text-[15.4px] sm:text-[16.5px] leading-relaxed pl-7">
                             {tr("Настраиваем физические карты бетона, стекла, дерева, металла и ткани с физически достоверным светом и тенями.")}
                         </p>
                     </div>
 
                     <div className="py-8 space-y-1.5">
                         <div className="flex items-center gap-3">
-                            <span className="font-mono text-sm text-neutral-400 font-semibold">04</span>
-                            <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-950">
+                            <span className="font-mono text-sm text-content-subtle font-semibold">04</span>
+                            <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-content">
                                 {tr("Финальный рендеринг или интеграция в код сайта")}
                             </h3>
                         </div>
-                        <p className="text-neutral-500 text-[15.4px] sm:text-[16.5px] leading-relaxed pl-7">
+                        <p className="text-content-muted text-[15.4px] sm:text-[16.5px] leading-relaxed pl-7">
                             {tr("Просчитываем Ultra-HD кадры и синематик-видео либо интегрируем 3D-сцену в браузер на Three.js с логикой кастомизатора.")}
                         </p>
                     </div>
 
                     <div className="pt-8 space-y-1.5">
                         <div className="flex items-center gap-3">
-                            <span className="font-mono text-sm text-emerald-600 font-semibold">05</span>
-                            <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-950">
+                            <span className="font-mono text-sm text-accent font-semibold">05</span>
+                            <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-content">
                                 {tr("Передача полного пакета файлов")}
                             </h3>
                         </div>
-                        <p className="text-neutral-500 text-[15.4px] sm:text-[16.5px] leading-relaxed pl-7">
+                        <p className="text-content-muted text-[15.4px] sm:text-[16.5px] leading-relaxed pl-7">
                             {tr("Предоставляем готовые 4K-рендеры, оптимизированные GLTF-модели и оригинальные файлы проектов со всеми текстурами.")}
                         </p>
                     </div>
@@ -841,39 +841,39 @@ export default function ThreeDesignPage() {
             {/* ========================================================= */}
             <section className="space-y-10 pt-4">
                 <div className="flex items-center gap-2.5">
-                    <span className="px-2.5 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-mono text-xs font-semibold">
+                    <span className="px-2.5 py-0.5 rounded-full bg-surface-muted text-content-secondary font-mono text-xs font-semibold">
                         05
                     </span>
-                    <span className="text-base sm:text-lg font-bold text-neutral-900 tracking-tight">
+                    <span className="text-base sm:text-lg font-bold text-content tracking-tight">
                         {tr("Наши гарантии")}
                     </span>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 divide-y md:divide-y-0 md:divide-x divide-neutral-200/80">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 divide-y md:divide-y-0 md:divide-x divide-line/80">
                     <div className="group pt-6 md:pt-0 md:pr-8 transition-transform duration-300">
-                        <h3 className="text-2xl sm:text-3xl lg:text-[34px] font-black tracking-tight text-neutral-950 leading-[1.12]">
+                        <h3 className="text-2xl sm:text-3xl lg:text-[34px] font-black tracking-tight text-content leading-[1.12]">
                             {tr("100% реализм.")} <br />
-                            <span className="text-neutral-400 font-bold group-hover:text-neutral-600 transition-colors">
+                            <span className="text-content-subtle font-bold group-hover:text-content-secondary transition-colors">
                                 {tr("Доводим геометрию и свет до идеала по брифу.")}
                             </span>
                         </h3>
                     </div>
 
                     <div className="group pt-8 md:pt-0 md:px-8 transition-transform duration-300">
-                        <h3 className="text-2xl sm:text-3xl lg:text-[32px] font-black tracking-tight text-neutral-950 leading-[1.14]">
+                        <h3 className="text-2xl sm:text-3xl lg:text-[32px] font-black tracking-tight text-content leading-[1.14]">
                             {tr("Все исходники")} <br className="hidden lg:inline" />
                             {tr("остаются у вас.")} <br />
-                            <span className="text-neutral-400 font-bold group-hover:text-neutral-600 transition-colors">
+                            <span className="text-content-subtle font-bold group-hover:text-content-secondary transition-colors">
                                 {tr("Полная коммерческая свобода без роялти.")}
                             </span>
                         </h3>
                     </div>
 
                     <div className="group pt-8 md:pt-0 md:pl-8 transition-transform duration-300">
-                        <h3 className="text-2xl sm:text-3xl lg:text-[28px] font-black tracking-tight text-neutral-950 leading-[1.18]">
+                        <h3 className="text-2xl sm:text-3xl lg:text-[28px] font-black tracking-tight text-content leading-[1.18]">
                             {tr("Фиксированная цена")} <br className="hidden lg:inline" />
                             {tr("в договоре —")} <br />
-                            <span className="text-neutral-400 font-bold group-hover:text-neutral-600 transition-colors">
+                            <span className="text-content-subtle font-bold group-hover:text-content-secondary transition-colors">
                                 {tr("стоимость не изменится в ходе работы.")}
                             </span>
                         </h3>
@@ -884,19 +884,19 @@ export default function ThreeDesignPage() {
             {/* ========================================================= */}
             {/* 6-Й ЭКРАН: Финальный CTA                                 */}
             {/* ========================================================= */}
-            <section className="bg-neutral-950 text-white rounded-[32px] p-8 sm:p-12 flex flex-col lg:flex-row items-center justify-between gap-8 shadow-xl">
+            <section className="bg-ink text-white rounded-panel p-8 sm:p-12 flex flex-col lg:flex-row items-center justify-between gap-8 shadow-xl">
                 <div className="space-y-2 text-center lg:text-left">
                     <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
                         {tr("Запустим 3D-проект с гарантией по договору")}
                     </h2>
-                    <p className="text-neutral-400 text-xs sm:text-sm">
+                    <p className="text-content-subtle text-xs sm:text-sm">
                         {tr("Архитектура, WebGL или предметный рендеринг: фиксируем срок, бюджет и передаем все исходники.")}
                     </p>
                 </div>
 
                 <Link
                     href="/contacts"
-                    className="group inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-white hover:bg-neutral-100 text-neutral-950 font-mono text-sm font-bold uppercase tracking-wider transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 shrink-0"
+                    className="group inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-white hover:bg-surface-muted text-content font-mono text-sm font-bold uppercase tracking-wider transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 shrink-0"
                 >
                     <span>{tr("Обсудить 3D")}</span>
                     <ArrowUpRight size={17} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

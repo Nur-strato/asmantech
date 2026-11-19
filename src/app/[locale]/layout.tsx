@@ -5,6 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { Header } from "@/components/sections/header";
 import { SmoothScrollProvider } from "@/components/providers/smooth-scroll";
+import { fontVariables } from "@/app/fonts";
 
 type Props = {
     children: React.ReactNode;
@@ -144,14 +145,14 @@ export default async function LocaleLayout({ children, params }: Props) {
     };
 
     return (
-        <html lang={locale} className="scroll-smooth">
+        <html lang={locale} className={`scroll-smooth ${fontVariables}`}>
         <head>
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
             />
         </head>
-        <body className="min-h-screen flex flex-col bg-white text-black antialiased selection:bg-neutral-950 selection:text-white">
+        <body className="min-h-screen flex flex-col bg-surface text-content font-sans antialiased selection:bg-ink selection:text-white">
         <NextIntlClientProvider>
             <SmoothScrollProvider>
                 <Header />

@@ -180,22 +180,22 @@ export function SocialChannels() {
                         className="fixed inset-0 z-40 bg-black/20 backdrop-blur-[2px] animate-in fade-in duration-200"
                         onClick={() => setActiveDevChannel(null)}
                     />
-                    <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[88%] max-w-[340px] sm:max-w-[360px] p-6 rounded-3xl bg-white border border-neutral-200/90 shadow-[0_20px_50px_rgba(0,0,0,0.14)] transition-all duration-200 animate-in fade-in zoom-in-95 text-center">
+                    <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[88%] max-w-[340px] sm:max-w-[360px] p-6 rounded-3xl bg-white border border-line/90 shadow-[0_20px_50px_rgba(0,0,0,0.14)] transition-all duration-200 animate-in fade-in zoom-in-95 text-center">
                         <button
                             type="button"
                             onClick={() => setActiveDevChannel(null)}
-                            className="absolute top-4 right-4 p-2 rounded-full text-neutral-400 hover:text-neutral-900 active:bg-neutral-100 transition-colors cursor-pointer"
+                            className="absolute top-4 right-4 p-2 rounded-full text-content-subtle hover:text-content active:bg-surface-muted transition-colors cursor-pointer"
                             title={t("close")}
                             aria-label={t("closeNotice")}
                         >
                             <X size={18} />
                         </button>
 
-                        <h4 className="font-sans text-2xl font-black text-neutral-950 tracking-tight">
+                        <h4 className="font-sans text-2xl font-black text-content tracking-tight">
                             {activeDevChannel}
                         </h4>
 
-                        <p className="mt-2 font-sans text-base font-semibold text-neutral-500">
+                        <p className="mt-2 font-sans text-base font-semibold text-content-muted">
                             {t("underDev")}
                         </p>
                     </div>
@@ -206,7 +206,7 @@ export function SocialChannels() {
             <div className="w-full mb-8 sm:mb-10">
                 <Link
                     href="/contacts"
-                    className="group w-full flex items-center justify-between px-6 sm:px-8 py-4 sm:py-5 rounded-2xl sm:rounded-3xl bg-neutral-900 hover:bg-neutral-800 text-white transition-all active:scale-[0.99] shadow-sm [touch-action:manipulation]"
+                    className="group w-full flex items-center justify-between px-6 sm:px-8 py-4 sm:py-5 rounded-2xl sm:rounded-3xl bg-neutral-900 hover:bg-ink-strong text-white transition-all active:scale-[0.99] shadow-sm [touch-action:manipulation]"
                 >
                     <span className="text-sm sm:text-base md:text-lg text-neutral-300">
                         {t("ctaQuestion")}
@@ -220,7 +220,7 @@ export function SocialChannels() {
 
             {/* Верхний заголовок */}
             <div>
-                <h3 className="text-2xl sm:text-3xl font-extrabold text-neutral-900 tracking-tight mt-1">
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-content tracking-tight mt-1">
                     {t("title")}
                 </h3>
             </div>
@@ -231,7 +231,7 @@ export function SocialChannels() {
                     {channels.map((channel, index) => (
                         <div
                             key={channel.name}
-                            className="flex flex-col items-center text-center p-3 sm:p-0 rounded-2xl sm:rounded-none bg-neutral-50/60 sm:bg-transparent border border-neutral-200/60 sm:border-none"
+                            className="flex flex-col items-center text-center p-3 sm:p-0 rounded-2xl sm:rounded-none bg-neutral-50/60 sm:bg-transparent border border-line/60 sm:border-none"
                         >
                             <a
                                 href={channel.href}
@@ -244,13 +244,13 @@ export function SocialChannels() {
                                     {channel.icon}
                                 </div>
 
-                                <h4 className="text-[19px] sm:text-[21px] font-bold text-neutral-900 tracking-tight pt-3 sm:pt-3.5">
+                                <h4 className="text-[19px] sm:text-[21px] font-bold text-content tracking-tight pt-3 sm:pt-3.5">
                                     {channel.name}
                                 </h4>
                             </a>
 
                             <div className="inline-flex items-center justify-center gap-1.5 max-w-[calc(100vw-4rem)] sm:max-w-full pt-1.5">
-                                <span className="font-mono text-[13px] text-neutral-900/50 font-medium truncate select-text">
+                                <span className="font-mono text-[13px] text-content/50 font-medium truncate select-text">
                                     {channel.handle}
                                 </span>
 
@@ -260,10 +260,10 @@ export function SocialChannels() {
                                         onClick={(e) => handleCopy(e, channel, index)}
                                         title={t("copy")}
                                         aria-label={`${t("copy")} ${channel.name}`}
-                                        className="p-2 sm:p-1.5 rounded-lg text-neutral-900/40 hover:text-neutral-900 hover:bg-neutral-100 active:bg-neutral-200 active:scale-90 transition-all cursor-pointer touch-manipulation"
+                                        className="p-2 sm:p-1.5 rounded-lg text-content/40 hover:text-content hover:bg-surface-muted active:bg-neutral-200 active:scale-90 transition-all cursor-pointer touch-manipulation"
                                     >
                                         {copiedIndex === index ? (
-                                            <Check size={14} className="text-emerald-600 stroke-[2.5]" />
+                                            <Check size={14} className="text-accent stroke-[2.5]" />
                                         ) : (
                                             <Copy size={14} />
                                         )}
