@@ -1,5 +1,6 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useMessages } from "next-intl";
+import type { TrPairs } from "./tr-pack";
 
 type Dict = Record<string, string>;
 
@@ -12,6 +13,11 @@ export function translate(dict: Dict | undefined, value: unknown) {
 }
 
 export function useTr() {
-    const dict = useMessages().Tr as Dict | undefined;
+    // В next-intl "Tr" приходит массивом пар (см. tr-pack.ts) — собираем обратно в словарь.
+    const raw = useMessages().Tr as unknown as TrPairs | Dict | undefined;
+    const dict = useMemo<Dict | undefined>(
+        () => (Array.isArray(raw) ? Object.fromEntries(raw) : raw),
+        [raw],
+    );
     return useCallback(<T,>(value: T): T => translate(dict, value) as T, [dict]);
 }

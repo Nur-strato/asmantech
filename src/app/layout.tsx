@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { fontVariables } from "./fonts";
 
 export const metadata: Metadata = {
     title: {
@@ -13,16 +12,12 @@ export const metadata: Metadata = {
     },
 };
 
+// <html>/<body> рендерят дочерние layout'ы: src/app/[locale]/layout.tsx (сайт с локалью)
+// и src/app/(standalone)/layout.tsx (admin, archive, embed). Здесь только общие стили и метаданные.
 export default function RootLayout({
                                        children,
                                    }: Readonly<{
     children: React.ReactNode;
 }>) {
-    return (
-        <html lang="ru" className={fontVariables} suppressHydrationWarning>
-        <body className="min-h-screen bg-surface text-content font-sans antialiased selection:bg-ink selection:text-white">
-        {children}
-        </body>
-        </html>
-    );
+    return children;
 }
