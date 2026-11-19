@@ -182,13 +182,13 @@ function CardLaptopMockup({ project }: { project: ProjectItem }) {
             <div className="absolute -bottom-8 w-[88%] h-8 bg-black/95 blur-xl rounded-full pointer-events-none [transform:translateZ(-16px)]" />
 
             <div className="absolute inset-0 [backface-visibility:hidden] bg-neutral-900 rounded-[18px] p-2 border border-neutral-700/80 shadow-[0_30px_70px_rgba(0,0,0,0.85)] flex flex-col overflow-hidden">
-                <div className="h-4 bg-neutral-950 px-2.5 flex items-center justify-between border-b border-neutral-800/80 shrink-0">
+                <div className="h-4 bg-ink px-2.5 flex items-center justify-between border-b border-neutral-800/80 shrink-0">
                     <div className="flex gap-1.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-[#FF5F56]/90" />
                         <span className="w-1.5 h-1.5 rounded-full bg-[#FFBD2E]/90" />
                         <span className="w-1.5 h-1.5 rounded-full bg-[#27C93F]/90" />
                     </div>
-                    <span className="text-[8px] font-mono text-neutral-500 tracking-wider">
+                    <span className="text-[8px] font-mono text-content-muted tracking-wider">
                         {project.id}.production.runtime
                     </span>
                 </div>
@@ -203,14 +203,14 @@ function CardLaptopMockup({ project }: { project: ProjectItem }) {
                         </span>
                     </div>
                     <div className="p-3 bg-neutral-900/90 rounded-xl border border-neutral-800 text-[10px] space-y-1 backdrop-blur-xs">
-                        <div className="text-neutral-400 font-mono text-[9px] uppercase tracking-wider">
+                        <div className="text-content-subtle font-mono text-[9px] uppercase tracking-wider">
                             Engineering Runtime
                         </div>
                         <div className="font-bold text-white text-xs sm:text-sm">
                             {project.title} — System Live
                         </div>
                     </div>
-                    <div className="text-[9px] font-mono text-neutral-500 flex justify-between pt-1 border-t border-neutral-900">
+                    <div className="text-[9px] font-mono text-content-muted flex justify-between pt-1 border-t border-neutral-900">
                         <span>Architecture Fixed Price</span>
                         <span className="text-white/90">● Click Zoom to Interact</span>
                     </div>
@@ -219,9 +219,9 @@ function CardLaptopMockup({ project }: { project: ProjectItem }) {
 
             <div className="absolute inset-0 [transform:rotateY(180deg)] [backface-visibility:hidden] bg-gradient-to-br from-neutral-800 via-neutral-900 to-neutral-950 rounded-[18px] border border-neutral-600/70 shadow-2xl flex flex-col items-center justify-center">
                 <div className="w-12 h-12 rounded-full bg-neutral-800/90 border border-neutral-700/80 flex items-center justify-center shadow-inner">
-                    <span className="font-mono font-black text-xs text-neutral-400">P³²</span>
+                    <span className="font-mono font-black text-xs text-content-subtle">P³²</span>
                 </div>
-                <div className="text-[9px] font-mono uppercase tracking-widest text-neutral-500 mt-3 font-semibold">
+                <div className="text-[9px] font-mono uppercase tracking-widest text-content-muted mt-3 font-semibold">
                     MacBook Pro Chassis
                 </div>
             </div>
@@ -239,17 +239,17 @@ function CardPhoneMockup({ project }: { project: ProjectItem }) {
         <div className="relative w-[185px] h-[315px] [transform-style:preserve-3d] flex flex-col items-center">
             <div className="absolute -bottom-6 w-[80%] h-6 bg-black/80 blur-lg rounded-full pointer-events-none [transform:translateZ(-10px)]" />
 
-            <div className="absolute inset-0 [backface-visibility:hidden] bg-neutral-950 rounded-[40px] p-2 border-[2.5px] border-neutral-700/90 shadow-[0_25px_60px_rgba(0,0,0,0.8)] flex flex-col overflow-hidden">
+            <div className="absolute inset-0 [backface-visibility:hidden] bg-ink rounded-[40px] p-2 border-[2.5px] border-neutral-700/90 shadow-[0_25px_60px_rgba(0,0,0,0.8)] flex flex-col overflow-hidden">
                 <div className="h-4 flex justify-center items-center shrink-0">
                     <div className="w-14 h-2.5 bg-neutral-900 rounded-full border border-neutral-800" />
                 </div>
-                <div className="flex-1 rounded-[28px] bg-black p-3 text-white flex flex-col justify-between overflow-hidden mt-0.5">
-                    <div className="text-[9px] font-mono text-neutral-400 flex justify-between border-b border-neutral-900 pb-1.5">
+                <div className="flex-1 rounded-3xl bg-black p-3 text-white flex flex-col justify-between overflow-hidden mt-0.5">
+                    <div className="text-[9px] font-mono text-content-subtle flex justify-between border-b border-neutral-900 pb-1.5">
                         <span>Mobile Studio</span>
                         <span className="text-white/80">SLA 100%</span>
                     </div>
                     <div className="p-2.5 bg-neutral-900/90 rounded-xl border border-neutral-800 text-[10px] space-y-1 my-auto">
-                        <div className="text-[8px] text-neutral-400 font-mono uppercase tracking-wider">
+                        <div className="text-[8px] text-content-subtle font-mono uppercase tracking-wider">
                             Project
                         </div>
                         <div className="font-bold text-white text-[11px] leading-snug">
@@ -271,8 +271,8 @@ function CardPhoneMockup({ project }: { project: ProjectItem }) {
                     <div className="rounded-full bg-black border border-neutral-600" />
                     <div className="rounded-full bg-black border border-neutral-600 col-span-2 w-4 h-4 mx-auto" />
                 </div>
-                <div className="mx-auto text-neutral-500 font-mono text-xs font-bold">P³²</div>
-                <div className="text-center text-[8px] font-mono uppercase tracking-widest text-neutral-500 font-semibold">
+                <div className="mx-auto text-content-muted font-mono text-xs font-bold">P³²</div>
+                <div className="text-center text-[8px] font-mono uppercase tracking-widest text-content-muted font-semibold">
                     Titanium Pro
                 </div>
             </div>
@@ -337,7 +337,7 @@ function Interactive360Stage({
     return (
         <div
             ref={stageRef}
-            className={`relative w-full aspect-[4/3] bg-gradient-to-b ${project.bgTone} border border-neutral-900 rounded-[28px] overflow-hidden flex items-center justify-center select-none [perspective:1400px]`}
+            className={`relative w-full aspect-[4/3] bg-gradient-to-b ${project.bgTone} border border-neutral-900 rounded-3xl overflow-hidden flex items-center justify-center select-none [perspective:1400px]`}
             onMouseDown={(e) => handleStart(e.clientX)}
             onMouseMove={handleMouseMove}
             onMouseUp={handleEnd}
@@ -383,7 +383,7 @@ function Interactive360Stage({
                         className={`px-3 py-1.5 rounded-full text-[10px] font-mono tracking-wider flex items-center gap-1.5 transition-all cursor-pointer ${
                             device === "laptop"
                                 ? "bg-white text-black font-extrabold shadow-sm"
-                                : "text-neutral-400 hover:text-white"
+                                : "text-content-subtle hover:text-white"
                         }`}
                     >
                         <Monitor size={11} />
@@ -399,7 +399,7 @@ function Interactive360Stage({
                         className={`px-3 py-1.5 rounded-full text-[10px] font-mono tracking-wider flex items-center gap-1.5 transition-all cursor-pointer ${
                             device === "phone"
                                 ? "bg-white text-black font-extrabold shadow-sm"
-                                : "text-neutral-400 hover:text-white"
+                                : "text-content-subtle hover:text-white"
                         }`}
                     >
                         <Smartphone size={11} />
@@ -448,7 +448,7 @@ function Interactive360Stage({
                         setRotationY(0);
                         if (soundEnabled) playHapticSound("click");
                     }}
-                    className="text-[11px] font-mono font-medium tracking-wider text-neutral-400 hover:text-white transition-colors cursor-pointer px-1.5"
+                    className="text-[11px] font-mono font-medium tracking-wider text-content-subtle hover:text-white transition-colors cursor-pointer px-1.5"
                 >
                     RESET
                 </button>
@@ -464,12 +464,12 @@ export default function ProjectsPart1Page() {
     const [soundEnabled, setSoundEnabled] = useState(true);
 
     return (
-        <main className="max-w-[1440px] mx-auto px-6 sm:px-10 pt-28 pb-32 space-y-16 bg-white text-neutral-900 font-sans">
+        <main className="max-w-[1440px] mx-auto px-6 sm:px-10 pt-28 pb-32 space-y-16 bg-white text-content font-sans">
             {/* 1. Навигация и звук */}
             <div className="flex items-center justify-between">
                 <Link
                     href="/"
-                    className="inline-flex items-center gap-2 text-xs font-mono font-medium uppercase tracking-wider text-neutral-500 hover:text-neutral-900 transition-colors group"
+                    className="inline-flex items-center gap-2 text-xs font-mono font-medium uppercase tracking-wider text-content-muted hover:text-content transition-colors group"
                 >
                     <ArrowLeft size={13} className="transition-transform group-hover:-translate-x-1" />
                     <span>Назад на главную</span>
@@ -481,7 +481,7 @@ export default function ProjectsPart1Page() {
                         setSoundEnabled(!soundEnabled);
                         if (!soundEnabled) playHapticSound("toggle");
                     }}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-neutral-200 text-neutral-600 hover:text-black hover:border-neutral-400 text-[11px] font-mono uppercase tracking-wider transition-all cursor-pointer"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-line text-content-secondary hover:text-black hover:border-neutral-400 text-[11px] font-mono uppercase tracking-wider transition-all cursor-pointer"
                     title="Включить/выключить тактильные звуки"
                 >
                     {soundEnabled ? <Volume2 size={13} /> : <VolumeX size={13} />}
@@ -496,7 +496,7 @@ export default function ProjectsPart1Page() {
                         <h1 className="text-6xl sm:text-8xl md:text-9xl font-black tracking-tighter uppercase leading-none select-none">
                             Work
                         </h1>
-                        <span className="text-xl sm:text-2xl font-mono font-bold tracking-tight ml-1 -mt-1 sm:-mt-2 text-neutral-400 select-none">
+                        <span className="text-xl sm:text-2xl font-mono font-bold tracking-tight ml-1 -mt-1 sm:-mt-2 text-content-subtle select-none">
                             ³²
                         </span>
                     </div>
@@ -506,7 +506,7 @@ export default function ProjectsPart1Page() {
                             FILTER: ALL WORK +
                         </span>
 
-                        <div className="flex items-center p-1 rounded-full border border-neutral-300 bg-neutral-100/80">
+                        <div className="flex items-center p-1 rounded-full border border-line-strong bg-surface-muted/80">
                             <button
                                 type="button"
                                 onClick={() => {
@@ -516,7 +516,7 @@ export default function ProjectsPart1Page() {
                                 className={`px-4 py-1.5 rounded-full text-[11px] font-mono font-bold tracking-wider transition-all cursor-pointer ${
                                     layout === "grid"
                                         ? "bg-neutral-900 text-white shadow-xs"
-                                        : "text-neutral-500 hover:text-neutral-900"
+                                        : "text-content-muted hover:text-content"
                                 }`}
                             >
                                 GRID
@@ -530,7 +530,7 @@ export default function ProjectsPart1Page() {
                                 className={`px-4 py-1.5 rounded-full text-[11px] font-mono font-bold tracking-wider transition-all cursor-pointer ${
                                     layout === "list"
                                         ? "bg-neutral-900 text-white shadow-xs"
-                                        : "text-neutral-500 hover:text-neutral-900"
+                                        : "text-content-muted hover:text-content"
                                 }`}
                             >
                                 LIST
@@ -545,18 +545,18 @@ export default function ProjectsPart1Page() {
                 {projects.map((item) => (
                     <article
                         key={item.id}
-                        className="group flex flex-col justify-between bg-neutral-50/60 hover:bg-neutral-50 rounded-[36px] border border-neutral-200/90 p-4 sm:p-5 transition-all duration-300 hover:border-neutral-400 hover:shadow-[0_24px_50px_rgba(0,0,0,0.06)]"
+                        className="group flex flex-col justify-between bg-neutral-50/60 hover:bg-neutral-50 rounded-[36px] border border-line/90 p-4 sm:p-5 transition-all duration-300 hover:border-neutral-400 hover:shadow-[0_24px_50px_rgba(0,0,0,0.06)]"
                     >
-                        <div className="rounded-[28px] overflow-hidden shadow-2xs">
+                        <div className="rounded-3xl overflow-hidden shadow-2xs">
                             <Interactive360Stage project={item} soundEnabled={soundEnabled} />
                         </div>
 
-                        <div className="pt-6 pb-2 px-2 flex flex-col sm:flex-row sm:items-center justify-between gap-5 border-t border-neutral-200/70 mt-5">
+                        <div className="pt-6 pb-2 px-2 flex flex-col sm:flex-row sm:items-center justify-between gap-5 border-t border-line/70 mt-5">
                             <div className="space-y-1">
-                                <div className="text-[11px] font-mono font-bold text-neutral-400 uppercase tracking-widest">
+                                <div className="text-[11px] font-mono font-bold text-content-subtle uppercase tracking-widest">
                                     {item.index} / {item.client}
                                 </div>
-                                <h2 className="text-2xl sm:text-3xl font-black text-neutral-900 tracking-tight leading-tight group-hover:text-neutral-700 transition-colors">
+                                <h2 className="text-2xl sm:text-3xl font-black text-content tracking-tight leading-tight group-hover:text-neutral-700 transition-colors">
                                     {item.title}
                                 </h2>
                             </div>
@@ -594,14 +594,14 @@ export default function ProjectsPart1Page() {
                     <h2 className="text-2xl sm:text-4xl font-black tracking-tight leading-snug">
                         Гарантия качества. Только результат по договору.
                     </h2>
-                    <p className="text-neutral-400 text-xs sm:text-sm max-w-2xl leading-relaxed">
+                    <p className="text-content-subtle text-xs sm:text-sm max-w-2xl leading-relaxed">
                         Фиксированная цена, передача 100% прав и жесткие штрафы за срыв сроков с первого дня.
                     </p>
                 </div>
 
                 <Link
                     href="/contacts"
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-9 py-4 rounded-2xl bg-white hover:bg-neutral-100 text-neutral-900 text-xs font-mono font-bold uppercase tracking-wider transition-all duration-200 shadow-md active:scale-95 shrink-0"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-9 py-4 rounded-2xl bg-white hover:bg-surface-muted text-content text-xs font-mono font-bold uppercase tracking-wider transition-all duration-200 shadow-md active:scale-95 shrink-0"
                 >
                     <span>Начать проект с гарантией</span>
                     <ArrowUpRight size={16} />

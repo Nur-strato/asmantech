@@ -228,8 +228,8 @@ function ProjectCard({
                 onMouseEnter={onEnter}
                 onMouseLeave={onLeave}
             >
-                <div className="relative overflow-hidden rounded-[26px] sm:rounded-[34px] bg-neutral-100 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] md:cursor-none group-hover:scale-[0.985]">
-                    <div className={`w-full relative ${project.aspectRatio || "aspect-[4/3]"} overflow-hidden bg-neutral-100`}>
+                <div className="relative overflow-hidden rounded-[26px] sm:rounded-[34px] bg-surface-muted transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] md:cursor-none group-hover:scale-[0.985]">
+                    <div className={`w-full relative ${project.aspectRatio || "aspect-[4/3]"} overflow-hidden bg-surface-muted`}>
                         <Image
                             src={project.image}
                             alt={tr(project.title)}
@@ -254,9 +254,9 @@ function ProjectCard({
 
             {/* Описание под карточкой */}
             <div className="pt-4 sm:pt-5 px-0.5">
-                <p className="text-[17px] sm:text-[18.5px] md:text-[20px] leading-[1.38] tracking-[-0.018em] text-neutral-900">
+                <p className="text-[17px] sm:text-[18.5px] md:text-[20px] leading-[1.38] tracking-[-0.018em] text-content">
                     <span className="font-bold text-black">{tr(project.title)}</span>
-                    <span className="font-normal text-neutral-900"> – {project.subtitle}</span>
+                    <span className="font-normal text-content"> – {project.subtitle}</span>
                 </p>
             </div>
         </article>

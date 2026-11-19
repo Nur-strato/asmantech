@@ -138,12 +138,12 @@ export function AucahackSandbox({ isZoomed }: { isZoomed: boolean }) {
         return (
             <div
                 className={`flex-1 p-4 flex flex-col justify-between overflow-hidden select-none font-sans transition-colors ${
-                    isMinimal ? "bg-[#FAF9F5] text-neutral-900" : "bg-[#F8F6F0] text-black"
+                    isMinimal ? "bg-[#FAF9F5] text-content" : "bg-[#F8F6F0] text-black"
                 }`}
             >
                 <div
                     className={`flex items-center justify-between pb-2 ${
-                        isMinimal ? "border-b border-neutral-200" : "border-b-2 border-black"
+                        isMinimal ? "border-b border-line" : "border-b-2 border-black"
                     }`}
                 >
                     <div className="flex items-center gap-2">
@@ -151,14 +151,14 @@ export function AucahackSandbox({ isZoomed }: { isZoomed: boolean }) {
                         <span
                             className={`text-[8px] font-mono px-1 rounded-sm uppercase ${
                                 isMinimal
-                                    ? "border border-neutral-300 text-neutral-600 bg-white"
+                                    ? "border border-line-strong text-content-secondary bg-white"
                                     : "border border-black font-bold text-black"
                             }`}
                         >
                             BETA
                         </span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-[9px] font-mono text-neutral-500">
+                    <div className="flex items-center gap-1.5 text-[9px] font-mono text-content-muted">
                         <span>{theme}</span>
                         <span>•</span>
                         <span>{lang}</span>
@@ -167,13 +167,13 @@ export function AucahackSandbox({ isZoomed }: { isZoomed: boolean }) {
                 <div className="my-auto text-center space-y-1">
                     <h2 className="text-xl sm:text-2xl font-black tracking-tight leading-tight">
                         {t.portal}<br />
-                        <span className={isMinimal ? "text-neutral-600 font-extrabold" : "text-neutral-800"}>AUCA</span>
+                        <span className={isMinimal ? "text-content-secondary font-extrabold" : "text-neutral-800"}>AUCA</span>
                     </h2>
-                    <p className="text-[9px] text-neutral-500 max-w-xs mx-auto line-clamp-1">{t.sub}</p>
+                    <p className="text-[9px] text-content-muted max-w-xs mx-auto line-clamp-1">{t.sub}</p>
                 </div>
                 <div
                     className={`flex items-center justify-between pt-2 border-t text-[9px] font-mono ${
-                        isMinimal ? "border-neutral-200 text-neutral-500" : "border-black/10 text-neutral-600"
+                        isMinimal ? "border-line text-content-muted" : "border-black/10 text-content-secondary"
                     }`}
                 >
                     <span>Курсов: {courses.length}</span>
@@ -186,13 +186,13 @@ export function AucahackSandbox({ isZoomed }: { isZoomed: boolean }) {
     return (
         <div
             className={`flex-1 flex flex-col overflow-hidden select-text font-sans transition-colors duration-200 ${
-                isMinimal ? "bg-[#FAF9F6] text-neutral-900" : "bg-[#F8F6F0] text-black"
+                isMinimal ? "bg-[#FAF9F6] text-content" : "bg-[#F8F6F0] text-black"
             }`}
         >
             <header
                 className={`h-12 px-4 sm:px-6 flex items-center justify-between shrink-0 transition-colors ${
                     isMinimal
-                        ? "bg-[#FAF9F6] border-b border-neutral-200/90"
+                        ? "bg-[#FAF9F6] border-b border-line/90"
                         : "bg-[#F8F6F0] border-b-2 border-black"
                 }`}
             >
@@ -202,7 +202,7 @@ export function AucahackSandbox({ isZoomed }: { isZoomed: boolean }) {
                         <span
                             className={`text-[9px] font-mono px-1.5 py-0.2 rounded-sm font-bold uppercase ${
                                 isMinimal
-                                    ? "border border-neutral-300 text-neutral-600 bg-white"
+                                    ? "border border-line-strong text-content-secondary bg-white"
                                     : "border-2 border-black text-black"
                             }`}
                         >
@@ -215,7 +215,7 @@ export function AucahackSandbox({ isZoomed }: { isZoomed: boolean }) {
                             type="button"
                             className={`w-6 h-6 rounded-md flex items-center justify-center font-bold text-sm cursor-pointer transition-all ${
                                 isMinimal
-                                    ? "border border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-50"
+                                    ? "border border-line-strong bg-white text-neutral-700 hover:bg-neutral-50"
                                     : "border-2 border-black bg-white text-black shadow-[1.5px_1.5px_0px_#000]"
                             }`}
                         >
@@ -242,7 +242,7 @@ export function AucahackSandbox({ isZoomed }: { isZoomed: boolean }) {
                         onClick={toggleTheme}
                         className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all ${
                             isMinimal
-                                ? "bg-white border border-neutral-200 text-neutral-700 shadow-2xs hover:border-neutral-300"
+                                ? "bg-white border border-line text-neutral-700 shadow-2xs hover:border-line-strong"
                                 : "bg-white border-2 border-black text-black shadow-[2px_2px_0px_#000]"
                         }`}
                         title="Переключить тему Standard / Minimal"
@@ -253,7 +253,7 @@ export function AucahackSandbox({ isZoomed }: { isZoomed: boolean }) {
                             }`}
                         />
                         <span>{theme} ▾</span>
-                        <span className="text-[8px] text-neutral-400 font-normal">{t.themeLabel}</span>
+                        <span className="text-[8px] text-content-subtle font-normal">{t.themeLabel}</span>
                     </button>
 
                     <button
@@ -261,7 +261,7 @@ export function AucahackSandbox({ isZoomed }: { isZoomed: boolean }) {
                         onClick={toggleLang}
                         className={`px-2.5 py-1 rounded-lg font-bold text-xs font-mono flex items-center gap-1 cursor-pointer active:scale-95 transition-all ${
                             isMinimal
-                                ? "bg-white border border-neutral-200 text-neutral-700 shadow-2xs hover:border-neutral-300"
+                                ? "bg-white border border-line text-neutral-700 shadow-2xs hover:border-line-strong"
                                 : "bg-white border-2 border-black text-black shadow-[2px_2px_0px_#000]"
                         }`}
                         title="Сменить язык (RU / EN)"
@@ -273,7 +273,7 @@ export function AucahackSandbox({ isZoomed }: { isZoomed: boolean }) {
                     <div
                         className={`w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs transition-all ${
                             isMinimal
-                                ? "bg-white border border-neutral-200 text-neutral-600 shadow-2xs"
+                                ? "bg-white border border-line text-content-secondary shadow-2xs"
                                 : "bg-white border-2 border-black text-black shadow-[2px_2px_0px_#000]"
                         }`}
                     >
@@ -285,10 +285,10 @@ export function AucahackSandbox({ isZoomed }: { isZoomed: boolean }) {
             <div className="flex-1 overflow-y-auto space-y-12 [scrollbar-width:none]">
                 <div className="px-4 sm:px-10 pt-6 space-y-6">
                     <div className="text-center space-y-2 py-2">
-                        <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-none text-neutral-900">
+                        <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-none text-content">
                             {t.portal}<br />AUCA
                         </h1>
-                        <p className="text-xs sm:text-sm text-neutral-600 font-medium max-w-md mx-auto">
+                        <p className="text-xs sm:text-sm text-content-secondary font-medium max-w-md mx-auto">
                             {t.sub}
                         </p>
                     </div>
@@ -298,7 +298,7 @@ export function AucahackSandbox({ isZoomed }: { isZoomed: boolean }) {
                             type="button"
                             className={`flex-1 py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all cursor-pointer text-center ${
                                 isMinimal
-                                    ? "bg-white border border-neutral-200/90 text-neutral-900 shadow-xs hover:border-neutral-300 active:bg-neutral-50"
+                                    ? "bg-white border border-line/90 text-content shadow-xs hover:border-line-strong active:bg-neutral-50"
                                     : "bg-white border-2 border-black text-black shadow-[3px_3px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#000]"
                             }`}
                         >
@@ -308,7 +308,7 @@ export function AucahackSandbox({ isZoomed }: { isZoomed: boolean }) {
                             type="button"
                             className={`flex-1 py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all cursor-pointer text-center ${
                                 isMinimal
-                                    ? "bg-white border border-neutral-200/90 text-neutral-900 shadow-xs hover:border-neutral-300 active:bg-neutral-50"
+                                    ? "bg-white border border-line/90 text-content shadow-xs hover:border-line-strong active:bg-neutral-50"
                                     : "bg-white border-2 border-black text-black shadow-[3px_3px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#000]"
                             }`}
                         >
@@ -318,15 +318,15 @@ export function AucahackSandbox({ isZoomed }: { isZoomed: boolean }) {
 
                     <div className="max-w-2xl mx-auto">
                         <div className="relative">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400" size={16} />
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-content-subtle" size={16} />
                             <input
                                 type="text"
                                 placeholder={t.searchPlaceholder}
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className={`w-full py-3 pl-11 pr-4 text-xs sm:text-sm font-medium focus:outline-hidden transition-all placeholder:text-neutral-400 ${
+                                className={`w-full py-3 pl-11 pr-4 text-xs sm:text-sm font-medium focus:outline-hidden transition-all placeholder:text-content-subtle ${
                                     isMinimal
-                                        ? "bg-white border border-neutral-200/90 rounded-2xl text-neutral-900 shadow-xs focus:border-neutral-400"
+                                        ? "bg-white border border-line/90 rounded-2xl text-content shadow-xs focus:border-neutral-400"
                                         : "bg-white border-2 border-black rounded-2xl text-black shadow-[3px_3px_0px_#000]"
                                 }`}
                             />
@@ -336,12 +336,12 @@ export function AucahackSandbox({ isZoomed }: { isZoomed: boolean }) {
                     <div
                         className={`max-w-2xl mx-auto p-4 sm:p-6 space-y-4 transition-all ${
                             isMinimal
-                                ? "bg-white border border-neutral-200/90 rounded-2xl shadow-xs"
+                                ? "bg-white border border-line/90 rounded-2xl shadow-xs"
                                 : "bg-white/70 border-2 border-black rounded-2xl shadow-[4px_4px_0px_#000]"
                         }`}
                     >
                         <div className="text-center space-y-2">
-                            <span className="text-[10px] font-mono font-bold tracking-wider text-neutral-400 uppercase">
+                            <span className="text-[10px] font-mono font-bold tracking-wider text-content-subtle uppercase">
                                 {t.dept}
                             </span>
                             <div>
@@ -360,7 +360,7 @@ export function AucahackSandbox({ isZoomed }: { isZoomed: boolean }) {
                         </div>
 
                         <div className={`pt-2 ${isMinimal ? "border-t border-neutral-100" : "border-t border-black/10"}`}>
-                            <div className="text-[10px] font-mono font-bold tracking-wider text-neutral-400 text-center uppercase pb-3">
+                            <div className="text-[10px] font-mono font-bold tracking-wider text-content-subtle text-center uppercase pb-3">
                                 {t.quickAccess} ({courses.length}/4)
                             </div>
 
@@ -370,15 +370,15 @@ export function AucahackSandbox({ isZoomed }: { isZoomed: boolean }) {
                                         key={c.id}
                                         className={`p-3 rounded-xl flex items-center justify-between transition-all ${
                                             isMinimal
-                                                ? "bg-white border border-neutral-200/90 text-neutral-900 hover:border-neutral-300 shadow-2xs"
+                                                ? "bg-white border border-line/90 text-content hover:border-line-strong shadow-2xs"
                                                 : "bg-white border-2 border-black text-black shadow-[2px_2px_0px_#000] hover:bg-neutral-50"
                                         }`}
                                     >
                                         <div>
-                                            <div className="text-[10px] font-mono text-neutral-400 font-bold">
+                                            <div className="text-[10px] font-mono text-content-subtle font-bold">
                                                 {c.code} • {c.dept}
                                             </div>
-                                            <div className="font-bold text-xs text-neutral-900 mt-0.5 line-clamp-1">
+                                            <div className="font-bold text-xs text-content mt-0.5 line-clamp-1">
                                                 {lang === "RU" ? c.nameRu : c.nameEn}
                                             </div>
                                         </div>
@@ -386,7 +386,7 @@ export function AucahackSandbox({ isZoomed }: { isZoomed: boolean }) {
                                             <button
                                                 type="button"
                                                 onClick={() => removeCourse(c.id)}
-                                                className="w-5 h-5 rounded-full border border-neutral-300 hover:border-red-500 hover:text-red-500 flex items-center justify-center text-neutral-400 transition-colors cursor-pointer text-xs"
+                                                className="w-5 h-5 rounded-full border border-line-strong hover:border-red-500 hover:text-red-500 flex items-center justify-center text-content-subtle transition-colors cursor-pointer text-xs"
                                                 title="Удалить курс"
                                             >
                                                 ✕
@@ -403,14 +403,14 @@ export function AucahackSandbox({ isZoomed }: { isZoomed: boolean }) {
                 <footer
                     className={`pt-10 pb-6 px-6 sm:px-12 transition-colors border-t ${
                         isMinimal
-                            ? "bg-[#FAF9F6] border-neutral-200/80 text-neutral-900"
+                            ? "bg-[#FAF9F6] border-line/80 text-content"
                             : "bg-[#F8F6F0] border-black/10 text-black"
                     }`}
                 >
                     <div className="flex items-center justify-between pb-8 border-b border-black/5">
                         <div className="flex items-center gap-3">
                             <span className="font-black text-base sm:text-lg tracking-tight">AUCAHACK</span>
-                            <span className="text-[11px] font-mono text-neutral-500 font-bold uppercase tracking-wider">
+                            <span className="text-[11px] font-mono text-content-muted font-bold uppercase tracking-wider">
                                 BISHKEK • {timeStr}
                             </span>
                         </div>
@@ -419,8 +419,8 @@ export function AucahackSandbox({ isZoomed }: { isZoomed: boolean }) {
                             type="button"
                             className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold tracking-wider cursor-pointer active:scale-95 transition-all ${
                                 isMinimal
-                                    ? "bg-white border border-neutral-300 text-neutral-800 hover:border-neutral-400 shadow-2xs"
-                                    : "bg-black text-white hover:bg-neutral-900 shadow-sm"
+                                    ? "bg-white border border-line-strong text-neutral-800 hover:border-neutral-400 shadow-2xs"
+                                    : "bg-black text-white hover:bg-ink-strong shadow-sm"
                             }`}
                         >
                             {t.addBtn}
@@ -429,7 +429,7 @@ export function AucahackSandbox({ isZoomed }: { isZoomed: boolean }) {
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-8 text-xs">
                         <div className="space-y-3">
-                            <div className="font-mono text-[10px] font-bold tracking-widest text-neutral-400 uppercase">
+                            <div className="font-mono text-[10px] font-bold tracking-widest text-content-subtle uppercase">
                                 {t.footerCols.main}
                             </div>
                             <ul className="space-y-2 font-medium">
@@ -447,7 +447,7 @@ export function AucahackSandbox({ isZoomed }: { isZoomed: boolean }) {
                         </div>
 
                         <div className="space-y-3">
-                            <div className="font-mono text-[10px] font-bold tracking-widest text-neutral-400 uppercase">
+                            <div className="font-mono text-[10px] font-bold tracking-widest text-content-subtle uppercase">
                                 {t.footerCols.reviews}
                             </div>
                             <ul className="space-y-2 font-medium">
@@ -460,7 +460,7 @@ export function AucahackSandbox({ isZoomed }: { isZoomed: boolean }) {
                         </div>
 
                         <div className="space-y-3">
-                            <div className="font-mono text-[10px] font-bold tracking-widest text-neutral-400 uppercase">
+                            <div className="font-mono text-[10px] font-bold tracking-widest text-content-subtle uppercase">
                                 {t.footerCols.tools}
                             </div>
                             <ul className="space-y-2 font-medium">
@@ -473,7 +473,7 @@ export function AucahackSandbox({ isZoomed }: { isZoomed: boolean }) {
                         </div>
 
                         <div className="space-y-3">
-                            <div className="font-mono text-[10px] font-bold tracking-widest text-neutral-400 uppercase">
+                            <div className="font-mono text-[10px] font-bold tracking-widest text-content-subtle uppercase">
                                 {t.footerCols.more}
                             </div>
                             <ul className="space-y-2 font-medium">
@@ -486,7 +486,7 @@ export function AucahackSandbox({ isZoomed }: { isZoomed: boolean }) {
                         </div>
                     </div>
 
-                    <div className="pt-6 border-t border-black/5 flex flex-col sm:flex-row items-center justify-between gap-3 text-[10px] font-mono text-neutral-500">
+                    <div className="pt-6 border-t border-black/5 flex flex-col sm:flex-row items-center justify-between gap-3 text-[10px] font-mono text-content-muted">
                         <span>© 2026 AUCAHACK. ALL RIGHTS RESERVED.</span>
                         <span className="font-bold tracking-wider cursor-pointer hover:text-black">
                             {t.legal}

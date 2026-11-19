@@ -52,14 +52,14 @@ const SPECS = [
 export default function SSLCertificatesPage() {
     const tr = useTr();
     return (
-        <main className="w-full min-h-screen bg-white text-neutral-900 pt-28 sm:pt-36 pb-24">
+        <main className="w-full min-h-screen bg-white text-content pt-28 sm:pt-36 pb-24">
             <div className="w-[85vw] max-w-[1240px] mx-auto space-y-12 sm:space-y-16">
 
                 {/* Навигация назад и статус-бар */}
-                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-neutral-200/80 pb-6">
+                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-line/80 pb-6">
                     <Link
                         href="/#solutions"
-                        className="inline-flex items-center gap-2 text-neutral-500 hover:text-neutral-950 font-mono text-xs uppercase tracking-wider transition-colors group"
+                        className="inline-flex items-center gap-2 text-content-muted hover:text-content font-mono text-xs uppercase tracking-wider transition-colors group"
                     >
                         <ArrowLeft
                             size={16}
@@ -69,11 +69,11 @@ export default function SSLCertificatesPage() {
                     </Link>
 
                     <div className="flex items-center gap-3">
-                        <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold">
+                        <span className="font-mono text-xs uppercase tracking-widest text-content-subtle font-semibold">
                             {tr("INFRASTRUCTURE 03")}
                         </span>
-                        <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 font-mono text-[11px] font-semibold border border-emerald-200/60 flex items-center gap-1.5">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        <span className="px-3 py-1 rounded-full bg-accent-soft text-accent font-mono text-[11px] font-semibold border border-emerald-200/60 flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
                             {tr("TLS 1.3 SECURED")}
                         </span>
                     </div>
@@ -82,23 +82,23 @@ export default function SSLCertificatesPage() {
                 {/* Заглавный блок */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
                     <div className="lg:col-span-8 space-y-5">
-                        <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-xl bg-neutral-100 border border-neutral-200/80 text-neutral-800 font-mono text-xs uppercase tracking-wider font-medium">
-                            <ShieldCheck size={14} className="text-neutral-950" />
+                        <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-xl bg-surface-muted border border-line/80 text-neutral-800 font-mono text-xs uppercase tracking-wider font-medium">
+                            <ShieldCheck size={14} className="text-content" />
                             Encryption & Data Security
                         </div>
 
-                        <h1 className="font-sans font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight text-neutral-950 leading-[1.08]">
+                        <h1 className="font-sans font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight text-content leading-[1.08]">
                             {tr("SSL-сертификаты и сквозное шифрование данных")}
                         </h1>
 
-                        <p className="text-neutral-600 font-sans text-base sm:text-lg lg:text-xl leading-relaxed max-w-2xl">
+                        <p className="text-content-secondary font-sans text-base sm:text-lg lg:text-xl leading-relaxed max-w-2xl">
                             {tr("Выпускаем, валидируем и интегрируем криптографические сертификаты для защиты платежей, пользовательских сессий и обеспечения максимального рейтинга доверия поисковых систем и браузеров.")}
                         </p>
                     </div>
 
                     {/* Сводка параметров */}
-                    <div className="lg:col-span-4 rounded-3xl bg-neutral-50 border border-neutral-200/90 p-6 space-y-5">
-                        <span className="font-mono text-xs uppercase tracking-widest text-neutral-400 font-semibold block">
+                    <div className="lg:col-span-4 rounded-3xl bg-neutral-50 border border-line/90 p-6 space-y-5">
+                        <span className="font-mono text-xs uppercase tracking-widest text-content-subtle font-semibold block">
                             {tr("Инженерные стандарты")}
                         </span>
 
@@ -106,10 +106,10 @@ export default function SSLCertificatesPage() {
                             {SPECS.map((item) => (
                                 <div
                                     key={item.label}
-                                    className="flex items-center justify-between py-2 border-b border-neutral-200/60 text-sm font-sans"
+                                    className="flex items-center justify-between py-2 border-b border-line/60 text-sm font-sans"
                                 >
-                                    <span className="text-neutral-500">{tr(item.label)}</span>
-                                    <span className="font-mono font-semibold text-neutral-950">
+                                    <span className="text-content-muted">{tr(item.label)}</span>
+                                    <span className="font-mono font-semibold text-content">
                                         {tr(item.value)}
                                     </span>
                                 </div>
@@ -118,7 +118,7 @@ export default function SSLCertificatesPage() {
 
                         <Link
                             href="/#contact"
-                            className="inline-flex items-center justify-center gap-2 w-full py-3.5 px-5 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white font-mono text-xs uppercase tracking-wider font-semibold transition-all active:scale-[0.99]"
+                            className="inline-flex items-center justify-center gap-2 w-full py-3.5 px-5 rounded-xl bg-ink hover:bg-ink-strong text-white font-mono text-xs uppercase tracking-wider font-semibold transition-all active:scale-[0.99]"
                         >
                             <span>{tr("Подключить шифрование")}</span>
                             <ArrowUpRight size={15} />
@@ -129,8 +129,8 @@ export default function SSLCertificatesPage() {
                 {/* Сетка преимуществ */}
                 <div className="space-y-6 pt-4">
                     <div className="flex items-center gap-3">
-                        <span className="w-2.5 h-2.5 rounded-full bg-neutral-950" />
-                        <h2 className="font-sans font-bold text-2xl tracking-tight text-neutral-950">
+                        <span className="w-2.5 h-2.5 rounded-full bg-ink" />
+                        <h2 className="font-sans font-bold text-2xl tracking-tight text-content">
                             {tr("Комплекс безопасности передачи данных")}
                         </h2>
                     </div>
@@ -141,15 +141,15 @@ export default function SSLCertificatesPage() {
                             return (
                                 <div
                                     key={feature.title}
-                                    className="p-7 rounded-[26px] bg-neutral-50/70 border border-neutral-200/80 space-y-4 hover:border-neutral-300 hover:bg-neutral-50 transition-all duration-200"
+                                    className="p-7 rounded-[26px] bg-neutral-50/70 border border-line/80 space-y-4 hover:border-line-strong hover:bg-neutral-50 transition-all duration-200"
                                 >
-                                    <div className="p-3 w-fit rounded-xl bg-white border border-neutral-200/90 text-neutral-900 shadow-xs">
+                                    <div className="p-3 w-fit rounded-xl bg-white border border-line/90 text-content shadow-xs">
                                         <Icon size={22} strokeWidth={1.8} />
                                     </div>
-                                    <h3 className="font-sans font-bold text-xl text-neutral-950">
+                                    <h3 className="font-sans font-bold text-xl text-content">
                                         {tr(feature.title)}
                                     </h3>
-                                    <p className="font-sans text-neutral-600 text-sm sm:text-[15px] leading-relaxed">
+                                    <p className="font-sans text-content-secondary text-sm sm:text-[15px] leading-relaxed">
                                         {tr(feature.description)}
                                     </p>
                                 </div>
@@ -159,9 +159,9 @@ export default function SSLCertificatesPage() {
                 </div>
 
                 {/* Процесс выпуска и настройки */}
-                <div className="rounded-[32px] bg-neutral-950 text-white p-8 sm:p-12 space-y-8">
+                <div className="rounded-panel bg-ink text-white p-8 sm:p-12 space-y-8">
                     <div className="space-y-2">
-                        <span className="font-mono text-xs uppercase tracking-widest text-neutral-400">
+                        <span className="font-mono text-xs uppercase tracking-widest text-content-subtle">
                             {tr("Workflow")}
                         </span>
                         <h2 className="font-sans font-bold text-2xl sm:text-3xl text-white tracking-tight">
@@ -193,13 +193,13 @@ export default function SSLCertificatesPage() {
                             },
                         ].map((item) => (
                             <div key={item.step} className="space-y-3">
-                                <span className="font-mono text-xl font-bold text-neutral-500">
+                                <span className="font-mono text-xl font-bold text-content-muted">
                                     {tr(item.step)}
                                 </span>
                                 <h4 className="font-sans font-semibold text-lg text-white">
                                     {tr(item.title)}
                                 </h4>
-                                <p className="font-sans text-sm text-neutral-400 leading-relaxed">
+                                <p className="font-sans text-sm text-content-subtle leading-relaxed">
                                     {tr(item.text)}
                                 </p>
                             </div>
